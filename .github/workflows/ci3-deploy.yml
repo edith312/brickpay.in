@@ -1,0 +1,34 @@
+name: Deploy CodeIgniter 3 to Hostinger
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ftp-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Cleanup unnecessary folders
+        run: |
+          rm -rf .git
+          rm -rf .github
+          rm -rf vendor   # prevent huge upload crashes
+
+      - name: Deploy to Hostinger via FTP
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          protocol: ftp
+          local-dir: ./
+          server-dir: /
+          state-name: .ftp-deploy-sync-state.json
+          log-level: verbose
+          timeout: 600000

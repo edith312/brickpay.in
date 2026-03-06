@@ -1,0 +1,151 @@
+
+    <div class="page-body pt-1 px-2">
+        <?php $this->load->view('map/header') ?>
+
+    <div class="container py-5">
+        <h2 class="text-center mb-4 fw-bold">Master Degrees</h2>
+
+            <div class="row g-3">
+                <?php
+
+                $masterDegrees = [
+                    "Executive MBA",
+                    "MBA in Agri-Business",
+                    "Master of Business Administration (General)",
+                    "Master of Business Administration (Fintech)",
+                    "Master of Business Administration (HR)",
+                    "Master of Business Administration (Marketing)",
+                    "Master of Business Administration (Business Analytics)",
+                    "Master of Business Administration (Entrepreneurship & Family Business Management)",
+                    "Master of Business Administration (Logistics & Supply Chain Management)",
+                    "Master of Business Administration (Digital & Social Media Marketing)",
+                    "Master of Business Administration (International Business)",
+                    "Master of Business Administration (Health Care Management)",
+                    "M. Sc. Ag. (Agricultural Economics)",
+                    "M. Sc. Ag. (Agricultural Extension & Communication)",
+                    "Master of Business Administration (Agri Business Management)",
+                    "M.Sc. Ag. Horticulture (Floriculture & Landscaping)",
+                    "M.Sc Ag. (Entomology)",
+                    "M. Sc. Ag. (Agronomy)",
+                    "M. Sc. Ag. (Genetics & Plant Breeding)",
+                    "M. Sc. Ag. (Hort.) Fruit Science",
+                    "M. Sc. Ag. (Hort.) Vegetable Science",
+                    "M. Sc. Ag. (Plant Pathology)",
+                    "M. Sc. Ag. (Soil Science and Agriculture Chemistry)",
+                    "Master of Optometry",
+                    "Master of Science (Cardiac Care Technology)",
+                    "Master of Science (Anaesthesia & Operation Theater Technology)",
+                    "Master of Science (Biochemistry)",
+                    "Master of Science (Bio-Technology & Bio-Informatics)",
+                    "Master of Science (Medical Laboratory Technology) [Biochemistry, Microbiology]",
+                    "Master of Science (Microbiology)",
+                    "Master of Science (Neurosciences & Neurotechnology)",
+                    "Master of Science (Nutrition & Dietetics) [Clinical Nutrition, Public Health Nutrition, Sports Nutrition]",
+                    "Master of Science (Radio-Imaging Technology)",
+                    "Master of Arts (English)",
+                    "Master of Science (Digital Forensics and Information Security)",
+                    "Master of Philosophy (Clinical Psychology)",
+                    "Master of Arts Clinical Psychology (RCI)",
+                    "Master of Arts Applied Positive Psychology",
+                    "Master of Arts Applied Psychology (Social/Industrial-Organization)",
+                    "Master of Science (Cognitive Science)",
+                    "Master of Science Psychology (Clinical)",
+                    "Master of Science Psychology (Forensic)",
+                    "Master of Science Psychology (Counseling)",
+                    "Master of Dental Surgery (Conservative Dentistry and Endodontics)",
+                    "Master of Dental Surgery (Oral and Maxillofacial Surgery)",
+                    "Master of Dental Surgery (Oral Medicine and Radiology)",
+                    "Master of Dental Surgery (Oral Pathology and Microbiology)",
+                    "Master of Dental Surgery (Orthodontics & Dentofacial Orthopedics)",
+                    "Master of Dental Surgery (Paediatric and Preventive Dentistry)",
+                    "Master of Dental Surgery (Periodontology)",
+                    "Master of Dental Surgery (Prosthodontics and Crown & Bridge)",
+                    "Master of Dental Surgery (Public Health Dentistry)",
+                    "MEd in Hearing Impairment",
+                    "Master of Education",
+                    "Master of Technology in Civil Engineering (Structural Engineering/ Transportation Engineering/ Remote Sensing and GIS)",
+                    "Master of Technology in Computer Science & Engineering (General/Big Data Analytics)",
+                    "Master of Technology in Mechanical Engineering",
+                    "Master of Computer Applications (Artificial Intelligence & Machine Learning/ Cyber Security/ Data Science)",
+                    "Master of Design (M. Des.)",
+                    "Master of Design (M. Des.) (Furniture and Interior Design)",
+                    "Master of Business Administration (Fashion Management)",
+                    "Master of Hotel Management",
+                    "Master of Laws",
+                    "Master of Arts (Journalism & Mass Communication) [Television Journalism, Online Journalism & Advertising, Public Relations, Event Management]",
+                    "Doctor of Medicine (Anatomy)",
+                    "Doctor of Medicine (Anesthesiology)",
+                    "Doctor of Medicine (Biochemistry)",
+                    "Doctor of Medicine (Community Medicine)",
+                    "Doctor of Medicine (Dermatology, Venerology & Leprosy)",
+                    "Doctor of Medicine (Forensic Medicine)",
+                    "Doctor of Medicine (General Medicine)",
+                    "Doctor of Medicine (Microbiology)",
+                    "Doctor of Medicine (Paediatrics)",
+                    "Doctor of Medicine (Pathology)",
+                    "Doctor of Medicine (Pharmacology)",
+                    "Doctor of Medicine (Physiology)",
+                    "Doctor of Medicine (Psychiatry)",
+                    "Doctor of Medicine (Radio-diagnosis)",
+                    "Doctor of Medicine (Respiratory Medicine)",
+                    "Master of Public Health",
+                    "Master of Surgery (General Surgery)",
+                    "Master of Surgery (Obstetrics & Gynecology)",
+                    "Master of Surgery (Ophthalmology)",
+                    "Master of Surgery (Orthopaedics)",
+                    "Master of Surgery (Oto-Rhino-Laryngology)",
+                    "Master of Science (Medical Anatomy)",
+                    "Master of Science (Medical Biochemistry)",
+                    "Master of Science (Medical Microbiology)",
+                    "Master of Science (Medical Pharmacology)",
+                    "Master of Science (Medical Physiology)",
+                    "Master of Science (Nursing) (Nurse Practitioner in Critical Care)",
+                    "Master of Science (Nursing) [Obstetric & Gynaecological Nursing, Child Health (Paediatric) Nursing, Mental Health (Psychiatric) Nursing, Medical Surgical Nursing, Community Health Nursing]",
+                    "Master of Pharmacy (Pharmaceutical Chemistry)",
+                    "Master of Pharmacy (Pharmaceutics)",
+                    "Master of Pharmacy (Pharmacognosy)",
+                    "Master of Pharmacy (Pharmacology)",
+                    "Master of Pharmacy (Pharmacy Practice)",
+                    "Master of Pharmacy (Pharmacy Quality Assurance)",
+                    "Master of Pharmacy (Pharmaceutical Regulatory Affairs)",
+                    "Doctor of Pharmacy (Pharm. D.) (Post Baccalaureate)",
+                    "Doctor of Pharmacy (Pharm. D.)",
+                    "Master of Physiotherapy (Cardiopulmonary)",
+                    "Master of Physiotherapy (Neurology)",
+                    "Master of Physiotherapy (Orthopedics)",
+                    "Master of Physiotherapy (Sports)",
+                    "Master of Physiotherapy (Community Based Rehabilitation)",
+                    "Master of Physiotherapy (Obstetrics & Gynaecology)",
+                    "Master of Science (Environmental Sustainability)",
+                    "Master of Science (Forensic Science)",
+                    "Master of Technology in Electronics & Communication Engineering"
+                ];
+
+                // Master degrees array
+                // $masterDegrees = [
+                //     "MA - Master of Arts",
+                //     "MSc - Master of Science",
+                //     "MCom - Master of Commerce",
+                //     "MBA - Master of Business Administration",
+                //     "MTech / ME - Master of Technology / Engineering",
+                //     "MCA - Master of Computer Applications",
+                //     "MFA - Master of Fine Arts",
+                //     "MPharm - Master of Pharmacy",
+                //     "MD - Doctor of Medicine",
+                //     "MS - Master of Surgery",
+                //     "LLM - Master of Law",
+                //     "M.Ed - Master of Education",
+                //     "MPH - Master of Public Health",
+                //     "MHA - Master of Hospital Administration"
+                // ];
+                
+                // Loop through array to generate buttons
+                foreach ($masterDegrees as $degree) {
+                    echo '<div class="col-lg-3 col-md-4 col-sm-6">';
+                    echo '<a href="#" class="branch-btn">' . $degree . '</a>';
+                    echo '</div>';
+                }
+                ?>
+            </div>
+        </div>
+    </div>

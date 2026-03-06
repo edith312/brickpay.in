@@ -1,0 +1,24 @@
+© 2025 Brickpay. All rights reserved.
+
+This software and its source code are the intellectual property of Brickpay. 
+Unauthorized copying, modification, distribution, reproduction, or use of this code, 
+in whole or in part, is strictly prohibited.
+
+This project is protected under the Indian Copyright Act, 1957 and applicable international laws.
+
+For commercial licensing or permissions, contact: brickpay@gmail.com 
+
+
+
+
+
+<?php
+/**
+ * Project: Brickpay
+ * File: [filename].php
+ * Author: Brickpay
+ * © 2025 Brickpay. All rights reserved.
+ *
+ * This file is part of a proprietary project developed by Shiv Web Developer.
+ * Unauthorized copying, modification, or redistribution is strictly prohibited.
+ */

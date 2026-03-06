@@ -1,0 +1,62 @@
+2026-01-23 | mobile ui fix for create task page
+2026-01-22 | new content add in homepage. ✅
+2026-01-21 | chat system added, press release sort new to old
+2026-01-20 | add network module to send request to connect with other users in user profile ✅
+2026-01-19 | permutation combination btn in reverse the process ✅
+2026-01-17 | calender future task edit and delete added and network users added
+2026-01-16 | Merge pull request #42 from shivprogrammer2023/jatin
+2026-01-16 | future task in calender completed, user profile ui fix, calender modal ui fix, db design for networking
+2026-01-15 | Merge pull request #41 from shivprogrammer2023/jatin
+2026-01-15 | calender future added
+2026-01-14 | Merge pull request #40 from shivprogrammer2023/jatin
+2026-01-14 | search user option added in smoking panel
+2026-01-14 | Merge pull request #39 from shivprogrammer2023/jatin
+2026-01-14 | artificial tree added in company, project, bricks, UI added in book creating
+2026-01-13 | Merge pull request #38 from shivprogrammer2023/jatin
+2026-01-13 | medical reports section added, reverse process shifted to mybooks section
+2026-01-12 | Merge pull request #37 from shivprogrammer2023/jatin
+2026-01-12 | connections added in tree, drag and drop bug fix, new fields added in user profile, new section added in map
+2026-01-10 | Merge pull request #36 from shivprogrammer2023/jatin
+2026-01-10 | tree ui fix, validations added in tree
+2026-01-10 | Merge pull request #35 from shivprogrammer2023/jatin
+2026-01-10 | drag and drop added, social media updated with company and project press release user profile added in press release
+2026-01-09 | Merge pull request #34 from shivprogrammer2023/jatin
+2026-01-09 | user profile fix
+2026-01-09 | tree added, create, remove, render users, create dynamic tree
+2026-01-08 | Merge pull request #33 from shivprogrammer2023/jatin
+2026-01-08 | new page added police and court
+2026-01-08 | press release added on user profile and company profile, Dynamic tree added
+2026-01-07 | Merge pull request #32 from shivprogrammer2023/jatin
+2026-01-07 | calender changes
+2026-01-07 | Merge pull request #31 from shivprogrammer2023/jatin
+2026-01-07 | numbering change, UI fix
+2026-01-07 | Merge pull request #30 from shivprogrammer2023/jatin
+2026-01-07 | numbering change, bug fix
+2026-01-07 | Merge branch 'main' of https://github.com/shivprogrammer2023/brickpay.in into jatin
+2026-01-07 | Merge pull request #29 from shivprogrammer2023/Shiv
+2026-01-07 | Database Backup
+2026-01-07 | Merge pull request #28 from shivprogrammer2023/jatin
+2026-01-06 | Merge branch 'main' of https://github.com/shivprogrammer2023/brickpay.in into jatin
+2026-01-06 | UI Fix, new fields added in create-bricks
+2026-01-05 | Merge pull request #27 from shivprogrammer2023/jatin
+2026-01-05 | calender task timeline fixed, calender edge cases added
+2026-01-04 | Merge pull request #26 from shivprogrammer2023/jatin
+2026-01-03 | calender UI fix, Calender calculation fix for task
+2026-01-03 | Merge pull request #25 from shivprogrammer2023/Shiv
+2026-01-03 | Chat Module UI Ready and User List Add On My Portpolio/My Chat List
+2026-01-02 | Merge pull request #24 from shivprogrammer2023/Shiv
+2026-01-02 | Database Backup From Live Server
+2026-01-02 | Merge pull request #23 from shivprogrammer2023/jatin
+2026-01-02 | user calender UI fix, and task height align with duration,
+2026-01-02 | UI fix, Bug fix
+2026-01-02 | Merge pull request #22 from shivprogrammer2023/jatin
+2026-01-01 | UI fix, new option added in project
+2025-12-31 | Merge pull request #21 from shivprogrammer2023/jatin
+2025-12-31 | options added in project details
+2025-12-31 | numbering added in map panel
+2025-12-31 | breadcrumb fix, Physical World Scale added, Panel Reshuffling, hide feature  added on TRP
+2025-12-31 | Merge pull request #20 from shivprogrammer2023/jatin
+2025-12-31 | Merge pull request #19 from shivprogrammer2023/Shiv
+2025-12-31 | Database Update and Code Flow Setup
+2025-12-31 | Merge pull request #18 from shivprogrammer2023/jatin
+2025-12-31 | department, market_research, reverse_process added and css fix
