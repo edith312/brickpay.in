@@ -18,30 +18,44 @@
             }
         }
     ?>
-
     <?php if (!empty($images)): ?>
         <?php foreach ($images as $img): ?>
             <div class="image-item d-flex align-items-center mb-2 me-2" data-image-id="<?= $img['id'] ?>">
 
                 <?php if (!empty($img['imagelink'])): ?>
                     <!-- IMAGE LINK -->
-                    <img 
-                        src="<?= htmlspecialchars($img['imagelink']) ?>"
-                        width="75"
-                        height="75"
-                        class="rounded border"
-                        alt="Image"
-                    >
+                    <div class="d-flex gap-1 align-items-start">
+                        <a href="<?= htmlspecialchars($img['imagelink']) ?>">
+                            <img 
+                                src="<?= htmlspecialchars($img['imagelink']) ?>"
+                                width="75"
+                                height="75"
+                                class="rounded border"
+                                alt="Image"
+                            >
+                        </a>
+                        <a href="" class="">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </a>
+                    </div>
 
                 <?php elseif (!empty($img['image'])): ?>
                     <!-- IMAGE FILE FROM SERVER -->
-                    <img 
-                        src="<?= base_url('uploads/calendar_image/' . htmlspecialchars($img['image'])) ?>"
-                        width="100"
-                        height="100"
-                        class="rounded border"
-                        alt="Image"
-                    >
+                    <div class="d-flex gap-1 align-items-center">
+                        <a href="<?= base_url('uploads/calendar_image/' . htmlspecialchars($img['image'])) ?>">
+                            <img 
+                                src="<?= base_url('uploads/calendar_image/' . htmlspecialchars($img['image'])) ?>"
+                                width="100"
+                                height="100"
+                                class="rounded border"
+                                alt="Image"
+                            >
+                        </a>
+                        <a href="<?= base_url('uploads/calendar_image/' . htmlspecialchars($img['image'])) ?>" 
+                        download="<?= htmlspecialchars($img['image']) ?>">
+                            <i class="fa-solid fa-arrow-down"></i>
+                        </a>
+                    </div>
 
                 <?php else: ?>
                     <span>No image available</span>

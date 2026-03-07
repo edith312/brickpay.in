@@ -643,7 +643,7 @@
 
                 <div class="d-flex gap-2 my-3">
 
-                    <div class="input-box">
+                    <!-- <div class="input-box">
                         <label>Date</label>
                         <input type="date"
                             name="artificialdate"
@@ -668,7 +668,7 @@
                             class="time-input form-control"
                             value="<?= htmlspecialchars($closingTime) ?>"
                             autocomplete="off">
-                    </div>
+                    </div> -->
 
                     <div class="d-flex align-items-end">
                         <div class="mx-2">
@@ -1130,16 +1130,16 @@
                         <!-- Header can be conditional -->
                         <?php if (!empty($calendar['timeline'])): ?>
                             <div class="">
-                                <div class="d-flex align-items-center">
-                                    <span>
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <!-- <span>
                                         Date: <?= htmlspecialchars(date('d-m-Y', strtotime($date))) ?>
                                         <span class="tabbed">
                                             Opening Time: <?= htmlspecialchars($openingTime) ?> |
                                             Closing Time: <?= htmlspecialchars($closingTime) ?>
                                         </span>
-                                    </span>
+                                    </span> -->
 
-                                    <span class="text-white btn btn-primary" style="margin-left: 10%">
+                                    <span class="text-white btn btn-primary" style="">
                                         <?php
                                             $timeline_type_map = [
                                                 '6' => 'Task',
@@ -1674,6 +1674,7 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+
                         <div class="box_probabilitybox tab-box" id="box_probabilitybox">
                             <h6> Probability Box </h6>
                             <div class="position-relative">
@@ -1700,6 +1701,7 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+
                         <div class="box_religionbox tab-box" id="box_religionbox">
                             <h6> Religion Box </h6>
                             <div class="position-relative">
@@ -1729,6 +1731,7 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+                        
                         <div class="box_languagebox tab-box" id="box_languagebox">
                             <h6> Language Box </h6>
                             <div class="position-relative">
@@ -2187,11 +2190,14 @@
         const btn = this;
         const mode = btn.dataset.mode || 'create';
         const editId = btn.dataset.id || null;
+        const params = new URLSearchParams(window.location.search);
+        const timeline_id = params.get('id');
+        // console.log('timeline_id',timeline_id);
         
         // const modal = btn.closest('.calendar-modal');
         // const $modal = $(modal);
 
-        const scheduleType = 0; // 0 or 1
+        const scheduleType = 1; // 0 or 1
         const type = $(btn).data('type');
 
         if (type === 'user' && btn.dataset.userMode === 'receiver') {
@@ -2201,6 +2207,8 @@
         const url  = $(btn).data('url');
 
         let formData = new FormData();
+        
+        formData.append('timeline_id', timeline_id)
 
         if (mode === 'edit' && editId) {
             formData.append('id', editId); // 🔥 send id for update
@@ -2211,7 +2219,7 @@
         const timelineItemId = wrapper?.dataset?.timelineItemId || null;
         console.log("wrapper",wrapper)
         console.log("timelineItemId", timelineItemId);
-
+        
         const allowedTypes = ['video', 'image', 'user', 'finance', 'audio'];
 
         if (allowedTypes.includes(type) && timelineItemId) {
@@ -2224,14 +2232,14 @@
 
 
         // ✅ Fixed / Future logic
-        formData.append("openingTime", $("#showOpening").val());
-        formData.append("closingTime", $("#showClosing").val());
+        // formData.append("openingTime", $("#showOpening").val());
+        // formData.append("closingTime", $("#showClosing").val());
         formData.append("timeline_type", $("#timeline_type").val())
-        const finalDateTime = getFinalDateTime();
-        formData.append("finaldatetime", finalDateTime);
+        // const finalDateTime = getFinalDateTime();
+        // formData.append("finaldatetime", finalDateTime);
 
         formData.append("scheduleType", scheduleType);
-        formData.append("date", $('#modalDateName').val().trim());
+        // formData.append("date", $('#modalDateName').val().trim());
         const timelineData = getDroppedTimelineData(
             $('#timeline-container')
         );
@@ -4584,16 +4592,16 @@
     }
     
     $(document).on('click', '#create_timeline', function () {
-        let modalDateName = $('#modalDateName').val();
-        let showOpening   = $('#showOpening').val();
-        let showClosing   = $('#showClosing').val();
+        // let modalDateName = $('#modalDateName').val();
+        // let showOpening   = $('#showOpening').val();
+        // let showClosing   = $('#showClosing').val();
         let timeline_type = $('#timeline_type').val();
         let company_id = "<?= $company_id ?>";
         let project_id = "<?= $project_id ?>";
 
         // console.log("timeline_type",timeline_type);
         // return;
-        if (!modalDateName || !showOpening || !showClosing || !timeline_type) {
+        if (!timeline_type) {
             alert('Please fill all fields');
             return;
         }
@@ -4610,14 +4618,11 @@
             type: 'POST',
             dataType: 'json',
             data: {
-                date: modalDateName,
-                openingtime: showOpening,
-                closingtime: showClosing,
                 timeline_type: timeline_type,
                 finaldatetime: finaldatetime,
                 company_id: company_id,
                 project_id: project_id,
-                schedule_type: 0
+                schedule_type: 1
             },
             beforeSend: function () {
                 $('#create_timeline').prop('disabled', true).text('Saving...');

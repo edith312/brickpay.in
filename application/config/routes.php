@@ -209,6 +209,7 @@ $route['company/trllevelsupdate'] = 'Home/trllevelsUpdate';
 // MY CALENDAR FUNCTIONALITY
 $route['calendar'] = 'calendar/index';
 $route['calendar/data-feeding-panel'] = 'calendar/data_feeding_panel';
+$route['calendar/data-feeding-panel-future'] = 'calendar/data_feeding_panel_future';
 $route['calendar/events'] = 'calendar/events';
 $route['calendar/create_events_tree'] = 'calendar/create_events_tree';
 // $route['calendar/create'] = 'calendar/create';

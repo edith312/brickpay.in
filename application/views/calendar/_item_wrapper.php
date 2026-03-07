@@ -21,6 +21,9 @@
             >
                 <i class="fa-solid fa-plus"></i>
             </a>
+            <a class="download_bulk ms-2 cursor-pointer">
+                <i class="fa-solid fa-download"></i>
+            </a>
         ',
 
         'docs' => '
@@ -47,6 +50,9 @@
             >
                 <i class="fa-solid fa-plus"></i>
             </a>
+                <a class="download_bulk ms-2 cursor-pointer">
+                <i class="fa-solid fa-download"></i>
+            </a>
         ',
 
         'audio' => '
@@ -59,6 +65,10 @@
             <a href="javascript:void(0)" class="btn btn-secondary btn-sm ms-2 add_more_btn"
             >
                 <i class="fa-solid fa-plus"></i>
+            </a>
+            </a>
+                <a class="download_bulk ms-2 cursor-pointer">
+                <i class="fa-solid fa-download"></i>
             </a>
         ',
 

@@ -178,6 +178,108 @@ class Calendar extends CI_Controller
         $this->load->view('data_feeding_panel.php', $data);
     }
 
+    public function data_feeding_panel_future()
+    {
+        $timeline_id   = $this->input->get('id');
+        $permission_id = $this->input->get('permission_id');
+        $project_id = $this->input->get('project_id');
+        $company_id = $this->input->get('company_id');
+        
+        // if (!$timeline_id) {
+        //     show_error('Invalid request');
+        // }
+
+        $user_id = sessionId('freelancer_id');
+        $is_public_view = false;
+
+        /////////////////////////////////////////////////////////
+        // 🔐 OWNER MODE
+        /////////////////////////////////////////////////////////
+
+        $calendar = $this->getTimelineDataForPanel($timeline_id, null, 1);
+
+        /////////////////////////////////////////////////////////
+        // 🌍 PUBLIC MODE
+        /////////////////////////////////////////////////////////
+        if ($permission_id) {
+
+            $permission = $this->CommonModal->getRowWhere(
+                'tbl_calendar_permissions',
+                ['id' => $permission_id]
+            );
+
+            $data['permission'] = $permission;
+
+            if (!$permission || $permission['is_public'] != 1) {
+                show_error('Private calendar');
+            }
+
+            $calendar = $this->getTimelineDataForPanel($timeline_id, $permission['user_id'], 1);
+
+            if (!$calendar) {
+                show_error('Timeline not found');
+            }
+            
+            // dd($calendar);
+            // Timeline must belong to permission owner
+            if ($calendar['timeline_details']['user_id'] != $permission['user_id']) {
+                show_error('Unauthorized');
+            }
+            // dd($calendar);
+
+            // Check date scope restriction
+            if (!$this->isDateAllowedByPermission($permission, $calendar['timeline_details']['date'])) {
+                show_error('Not allowed to view this date');
+            }
+
+            $is_public_view = true;
+            $user_id = $permission['user_id'];
+        }
+
+        /////////////////////////////////////////////////////////
+        // LOAD DATA
+        /////////////////////////////////////////////////////////
+        if($company_id){
+            $data['company_id'] = $company_id;
+
+            $data['company_details'] = $this->CommonModal->getRowWhere('companies',[
+                'id' => $company_id
+            ]);
+        }
+
+        if($project_id){
+            $data['project_id'] = $project_id;
+
+            $data['project_details'] = $this->CommonModal->getRowWhere('projects',[
+                'id' => $project_id
+            ]);
+
+            $data['company_details'] = $this->CommonModal->getRowWhere('companies',[
+                'id' => $data['project_details']['company_id']
+            ]);
+        }
+        
+        $data['timeline_id'] = $timeline_id;
+        $data['calendar']    = $calendar;
+        $data['title']       = 'Data Feeding Panel';
+        $data['is_public_view'] = $is_public_view;
+        // dd($data['calendar']['timeline_details']['timeline_type']);
+        // Trees only for owner
+        if (!$is_public_view) {
+            $data['trees'] = $this->CommonModal->getRowsWhere('tree', [
+                'user_id' => $user_id,
+                'tree_type' => 4,
+            ]);
+        } else {
+            $data['trees'] = [];
+        }
+
+        $this->load->view('includes/header-link.php');
+        $this->load->view('includes/header.php');
+        $this->load->view('includes/footer-link');
+        $this->load->view('data_feeding_panel_future.php', $data);
+    }
+
     public function events()
     {
         $start = $this->input->get('start');
@@ -2685,6 +2787,154 @@ class Calendar extends CI_Controller
 
 
     // AUDIO FILE FUNCTIONALITY
+    // public function saveAudio()
+    // {
+    //     // ==========================
+    //     // AUTH
+    //     // ==========================
+    //     if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
+    //         redirect(base_url(''));
+    //     }
+
+    //     $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
+
+    //     // ==========================
+    //     // INPUTS
+    //     // ==========================
+    //     $edit_id   = $this->input->post('id'); // edit mode
+    //     $audiolink = trim($this->input->post('audiolink'));
+
+    //     // ==========================
+    //     // VALIDATION
+    //     // ==========================
+    //     if (empty($audiolink) && empty($_FILES['audiofile']['name'])) {
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => 'Audio link cannot be empty!'
+    //         ]);
+    //         return;
+    //     }
+
+    //     date_default_timezone_set('Asia/Kolkata');
+    //     $now = date('Y-m-d H:i:s');
+
+    //     // ==========================
+    //     // HANDLE TIMELINE
+    //     // ==========================
+    //     $timeline = $this->handleTimeline($user_id);
+
+    //     if ($timeline === false) {
+    //         echo json_encode([
+    //             'success' => false,
+    //             'message' => 'Timeline could not be created'
+    //         ]);
+    //         return;
+    //     }
+
+    //     // ==========================
+    //     // AUDIO UPLOAD
+    //     // ==========================
+    //     $uploadedAudioPath = null;
+
+    //     if (!empty($_FILES['audiofile']['name'])) {
+
+    //         $_FILES['audio'] = $_FILES['audiofile'];
+    //         $_FILES['audio']['name'] = preg_replace('/\s+/', '_', $_FILES['audio']['name']);
+
+    //         $path = FCPATH . 'uploads/calendar_audio/';
+    //         if (!is_dir($path)) mkdir($path, 0777, true);
+
+    //         $config = [
+    //             'upload_path'   => $path,
+    //             'allowed_types' => '*',
+    //             'max_size'      => 10240,
+    //             'encrypt_name'  => true,
+    //             'detect_mime'   => false
+    //         ];
+
+    //         $this->load->library('upload');
+    //         $this->upload->initialize($config);
+    //         // echo '<pre>';
+    //         // print_r($_FILES);
+    //         // exit;
+    //         if (!$this->upload->do_upload('audio')) {
+    //             echo json_encode([
+    //                 'success' => false,
+    //                 'message' => $this->upload->display_errors('', '')
+    //             ]);
+    //             return;
+    //         }
+
+    //         $uploadedAudioPath = $this->upload->data('file_name');
+    //     }
+
+    //     // ==========================
+    //     // DATA PAYLOAD
+    //     // ==========================
+    //     $data = [
+    //         'user_id'       => $user_id,
+    //         'audiolink'     => $audiolink,
+    //         'schedule_type' => $timeline['schedule_type'],
+    //         'openingtime'   => $timeline['openingtime_db'],
+    //         'closingtime'   => $timeline['closingtime_db'],
+    //         'finaldatetime' => $timeline['finaldatetime_db'],
+    //         'updated_date'  => $now
+    //     ];
+
+    //     if ($uploadedAudioPath !== null) {
+    //         $data['audio'] = $uploadedAudioPath;
+    //     }
+
+    //     // ==========================
+    //     // UPDATE MODE
+    //     // ==========================
+    //     if (!empty($edit_id)) {
+    //         $this->db->where('id', $edit_id)
+    //                 ->where('user_id', $user_id)
+    //                 ->update('tbl_calendar_audio', $data);
+
+    //         // 🔥 Return PHP-rendered HTML
+    //         $html = $this->renderTimelineHtmlForPanel($timeline['timeline_id']);
+
+    //         echo json_encode([
+    //             'success' => true,
+    //             'message' => 'Audio updated successfully!',
+    //             'html'    => $html
+    //         ]);
+    //         return;
+    //     }
+
+    //     // ==========================
+    //     // CREATE MODE
+    //     // ==========================
+    //     $data['created_date'] = $now;
+    //     $this->db->insert('tbl_calendar_audio', $data);
+    //     $insertId = $this->db->insert_id();
+
+    //     // ==========================
+    //     // SYNC TIMELINE ITEMS
+    //     // ==========================
+    //     $timeline_items = json_decode($this->input->post('timeline'), true);
+
+    //     if (!empty($timeline_items)) {
+    //         $this->Calender_model->syncTimelineItems(
+    //             $timeline['new_timeline_item'] ?? null,
+    //             $user_id,
+    //             $timeline_items,
+    //             $insertId
+    //         );
+    //     }
+
+    //     // 🔥 Return PHP-rendered HTML
+    //     $html = $this->renderTimelineHtmlForPanel($timeline['timeline_id']);
+
+    //     echo json_encode([
+    //         'success' => true,
+    //         'message' => 'Audio saved successfully!',
+    //         'html'    => $html
+    //     ]);
+    // }
+
     public function saveAudio()
     {
         // ==========================
@@ -2699,16 +2949,30 @@ class Calendar extends CI_Controller
         // ==========================
         // INPUTS
         // ==========================
-        $edit_id   = $this->input->post('id'); // edit mode
+        $edit_id   = $this->input->post('id');
         $audiolink = trim($this->input->post('audiolink'));
+        $timeline_item_id = $this->input->post('timeline_item_id');
+
+        // ==========================
+        // CHECK FILE EXISTENCE
+        // ==========================
+        $hasFiles = false;
+
+        if (isset($_FILES['audiofile']['name'])) {
+            if (is_array($_FILES['audiofile']['name'])) {
+                $hasFiles = !empty($_FILES['audiofile']['name'][0]);
+            } else {
+                $hasFiles = !empty($_FILES['audiofile']['name']);
+            }
+        }
 
         // ==========================
         // VALIDATION
         // ==========================
-        if (empty($audiolink) && empty($_FILES['audiofile']['name'])) {
+        if (empty($audiolink) && !$hasFiles) {
             echo json_encode([
                 'success' => false,
-                'message' => 'Audio link cannot be empty!'
+                'message' => 'Audio link or Audio file required!'
             ]);
             return;
         }
@@ -2730,14 +2994,11 @@ class Calendar extends CI_Controller
         }
 
         // ==========================
-        // AUDIO UPLOAD
+        // AUDIO UPLOAD (MULTIPLE)
         // ==========================
-        $uploadedAudioPath = null;
+        $uploadedAudios = [];
 
-        if (!empty($_FILES['audiofile']['name'])) {
-
-            $_FILES['audio'] = $_FILES['audiofile'];
-            $_FILES['audio']['name'] = preg_replace('/\s+/', '_', $_FILES['audio']['name']);
+        if ($hasFiles) {
 
             $path = FCPATH . 'uploads/calendar_audio/';
             if (!is_dir($path)) mkdir($path, 0777, true);
@@ -2746,84 +3007,112 @@ class Calendar extends CI_Controller
                 'upload_path'   => $path,
                 'allowed_types' => '*',
                 'max_size'      => 10240,
-                'encrypt_name'  => true,
-                'detect_mime'   => false
+                'encrypt_name'  => true
             ];
 
             $this->load->library('upload');
-            $this->upload->initialize($config);
-            // echo '<pre>';
-            // print_r($_FILES);
-            // exit;
-            if (!$this->upload->do_upload('audio')) {
-                echo json_encode([
-                    'success' => false,
-                    'message' => $this->upload->display_errors('', '')
-                ]);
-                return;
+
+            $names = $_FILES['audiofile']['name'];
+            $filesCount = is_array($names) ? count($names) : 1;
+
+            for ($i = 0; $i < $filesCount; $i++) {
+
+                $_FILES['audio']['name'] = is_array($names)
+                    ? preg_replace('/\s+/', '_', $_FILES['audiofile']['name'][$i])
+                    : preg_replace('/\s+/', '_', $_FILES['audiofile']['name']);
+
+                $_FILES['audio']['type']     = is_array($names) ? $_FILES['audiofile']['type'][$i] : $_FILES['audiofile']['type'];
+                $_FILES['audio']['tmp_name'] = is_array($names) ? $_FILES['audiofile']['tmp_name'][$i] : $_FILES['audiofile']['tmp_name'];
+                $_FILES['audio']['error']    = is_array($names) ? $_FILES['audiofile']['error'][$i] : $_FILES['audiofile']['error'];
+                $_FILES['audio']['size']     = is_array($names) ? $_FILES['audiofile']['size'][$i] : $_FILES['audiofile']['size'];
+
+                $this->upload->initialize($config);
+
+                if (!$this->upload->do_upload('audio')) {
+
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $this->upload->display_errors('', '')
+                    ]);
+                    return;
+                }
+
+                $uploadedAudios[] = $this->upload->data('file_name');
+            }
+        }
+
+        // ==========================
+        // SAVE DATA
+        // ==========================
+        $insertedIds = [];
+
+        if (!empty($uploadedAudios)) {
+
+            foreach ($uploadedAudios as $audioName) {
+
+                $data = [
+                    'user_id'          => $user_id,
+                    'audiolink'        => $audiolink,
+                    'audio'            => $audioName,
+                    'timeline_item_id' => $timeline['new_timeline_item'] ?? $timeline_item_id,
+                    'schedule_type'    => $timeline['schedule_type'],
+                    'openingtime'      => $timeline['openingtime_db'],
+                    'closingtime'      => $timeline['closingtime_db'],
+                    'finaldatetime'    => $timeline['finaldatetime_db'],
+                    'updated_date'     => $now
+                ];
+
+                $this->db->insert('tbl_calendar_audio', $data);
+                $insertedIds[] = $this->db->insert_id();
             }
 
-            $uploadedAudioPath = $this->upload->data('file_name');
+        } else {
+
+            $data = [
+                'user_id'          => $user_id,
+                'audiolink'        => $audiolink,
+                'timeline_item_id' => $timeline['new_timeline_item'] ?? $timeline_item_id,
+                'schedule_type'    => $timeline['schedule_type'],
+                'openingtime'      => $timeline['openingtime_db'],
+                'closingtime'      => $timeline['closingtime_db'],
+                'finaldatetime'    => $timeline['finaldatetime_db'],
+                'updated_date'     => $now
+            ];
+
+            if (!empty($edit_id)) {
+
+                $this->db->where('id', $edit_id)
+                        ->where('user_id', $user_id)
+                        ->update('tbl_calendar_audio', $data);
+
+                $insertedIds[] = $edit_id;
+
+            } else {
+
+                $data['created_date'] = $now;
+                $this->db->insert('tbl_calendar_audio', $data);
+                $insertedIds[] = $this->db->insert_id();
+            }
         }
 
         // ==========================
-        // DATA PAYLOAD
-        // ==========================
-        $data = [
-            'user_id'       => $user_id,
-            'audiolink'     => $audiolink,
-            'schedule_type' => $timeline['schedule_type'],
-            'openingtime'   => $timeline['openingtime_db'],
-            'closingtime'   => $timeline['closingtime_db'],
-            'finaldatetime' => $timeline['finaldatetime_db'],
-            'updated_date'  => $now
-        ];
-
-        if ($uploadedAudioPath !== null) {
-            $data['audio'] = $uploadedAudioPath;
-        }
-
-        // ==========================
-        // UPDATE MODE
-        // ==========================
-        if (!empty($edit_id)) {
-            $this->db->where('id', $edit_id)
-                    ->where('user_id', $user_id)
-                    ->update('tbl_calendar_audio', $data);
-
-            // 🔥 Return PHP-rendered HTML
-            $html = $this->renderTimelineHtmlForPanel($timeline['timeline_id']);
-
-            echo json_encode([
-                'success' => true,
-                'message' => 'Audio updated successfully!',
-                'html'    => $html
-            ]);
-            return;
-        }
-
-        // ==========================
-        // CREATE MODE
-        // ==========================
-        $data['created_date'] = $now;
-        $this->db->insert('tbl_calendar_audio', $data);
-        $insertId = $this->db->insert_id();
-
-        // ==========================
-        // SYNC TIMELINE ITEMS
+        // SYNC TIMELINE
         // ==========================
         $timeline_items = json_decode($this->input->post('timeline'), true);
 
         if (!empty($timeline_items)) {
+
             $this->Calender_model->syncTimelineItems(
-                $timeline['new_timeline_item'] ?? null,
+                $timeline['new_timeline_item'],
                 $user_id,
                 $timeline_items,
-                $insertId
+                $insertedIds[0]
             );
         }
 
-        // 🔥 Return PHP-rendered HTML
+        // ==========================
+        // RETURN HTML
+        // ==========================
         $html = $this->renderTimelineHtmlForPanel($timeline['timeline_id']);
 
         echo json_encode([
@@ -2907,7 +3196,7 @@ class Calendar extends CI_Controller
 
             $config = [
                 'upload_path'   => $path,
-                'allowed_types' => 'jpg|png|jpeg|webp|svg|heic',
+                'allowed_types' => '*',
                 'max_size'      => 10240,
                 'encrypt_name'  => true
             ];
@@ -4072,7 +4361,7 @@ class Calendar extends CI_Controller
     }
 
 
-    private function getTimelineDataForPanel($timeline_id, $user_id = null)
+    private function getTimelineDataForPanel($timeline_id, $user_id = null, $schedule_type = 0)
     {
 
         if (!$user_id) {
@@ -4113,7 +4402,8 @@ class Calendar extends CI_Controller
 
         $timeline_details = $this->CommonModal->getRowWhere('calendar_timeline_master', [
             'user_id' => $user_id,
-            'id'      => $timeline_id
+            'id'      => $timeline_id,
+            'schedule_type' => $schedule_type
         ]);
 
         $timeline_items = $this->CommonModal->getRowsWhere(
@@ -4161,6 +4451,12 @@ class Calendar extends CI_Controller
 
                 if ($item['content_type'] == 'image') {
                     $content['additional_images'] = $this->CommonModal->getRowsWhere('calendar_image', [
+                        'timeline_item_id' => $item['id']
+                    ]);
+                }
+
+                if ($item['content_type'] == 'audio') {
+                    $content['additional_audios'] = $this->CommonModal->getRowsWhere('calendar_audio', [
                         'timeline_item_id' => $item['id']
                     ]);
                 }
@@ -4630,7 +4926,8 @@ class Calendar extends CI_Controller
         $scheduleType  = (int) $this->input->post('scheduleType');
         $timeline      = json_decode($this->input->post('timeline'), true);
         $date          = date('Y-m-d', strtotime($this->input->post('date')));
-        
+        $timelineId   = $this->input->post('timeline_id');
+
         if ($scheduleType === 0) {
             $openingtime_db   = $openingTime ?: null;
             $closingtime_db   = $closingTime ?: null;
@@ -4641,15 +4938,17 @@ class Calendar extends CI_Controller
             $finaldatetime_db = null;
         }
 
-        $timelineId = $this->Calender_model->getOrCreateTimeline([
-            'user_id'       => $user_id,
-            'date'          => $date,
-            'opening_time'  => $openingtime_db,
-            'closing_time'  => $closingtime_db,
-            'schedule_type' => $scheduleType,
-            'finaldatetime' => $finaldatetime_db,
-            'timeline_type' => $timeline_type,
-        ]);
+        if ($scheduleType === 0) {
+            $timelineId = $this->Calender_model->getOrCreateTimeline([
+                'user_id'       => $user_id,
+                'date'          => $date,
+                'opening_time'  => $openingtime_db,
+                'closing_time'  => $closingtime_db,
+                'schedule_type' => $scheduleType,
+                'finaldatetime' => $finaldatetime_db,
+                'timeline_type' => $timeline_type,
+            ]);
+        }
 
         if (empty($timelineId)) {
             return false;
@@ -5014,7 +5313,7 @@ class Calendar extends CI_Controller
             }
         }
 
-        if ($type === 'video' || $type === 'image') {
+        if ($type === 'video' || $type === 'image' || $type === 'audio') {
 
             // Find timeline item linked with this content
             $timeline_item = $this->db->where([
@@ -5418,16 +5717,27 @@ class Calendar extends CI_Controller
         $finaldatetime = $this->input->post('finaldatetime');
         $company_id = $this->input->post('company_id');
         $project_id = $this->input->post('project_id');
+        $schedule_type = $this->input->post('schedule_type');
+        
 
         $timeline_data = [
             'user_id' => $user_id,
-            'date'  => $date,
             'opening_time' => $openingtime,
             'closing_time'  => $closingtime,
             'timeline_type' => $timeline_type,
             'finaldatetime'=> $finaldatetime,
-            'schedule_type' => 0
+            'schedule_type' => $schedule_type
         ];
+
+        if(!empty($date)){
+            $timeline_data['date'] = $date;
+        }
+        if(!empty($openingtime)){
+            $timeline_data['opening_time'] = $openingtime;
+        }
+        if(!empty($openingtime)){
+            $timeline_data['closingtime'] = $closingtime;
+        }
 
         $redirect_url = '';
 
@@ -5440,11 +5750,11 @@ class Calendar extends CI_Controller
         $timelineId = $this->Calender_model->getOrCreateTimeline($timeline_data);
         
         if($company_id){
-            $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId&company_id=$company_id";
+            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&company_id=$company_id";
         }elseif($project_id){
-            $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId&project_id=$project_id";
+            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&project_id=$project_id";
         }else{
-            $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId";
+            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId";
         }
 
         if ($timelineId) {
@@ -5587,5 +5897,40 @@ class Calendar extends CI_Controller
         $permissions = $this->db->get('tbl_calendar_permissions')->result_array();
 
         echo json_encode($permissions);
+    }
+
+    public function bulk_download(){
+        $type = $this->input->get("timeline_type");
+        $timeline_item_id = $this->input->get("timeline_item_id");
+        $items = $this->CommonModal->getRowByConditions("calendar_$type", [
+            'timeline_item_id' => $timeline_item_id,
+        ]);
+
+        $this->load->library('zip');
+
+        foreach($items as $item){
+            if (!empty($item[$type])) {
+
+                $filePath = FCPATH . "uploads/calendar_$type/" . $item[$type];
+
+                if (file_exists($filePath)) {
+                    $this->zip->read_file($filePath);
+                }
+
+            } elseif (!empty($item[$type . "link"])) {
+
+                $imageData = file_get_contents($item[$type . "link"]);
+                $filename = basename($item[$type . "link"]);
+
+                $this->zip->add_data($filename, $imageData);
+
+            }
+        }
+
+        $this->zip->download("calendar_$type.zip");
+
+        // dd($all_item);
+        // dd($timeline_type);
+        // dd($timeline_item_id);
     }
 }

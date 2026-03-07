@@ -1581,7 +1581,9 @@
                     <button class="btn-filter" id="btnEnableDisable">Enable/Disable</button>
                     <button class="btn-filter" id="btnPast">Past</button>
                     <button class="btn-filter" id="btnPresent">Present</button>
-                    <button class="btn-filter" id="future-modal-btn">Future</button>
+                    <button class="btn-filter">
+                        <a class="text-white" id="" href="<?= base_url('calendar/data-feeding-panel-future') ?>">Future</a>
+                    </button>
                     <button class="btn-filter" id="btnWishlist">Wishlist - Future </button>
                 </div>
                 <button class="btn-filter" id="openPermissionsModal">

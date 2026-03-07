@@ -8,13 +8,26 @@ class Calender_model extends CI_Model
         // ==========================
         // REQUIRED KEYS (DEFENSIVE)
         // ==========================
-        $required = [
-            'user_id',
-            'date',
-            'opening_time',
-            'closing_time',
-            'schedule_type'
-        ];
+        
+        $required = [];
+
+        if($data['schedule_type'] == 0){
+            $required = [
+                'user_id',
+                'date',
+                'opening_time',
+                'closing_time',
+                'schedule_type'
+            ];
+        }
+        
+        if($data['schedule_type'] == 1){
+            $required = [
+                'user_id',
+                'schedule_type'
+            ];
+        }
+        
         // dd($data);
         foreach ($required as $key) {
             if (!array_key_exists($key, $data)) {
@@ -25,34 +38,31 @@ class Calender_model extends CI_Model
         // ==========================
         // CHECK IF TIMELINE EXISTS
         // ==========================
-        $this->db->where('user_id', $data['user_id'])
-                 ->where('date', $data['date'])
-                 ->where('schedule_type', $data['schedule_type']);
+        if($data['schedule_type'] == 0){
+            $this->db->where('user_id', $data['user_id'])
+                 ->where('schedule_type', $data['schedule_type'])
+                 ->where('date', $data['date']);
 
-        // Fixed schedule → match time slot
-        if ($data['schedule_type'] === 0) {
-            $this->db->where('opening_time', $data['opening_time'])
-                     ->where('closing_time', $data['closing_time']);
-        }
 
-        // Future schedule → no time
-        if ($data['schedule_type'] === 1) {
-            $this->db->where('opening_time IS NULL', null, false)
-                     ->where('closing_time IS NULL', null, false);
-        }
+            // Fixed schedule → match time slot
+            if ($data['schedule_type'] === 0) {
+                $this->db->where('opening_time', $data['opening_time'])
+                        ->where('closing_time', $data['closing_time']);
+            }
+            
+            $query = $this->db->get('tbl_calendar_timeline_master');
 
-        $query = $this->db->get('tbl_calendar_timeline_master');
+            if ($query->num_rows() > 0) {
 
-        if ($query->num_rows() > 0) {
+                $existingId = (int) $query->row()->id;
 
-            $existingId = (int) $query->row()->id;
+                $this->db->where('id', $existingId);
+                $this->db->update('tbl_calendar_timeline_master', [
+                    'timeline_type' => $data['timeline_type']
+                ]);
 
-            $this->db->where('id', $existingId);
-            $this->db->update('tbl_calendar_timeline_master', [
-                'timeline_type' => $data['timeline_type']
-            ]);
-
-            return $existingId;
+                return $existingId;
+            }
         }
 
         // ==========================

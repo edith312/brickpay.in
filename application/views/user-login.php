@@ -296,55 +296,51 @@
         <!-- Toggle Buttons -->
          <div class="mt-4 text-center p-2" style="background-color:#08c9e2ff;">
             <button class="initiative-btn btn me-2 text-white"
-                data-target="initiativeOne"
+                data-target=""
                 style="border:1px solid white;">
                 Members
             </button>
             <button class="initiative-btn btn me-2 text-white"
                 data-target="mentors"
                 style="border:1px solid white;">
-                Men
+                Mentors
             </button>
-            <div id="mentors" class="initiative-content mt-4 show-content">
-                <div class="p-4 border rounded bg-light">
+         </div>
+         <div id="mentors" class="initiative-content mt-4">
+            <div class="p-4 border rounded bg-light">
 
-                    <h4 class="mb-4 fw-bold text-center">Our Mentors</h4>
+                <h4 class="mb-4 fw-bold text-center">Our Mentors</h4>
 
-                    <div class="row g-4 justify-content-center">
+                <div class="row g-4 justify-content-center" id="mentorContainer">
 
-                        <!-- Mentor 1 -->
-                        <div class="col-md-3 col-sm-6">
-                            <div class="card mentor-card text-center h-100 shadow-sm">
-                                <div class="mentor-img-wrapper">
-                                    <img src="<?= base_url('uploads/mentor/modi_new.jpg') ?>" class="card-img-top" alt="Narendra Modi">
-                                </div>
-
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Narendra Modi</h6>
-                                    <small class="text-muted">Prime Minister of India</small>
-                                </div>
+                    <div class="col-md-3 col-sm-6 mentor-item" draggable="true">
+                        <div class="card mentor-card text-center h-100 shadow-sm">
+                            <div class="mentor-img-wrapper">
+                                <img src="<?= base_url('uploads/mentor/modi_new.jpg') ?>" class="card-img-top">
+                            </div>
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-1">Narendra Modi</h6>
+                                <small class="text-muted">Prime Minister of India</small>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Mentor 2 -->
-                        <div class="col-md-3 col-sm-6">
-                            <div class="card mentor-card text-center h-100 shadow-sm">
-                                <div class="mentor-img-wrapper">
-                                    <img src="<?= base_url('uploads/mentor/mukesh ambani.webp') ?>" class="card-img-top" alt="Mukesh Ambani">
-                                </div>
-
-                                <div class="card-body">
-                                    <h6 class="fw-bold mb-1">Mukesh Ambani</h6>
-                                    <small class="text-muted">Chairman, Reliance Industries</small>
-                                </div>
+                    <div class="col-md-3 col-sm-6 mentor-item" draggable="true">
+                        <div class="card mentor-card text-center h-100 shadow-sm">
+                            <div class="mentor-img-wrapper">
+                                <img src="<?= base_url('uploads/mentor/mukesh ambani.webp') ?>" class="card-img-top">
+                            </div>
+                            <div class="card-body">
+                                <h6 class="fw-bold mb-1">Mukesh Ambani</h6>
+                                <small class="text-muted">Chairman, Reliance Industries</small>
                             </div>
                         </div>
-
                     </div>
 
                 </div>
+
             </div>
-         </div>
+        </div>
          <h5 style="font-weight: 600; font-size: 30px; text-align: center; margin-top: 14px;">Our Bold Vision is to make our initiatives as united nations goals (i.e. UN SDG 17 Goals)</h5>
         <div class="mt-4 text-center p-2" style="background-color:#08c9e2ff;">
 
@@ -905,6 +901,35 @@
     </script>
     
     <script>
+        // document.addEventListener("DOMContentLoaded", function(){
+
+        //     const buttons = document.querySelectorAll(".initiative-btn");
+        //     const contents = document.querySelectorAll(".initiative-content");
+
+        //     buttons.forEach(button => {
+
+        //         button.addEventListener("click", function(){
+
+        //             const targetId = this.getAttribute("data-target");
+        //             const targetContent = document.getElementById(targetId);
+
+        //             // Close all sections
+        //             contents.forEach(content => {
+        //                 content.classList.remove("show-content");
+        //             });
+
+        //             // Remove active class from all buttons
+        //             buttons.forEach(btn => btn.classList.remove("active-btn"));
+
+        //             // Open selected section
+        //             targetContent.classList.add("show-content");
+        //             this.classList.add("active-btn");
+
+        //         });
+
+        //     });
+
+        // });
         document.addEventListener("DOMContentLoaded", function(){
 
             const buttons = document.querySelectorAll(".initiative-btn");
@@ -917,12 +942,21 @@
                     const targetId = this.getAttribute("data-target");
                     const targetContent = document.getElementById(targetId);
 
+                    // If already open → close it
+                    if (this.classList.contains("active-btn")) {
+
+                        this.classList.remove("active-btn");
+                        targetContent.classList.remove("show-content");
+                        return;
+
+                    }
+
                     // Close all sections
                     contents.forEach(content => {
                         content.classList.remove("show-content");
                     });
 
-                    // Remove active class from all buttons
+                    // Remove active class from buttons
                     buttons.forEach(btn => btn.classList.remove("active-btn"));
 
                     // Open selected section
@@ -934,8 +968,43 @@
             });
 
         });
-        </script>
+    </script>
+    <script>
+            const container = document.getElementById("mentorContainer");
+            let draggedItem = null;
 
+            document.querySelectorAll(".mentor-item").forEach(item => {
+
+                item.addEventListener("dragstart", function () {
+                    draggedItem = this;
+                    setTimeout(() => this.style.opacity = "0.5", 0);
+                });
+
+                item.addEventListener("dragend", function () {
+                    this.style.opacity = "1";
+                });
+
+                item.addEventListener("dragover", function (e) {
+                    e.preventDefault();
+                });
+
+                item.addEventListener("drop", function () {
+                    if (draggedItem !== this) {
+
+                        let items = [...container.children];
+                        let draggedIndex = items.indexOf(draggedItem);
+                        let targetIndex = items.indexOf(this);
+
+                        if (draggedIndex < targetIndex) {
+                            container.insertBefore(draggedItem, this.nextSibling);
+                        } else {
+                            container.insertBefore(draggedItem, this);
+                        }
+                    }
+                });
+
+            });
+        </script>
 </body>
 <!-- Shiv Web Developer -->
 
