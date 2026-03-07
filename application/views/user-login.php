@@ -303,7 +303,7 @@
             <button class="initiative-btn btn me-2 text-white"
                 data-target="mentors"
                 style="border:1px solid white;">
-                Mentor
+                Men
             </button>
             <div id="mentors" class="initiative-content mt-4 show-content">
                 <div class="p-4 border rounded bg-light">
