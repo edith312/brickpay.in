@@ -301,10 +301,49 @@
                 Members
             </button>
             <button class="initiative-btn btn me-2 text-white"
-                data-target="initiativeOne"
+                data-target="mentors"
                 style="border:1px solid white;">
-                Mentors
+                Mentor
             </button>
+            <div id="mentors" class="initiative-content mt-4 show-content">
+                <div class="p-4 border rounded bg-light">
+
+                    <h4 class="mb-4 fw-bold text-center">Our Mentors</h4>
+
+                    <div class="row g-4 justify-content-center">
+
+                        <!-- Mentor 1 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card mentor-card text-center h-100 shadow-sm">
+                                <div class="mentor-img-wrapper">
+                                    <img src="<?= base_url('uploads/mentor/modi_new.jpg') ?>" class="card-img-top" alt="Narendra Modi">
+                                </div>
+
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-1">Narendra Modi</h6>
+                                    <small class="text-muted">Prime Minister of India</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mentor 2 -->
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card mentor-card text-center h-100 shadow-sm">
+                                <div class="mentor-img-wrapper">
+                                    <img src="<?= base_url('uploads/mentor/mukesh ambani.webp') ?>" class="card-img-top" alt="Mukesh Ambani">
+                                </div>
+
+                                <div class="card-body">
+                                    <h6 class="fw-bold mb-1">Mukesh Ambani</h6>
+                                    <small class="text-muted">Chairman, Reliance Industries</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
          </div>
          <h5 style="font-weight: 600; font-size: 30px; text-align: center; margin-top: 14px;">Our Bold Vision is to make our initiatives as united nations goals (i.e. UN SDG 17 Goals)</h5>
         <div class="mt-4 text-center p-2" style="background-color:#08c9e2ff;">
