@@ -288,5 +288,52 @@ class Teams extends CI_Controller {
         }
     }
 
+    public function delete_member() {
+
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
+        $member_id = $this->input->post('member_id');
+
+        $res = $this->CommonModal->deleteRowById('teamcompanymember',[
+            'id' => $member_id
+        ]);
+
+        if($res){
+            echo json_encode(['success' => true]);
+        }else{
+            echo json_encode(['success' => false]);
+        }
+    }
+
+    public function update_team_member(){
+
+        $id = $this->input->post('id');
+        $member_id = $this->input->post('member_id');
+
+        if(empty($id) || empty($member_id)){
+            echo json_encode(['success'=>false]);
+            return;
+        }
+
+        $res = $this->CommonModal->updateRowById(
+            'teamcompanymember',
+            'id',
+            $id,
+            [
+                'member_id' => $member_id,
+                'status' => 'Requested'
+            ]
+        );
+
+        if($res){
+            echo json_encode(['success'=>true]);
+        }else{
+            echo json_encode(['success'=>false]);
+        }
+
+    }
+
 
 }

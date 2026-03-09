@@ -35,6 +35,7 @@ class CommonModal extends CI_Model
 		$this->db->set($clean_post)
 			->where($column, $id)
 			->update($table);
+
 		if ($this->db->affected_rows() > 0) {
 			return true;
 		} else {

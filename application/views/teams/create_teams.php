@@ -311,6 +311,7 @@
             url: '<?= base_url("Teams/add_team_member") ?>',
             type: 'POST',
             data: {
+
                 department_id: departmentId,
                 member_id: memberId
             },
@@ -328,7 +329,7 @@
 
     $(document).on('click', '.delete_department', function () {
         
-        if(!confirm('are you sure you want to delete department')){
+        if(!confirm('are you sure you want to delete this department?')){
             return;
         }
         
@@ -426,5 +427,147 @@
         });
 
     });
+    
+    $(document).on('click', '.delete_member', function () {
 
+        if(!confirm('are you sure you want to delete this member?')){
+            return;
+        }
+                        
+        let $box = $(this).closest('.team-member');
+        let member_id = $box.data('id');
+
+        $.ajax({
+            url: '<?= base_url('Teams/delete_member') ?>',
+            type: 'post',
+            data: {
+                member_id: member_id
+            },
+            dataType: 'json',
+            success: function(res){
+
+                if(res.success){
+                    $('#fetch_team_structure_btn').click();
+                } else {
+                    alert('Failed to delete member');
+                }
+
+            },
+            error: function(err){
+                console.error(err);
+            }
+        });
+    });
+
+    $(document).on('click', '.edit_member', function () {
+
+        const $memberContainer = $(this).closest('.member-container');
+
+        // Clear everything inside container and show search UI
+        $memberContainer.html(`
+            <input type="text"
+                class="form-control form-control-sm edit-member-input"
+                placeholder="Search user..."
+                style="width:200px">
+
+            <input type="hidden" class="selected-member-id">
+
+            <i class="bi bi-check save_member text-success fs-5"
+                title="Save Member"
+                role="button"></i>
+
+            <div class="edit-suggestions list-group mt-1" style="position:absolute; z-index:1000;"></div>
+        `);
+
+        // focus input automatically
+        $memberContainer.find('.edit-member-input').focus();
+    });
+
+    $(document).on('input', '.edit-member-input', function () {
+
+        const $li = $(this).closest('.team-member');
+        const query = $(this).val().trim();
+
+        if (query.length < 2) {
+            $li.find('.edit-suggestions').remove();
+            return;
+        }
+
+        $.ajax({
+            url: '<?= base_url("Teams/search_freelancers") ?>',
+            type: 'GET',
+            data: { q: query },
+            dataType: 'json',
+            success: function(res){
+
+                // 🔴 remove old suggestions
+                $li.find('.edit-suggestions').remove();
+
+                if(!res.success) return;
+
+                let html = `<div class="edit-suggestions list-group">`;
+
+                res.users.forEach(u => {
+                    html += `
+                        <button class="list-group-item list-group-item-action select-edit-member"
+                            data-id="${u.id}"
+                            data-name="${u.name}">
+                            ${u.name} (${u.email})
+                        </button>
+                    `;
+                });
+
+                html += `</div>`;
+
+                $li.append(html);
+            }
+        });
+
+    });
+
+    $(document).on('click', '.select-edit-member', function () {
+
+        const $btn = $(this);
+        const $li = $btn.closest('.team-member');
+
+        const userId = $btn.data('id');
+        const name = $btn.data('name');
+
+        $li.find('.edit-member-input').val(name);
+        $li.find('.selected-member-id').val(userId);
+
+        $li.find('.edit-suggestions').remove();
+    });
+
+    $(document).on('click', '.save_member', function () {
+
+        const $li = $(this).closest('.team-member');
+        const id = $li.data('id');
+        const memberId = $li.find('.selected-member-id').val();
+
+        if(!memberId){
+            alert('Please select a user');
+            return;
+        }
+
+        $.ajax({
+            url: '<?= base_url("Teams/update_team_member") ?>',
+            type: 'POST',
+            data: {
+                id: id,
+                member_id: memberId
+            },
+            dataType: 'json',
+            success: function(res){
+
+                if(res.success){
+                    $('#fetch_team_structure_btn').click();
+                }else{
+                    alert('Failed to update member');
+                }
+
+            }
+        });
+
+    });
 </script>

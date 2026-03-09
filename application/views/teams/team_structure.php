@@ -27,18 +27,18 @@
             <?php if (!empty($d['team'])): ?>
                 <ul class="team-list">
                     <?php foreach ($d['team'] as $t): ?>
-                        <li class="team-member">
-                            <div class="d-flex align-items-center gap-2">
-                                <?php if (!empty($t['freelancer']['user_image'])): ?>
+                        <li class="team-member" data-id="<?= $t['id'] ?>">
+                            <div class="d-flex align-items-center gap-2 member-container">
+                                <?php if (!empty($t['freelancer']['avatar'])): ?>
                                     <img 
-                                        src="<?= htmlspecialchars($t['freelancer']['avatar']) ?>" 
+                                        src="<?= htmlspecialchars(base_url('uploads/user_profile/') . $t['freelancer']['avatar']) ?>" 
                                         alt="<?= htmlspecialchars($t['freelancer']['name']) ?>" 
                                         width="28" height="28" 
                                         style="border-radius:50%; object-fit:cover;"
                                     >
                                 <?php endif; ?>
 
-                                <span class="fw-semibold">
+                                <span class="fw-semibold" >
                                     <?= htmlspecialchars($t['freelancer']['name'] ?? 'Unknown User') ?>
                                 </span>
 
@@ -47,6 +47,8 @@
                                         (<?= htmlspecialchars($t['status']) ?>)
                                     </small>
                                 <?php endif; ?>
+                                <i class="bi bi-pencil edit_member" title="edit member" role="button"></i>
+                                <i class="bi bi-trash delete_member" title="delete member" role="button"></i>
                             </div>
                         </li>
                     <?php endforeach; ?>
