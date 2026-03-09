@@ -1,14 +1,18 @@
 <ul class="department-list">
     <?php foreach ($departments as $d): ?>
-        <li class="department-item">
+        <li class="department-item" data-dept-id="<?= $d['id'] ?>">
             <div class="d-flex justify-content-between">
-                <strong><?= htmlspecialchars($d['department_name']) ?></strong>
-                <div class="add-team-member" data-dept-id="<?= $d['id'] ?>">
+                <div class="d-flex align-items-center gap-2">
+                    <strong class="department_name"><?= htmlspecialchars($d['department_name']) ?></strong>
+                    <i class="bi bi-pencil edit_department" title="edit department" role="button"></i>
+                    <i class="bi bi-trash delete_department" title="delete department" role="button"></i>
+                </div>
+                <div class="add-team-member">
                     <div class="d-flex gap-2 align-items-center">
                         <input 
                             type="text" 
                             class="form-control form-control-sm member-search-input" 
-                            placeholder="Search user by name/email"
+                            placeholder="add user by name/email"
                         >
                         <input type="hidden" class="selected-member-id">
 

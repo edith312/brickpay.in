@@ -3091,7 +3091,7 @@ class Home extends CI_Controller
         $data['getAllBrickRequest'] = $this->CommonModal->getRowById('tbl_teamcompanymember', $where, 'id', 'DESC');
         $user_id = sessionId('freelancer_id');
         $data['getAllNetworkRequest'] = $this->HomeModal->getAllIncomingRequests($user_id);
-        // print_r($data['getAllNetworkRequest']); die;
+        // dd($data['getAllNetworkRequest']);
         // echo $user_id; die;
         $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
 
@@ -3156,7 +3156,7 @@ class Home extends CI_Controller
         $data['getAppointmentRequets'] = $this->HomeModal->getAppointments($ids);
 
         // dd($data['getAppointmentRequets']);
-
+        
         $this->load->view('includes/header-link', $data);
         $this->load->view('request-panel');
     }

@@ -28,6 +28,10 @@ class Teams extends CI_Controller {
 
     public function get_projects() {
 
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
         $selectedCompanyId = $this->input->post('selectedCompanyId');
         
         if(empty($selectedCompanyId)){
@@ -56,6 +60,10 @@ class Teams extends CI_Controller {
     }
 
     public function get_bricks() {
+
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
 
         $selectedProjectId = $this->input->post('selectedProjectId');
         
@@ -86,6 +94,10 @@ class Teams extends CI_Controller {
 
     public function get_team_structure()
     {
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
         $companyId = $this->input->post('selectedCompanyId');
         $projectId = $this->input->post('selectedProjectId');
         $brickId   = $this->input->post('selectedBrickId');
@@ -117,6 +129,11 @@ class Teams extends CI_Controller {
 
     public function create_department()
     {
+
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
         $name      = trim($this->input->post('department_name'));
         $companyId = $this->input->post('company_id');
         $projectId = $this->input->post('project_id');
@@ -154,8 +171,73 @@ class Teams extends CI_Controller {
         }
     }
 
+    public function update_department()
+    {
+        if (!sessionId('freelancer_id')) {
+            echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+            return;
+        }
+
+        $department_id   = $this->input->post('department_id');
+        $department_name = trim($this->input->post('department_name'));
+
+        if (empty($department_id) || empty($department_name)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid department data'
+            ]);
+            return;
+        }
+
+        $update = $this->CommonModal->updateRowById(
+            'departments',
+            'id',
+            $department_id,
+            [
+                'name' => $department_name
+            ]
+        );
+
+        if ($update) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Department updated successfully'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Update failed'
+            ]);
+        }
+    }
+
+    public function delete_department() {
+
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
+        $departmentId = $this->input->post('department_id');
+
+        if(!empty($departmentId)){
+            $res = $this->CommonModal->deleteRowById('departments', [
+                'id' => $departmentId
+            ]);
+        }
+
+        if($res){
+            echo json_encode(['success' => true]);
+        }else{
+            echo json_encode(['success' => false]);
+        }
+    }
+
     public function search_freelancers()
     {
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
         $q = trim($this->input->get('q'));
 
         if (strlen($q) < 2) {
@@ -172,6 +254,11 @@ class Teams extends CI_Controller {
 
     public function add_team_member()
     {
+
+        if(!sessionId('freelancer_id')){
+            redirect('/');
+        }
+
         $departmentId = $this->input->post('department_id');
         $memberId     = $this->input->post('member_id');
 
@@ -200,4 +287,6 @@ class Teams extends CI_Controller {
             echo json_encode(['success' => false, 'msg' => 'DB insert failed']);
         }
     }
+
+
 }

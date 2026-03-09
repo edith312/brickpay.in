@@ -298,7 +298,7 @@
     });
 
     $(document).on('click', '.add-member-btn', function () {
-        const $box = $(this).closest('.add-team-member');
+        const $box = $(this).closest('.department-item');
         const departmentId = $box.data('dept-id');
         const memberId = $box.find('.selected-member-id').val();
 
@@ -325,4 +325,106 @@
             }
         });
     });
+
+    $(document).on('click', '.delete_department', function () {
+        
+        if(!confirm('are you sure you want to delete department')){
+            return;
+        }
+        
+        const $box = $(this).closest('.department-item');
+        const departmentId = $box.data('dept-id');
+
+        $.ajax({
+            url: '<?= base_url('Teams/delete_department') ?>',
+            type: 'post',
+            data: {
+                department_id: departmentId,
+            },
+            dataType: 'json',
+            success: function (res) {
+                if(res.success){
+                    alert('department deleted');
+                    $('#fetch_team_structure_btn').click();
+                }else{
+                    alert('failed to delete department')
+                }
+            },
+            error: function (res) {
+                console.error(res)
+            }
+        })
+    })
+
+    let deptName = '';
+
+    $(document).on('click', '.edit_department', function () {
+
+        const $box = $(this).closest('.department-item');
+        const $name = $box.find('.department_name');
+        deptName = $name.text().trim();
+
+        const $editIcon = $(this);
+        const $deleteIcon = $box.find('.delete_department');
+
+        // Replace name with input
+        $name.replaceWith(`
+            <input type="text" 
+                class="form-control form-control-sm department_edit_input"
+                value="${deptName}"
+                style="width:200px;">
+        `);
+
+        // Hide icons
+        $editIcon.hide();
+        $deleteIcon.hide();
+
+        // Add save button if not exists
+        if ($box.find('.save_department').length === 0) {
+            $editIcon.after(`
+                <i class="bi bi-check save_department text-success fs-5"
+                title="Save Department"
+                role="button"></i>
+            `);
+        }
+    });
+
+    $(document).on('click', '.save_department', function () {
+
+        const $box = $(this).closest('.department-item');
+        const departmentId = $box.data('dept-id');
+        const newName = $box.find('.department_edit_input').val().trim();
+        
+        if(newName === ''){
+            alert('Department name cannot be empty');
+            return;
+        }
+        if(newName === deptName){
+            $('#fetch_team_structure_btn').click();
+            return;
+        }
+        $.ajax({
+            url: '<?= base_url('Teams/update_department') ?>',
+            type: 'post',
+            data: {
+                department_id: departmentId,
+                department_name: newName
+            },
+            dataType: 'json',
+            success: function(res){
+
+                if(res.success){
+                    $('#fetch_team_structure_btn').click();
+                } else {
+                    alert('Failed to update department');
+                }
+
+            },
+            error: function(err){
+                console.error(err);
+            }
+        });
+
+    });
+
 </script>

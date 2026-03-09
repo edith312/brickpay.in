@@ -492,38 +492,6 @@
         <?php if(!empty($getAllNetworkRequest)) : ?>
           <?php foreach ($getAllNetworkRequest as $request): ?>
 
-            <?php function requestButtonUI($status, $request_id) {
-
-              if ($status === 'pending') {
-                  return '
-                    <button class="btn btn-success btn-sm me-1 accept-btn" data-id="'.$request_id.'">
-                      <i class="fa fa-check"></i> Accept
-                    </button>
-                    <button class="btn btn-warning btn-sm reject-btn" data-id="'.$request_id.'">
-                      <i class="fa fa-times"></i> Reject
-                    </button>
-                  ';
-              }
-
-              if ($status === 'accepted') {
-                  return '
-                    <button class="btn btn-secondary btn-sm" disabled>
-                      <i class="fa fa-user-check"></i> Connected
-                    </button>
-                  ';
-              }
-
-              if ($status === 'rejected') {
-                  return '
-                    <button class="btn btn-danger btn-sm" disabled>
-                      <i class="fa fa-ban"></i> Rejected
-                    </button>
-                  ';
-              }
-
-              return '';
-            }
-          ?>
           
 
           <li class="col-12">
@@ -620,7 +588,6 @@
 
                   <div class="row align-items-center">
 
-                      <!-- LEFT: Sender Info -->
                       <div class="col-md-3 mb-3 mb-md-0">
                           <div class="d-flex align-items-center">
 
@@ -649,7 +616,6 @@
                           </div>
                       </div>
 
-                      <!-- MIDDLE: Details -->
                       <div class="col-md-6 mb-3 mb-md-0">
 
                           <h6 class="fw-bold mb-2">
@@ -686,7 +652,6 @@
 
                       </div>
 
-                      <!-- RIGHT: Actions -->
                       <div class="col-md-3 text-md-end">
 
                           <?php if ($appointment['status'] === 'pending') { ?>
