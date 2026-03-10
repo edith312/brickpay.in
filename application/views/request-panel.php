@@ -81,44 +81,44 @@
     <div class="tab-pane fade show active" id="pass-channel-tab" role="tabpanel" aria-labelledby="channel-request-tab">
       <ul class="row g-1 li_animate list-unstyled" id="request-tab">
         <?php
-        if (!empty($getAllBrickRequest)):
+            if (! empty($getAllBrickRequest)):
 
-          foreach ($getAllBrickRequest as $request):
-            if ($request['request_tab_id'] == 'channel-request') {
-              $getCompany = $this->CommonModal->getSingleRowById('companies', ['id' => $request['company_id']]);
-              $getProjects = $this->CommonModal->getSingleRowById('projects', ['id' => $request['project_id']]);
-              $getBrick = $this->CommonModal->getSingleRowById('bricks', ['id' => $request['brick_id']]);
-              $getUser = $this->CommonModal->getSingleRowById('freelancer', ['id' => $request['created_by']]);
-        ?>
+                foreach ($getAllBrickRequest as $request):
+                    if ($request['request_tab_id'] == 'channel-request') {
+                        $getCompany  = $this->CommonModal->getSingleRowById('companies', ['id' => $request['company_id']]);
+                        $getProjects = $this->CommonModal->getSingleRowById('projects', ['id' => $request['project_id']]);
+                        $getBrick    = $this->CommonModal->getSingleRowById('bricks', ['id' => $request['brick_id']]);
+                        $getUser     = $this->CommonModal->getSingleRowById('freelancer', ['id' => $request['created_by']]);
+            ?>
 
               <li class="col-12">
                 <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row" style="background: #eeeeee4f;">
-                  <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?= base_url('/uploads/user_profile/') . $getUser['user_image']; ?>" alt="Freelancer Image">
+                  <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?php echo base_url('/uploads/user_profile/') . $getUser['user_image']; ?>" alt="Freelancer Image">
                   <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
                     <div class="row g-0 align-items-center">
                       <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 mb-3 mb-md-0">
-                        <h6 class="mb-1"><?= $getUser['name'] ?></h6>
+                        <h6 class="mb-1"><?php echo $getUser['name'] ?></h6>
                         <!-- <span class="text-black d-block"><//?= $getUser['address'] ?></span> -->
                         <!-- <span class="badge bg-primary mt-2"><//?= $getCompany['company_name'] ?></span> -->
                       </div>
                       <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 text-center text-md-start">
                         <p class="small text-black mb-1">
                           <strong>Pass Channel Request:</strong> Requested to create pass channal on, <br />
-                          <?= $getCompany['company_name'] ?> <br />
-                          <?= $getProjects['project_name'] ?> <br />
-                          <?= generateBrickId($getBrick['id']) . ' ' . $getBrick['brick_title']; ?>
+                          <?php echo $getCompany['company_name'] ?> <br />
+                          <?php echo $getProjects['project_name'] ?> <br />
+                          <?php echo generateBrickId($getBrick['id']) . ' ' . $getBrick['brick_title']; ?>
                         </p>
-                        <span class="text-black small">Requested on: <?= convertDatedmy($request['create_date']) ?></span>
+                        <span class="text-black small">Requested on: <?php echo convertDatedmy($request['create_date']) ?></span>
                       </div>
                       <?php if ($request['status'] === 'Requested'): ?>
                         <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                          <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Accepted') ?>'" class="btn btn-success btn-sm me-1" title="Accept"><i class="fa fa-check"></i> Accepet</button>
-                          <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Rejected') ?>'" class="btn btn-danger btn-sm" title="Reject"><i class="fa fa-times"></i> Reject</button>
+                          <button type="button" onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Accepted') ?>'" class="btn btn-success btn-sm me-1" title="Accept"><i class="fa fa-check"></i> Accepet</button>
+                          <button type="button" onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Rejected') ?>'" class="btn btn-danger btn-sm" title="Reject"><i class="fa fa-times"></i> Reject</button>
                         </div>
                       <?php else: ?>
                         <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                          <span class="text-<?= $request['status'] === 'Accepted' ? 'success' : 'danger' ?> btn-sm me-1"><i class="fa fa-<?= $request['status'] === 'Accepted' ? 'check' : 'times' ?>"></i> <?= $request['status'] ?></span>
-                          <a class="text-danger mx-3" title="Remove Member" href="<?= base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
+                          <span class="text-<?php echo $request['status'] === 'Accepted' ? 'success' : 'danger' ?> btn-sm me-1"><i class="fa fa-<?php echo $request['status'] === 'Accepted' ? 'check' : 'times' ?>"></i> <?php echo $request['status'] ?></span>
+                          <a class="text-danger mx-3" title="Remove Member" href="<?php echo base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
 
                         </div>
                       <?php endif; ?>
@@ -127,11 +127,11 @@
                 </div>
               </li>
 
-            <?php } ?>
+            <?php }?>
 
           <?php
-          endforeach;
-        else:
+              endforeach;
+              else:
           ?>
           <li class="col-12">
             <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row border" style="background: #eeeeee4f;">
@@ -148,54 +148,54 @@
     <div class="tab-pane fade" id="work" role="tabpanel" aria-labelledby="work-tab">
       <ul class="row g-1 li_animate list-unstyled" id="WorkRequests">
         <?php
-        if (!empty($getAllBrickRequest)):
-          foreach ($getAllBrickRequest as $request):
-            if ($request['request_tab_id'] == 'network-marketing-request' && $request['member_id'] == sessionId('freelancer_id')) {
-              $getCompany = $this->CommonModal->getSingleRowById('companies', ['id' => $request['company_id']]);
-              $getDirectorDetails = $this->CommonModal->getSingleRowById('tbl_company_directory', ['company_id' => $getCompany['id']]);
-              $getProjects = $this->CommonModal->getSingleRowById('projects', ['id' => $request['project_id']]);
-              $getBrick = $this->CommonModal->getSingleRowById('bricks', ['id' => $request['brick_id']]);
-              $getUser = $this->CommonModal->getSingleRowById('freelancer', ['id' => $request['created_by']]);
-              $getChannelName = $this->CommonModal->getSingleRowById('brick_pass_channel', ['channel_id' => $request['channel_id'], 'created_by' => $request['created_by']]);
+            if (! empty($getAllBrickRequest)):
+                foreach ($getAllBrickRequest as $request):
+                    if ($request['request_tab_id'] == 'network-marketing-request' && $request['member_id'] == sessionId('freelancer_id')) {
+                        $getCompany         = $this->CommonModal->getSingleRowById('companies', ['id' => $request['company_id']]);
+                        $getDirectorDetails = $this->CommonModal->getSingleRowById('tbl_company_directory', ['company_id' => $getCompany['id']]);
+                        $getProjects        = $this->CommonModal->getSingleRowById('projects', ['id' => $request['project_id']]);
+                        $getBrick           = $this->CommonModal->getSingleRowById('bricks', ['id' => $request['brick_id']]);
+                        $getUser            = $this->CommonModal->getSingleRowById('freelancer', ['id' => $request['created_by']]);
+                        $getChannelName     = $this->CommonModal->getSingleRowById('brick_pass_channel', ['channel_id' => $request['channel_id'], 'created_by' => $request['created_by']]);
 
-        ?>
+            ?>
 
               <li class="col-12">
                 <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row" style="background: #eeeeee4f;">
-                  <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?= base_url('/uploads/user_profile/') . $getUser['user_image']; ?>" alt="Freelancer Image">
+                  <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?php echo base_url('/uploads/user_profile/') . $getUser['user_image']; ?>" alt="Freelancer Image">
                   <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
                     <div class="row g-0 align-items-center">
                       <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 mb-3 mb-md-0">
-                        <h6 class="mb-1"><?= $getUser['name'] ?></h6>
+                        <h6 class="mb-1"><?php echo $getUser['name'] ?></h6>
                       </div>
                       <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 text-center text-md-start">
                         <p class="small text-black mb-1">
-                          <strong> <?= $getUser['name'] ?> </strong> Invited you join paas channal on <?= $getChannelName['channel_name'] ?> <br />
-                          <?= $getCompany['company_name'] ?> <br />
-                          <?= $getProjects['project_name'] ?> <br />
-                          <?= generateBrickId($getBrick['id']) . ' ' . $getBrick['brick_title']; ?>
+                          <strong> <?php echo $getUser['name'] ?> </strong> Invited you join paas channal on <?php echo $getChannelName['channel_name'] ?> <br />
+                          <?php echo $getCompany['company_name'] ?> <br />
+                          <?php echo $getProjects['project_name'] ?> <br />
+                          <?php echo generateBrickId($getBrick['id']) . ' ' . $getBrick['brick_title']; ?>
                         </p>
-                        <span class="text-black small">Requested on: <?= convertDatedmy($request['create_date']) ?></span>
+                        <span class="text-black small">Requested on: <?php echo convertDatedmy($request['create_date']) ?></span>
                       </div>
                       <?php if ($request['status'] === 'Requested'): ?>
                         <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                          <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Accepted') ?>'" class="btn btn-success btn-sm me-1" title="Accept"><i class="fa fa-check"></i> Accepet</button>
-                          <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Rejected') ?>'" class="btn btn-danger btn-sm" title="Reject"><i class="fa fa-times"></i> Reject</button>
+                          <button type="button" onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Accepted') ?>'" class="btn btn-success btn-sm me-1" title="Accept"><i class="fa fa-check"></i> Accepet</button>
+                          <button type="button" onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Rejected') ?>'" class="btn btn-danger btn-sm" title="Reject"><i class="fa fa-times"></i> Reject</button>
                         </div>
                       <?php else: ?>
                         <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                          <span class="text-<?= $request['status'] === 'Accepted' ? 'success' : 'danger' ?> btn-sm me-1"><i class="fa fa-<?= $request['status'] === 'Accepted' ? 'check' : 'times' ?>"></i> <?= $request['status'] ?></span>
-                          <a class="text-danger mx-3" title="Remove Member" href="<?= base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
+                          <span class="text-<?php echo $request['status'] === 'Accepted' ? 'success' : 'danger' ?> btn-sm me-1"><i class="fa fa-<?php echo $request['status'] === 'Accepted' ? 'check' : 'times' ?>"></i> <?php echo $request['status'] ?></span>
+                          <a class="text-danger mx-3" title="Remove Member" href="<?php echo base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
                         </div>
                       <?php endif; ?>
                     </div>
                   </div>
                 </div>
               </li>
-            <?php } ?>
+            <?php }?>
           <?php
-          endforeach;
-        else:
+              endforeach;
+              else:
           ?>
           <li class="col-12">
             <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row border" style="background: #eeeeee4f;">
@@ -210,143 +210,196 @@
 
     <div class="tab-pane fade" id="teamup" role="tabpanel" aria-labelledby="teamup-tab">
       <ul class="row g-1 li_animate list-unstyled" id="TeamRequests">
-        <?php
-        if (!empty($getTeamRequest)):
-          foreach ($getTeamRequest as $request):
-            $getCompany = $this->CommonModal->getSingleRowById('companies', ['id' => $request['company_id']]);
-            $getProject = $this->CommonModal->getSingleRowById('projects', ['id' => $request['project_id']]);
-            $getBricks = $this->CommonModal->getSingleRowById('bricks', ['id' => $request['brick_id']]);
-            $getDirectorDetails = $this->CommonModal->getSingleRowById('tbl_company_directory', ['company_id' => $getCompany['id']]);
 
-        ?>
-            <li class="col-12">
-              <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row" style="background: #eeeeee4f;">
-                <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?= base_url() ?>assets/images/img/user.png" alt="Priya Sharma">
-                <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
-                  <div class="row g-0 align-items-center">
-                    <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 mb-3 mb-md-0">
-                      <h6 class="mb-1">
-                        <?php if ($request['department_id'] == null) {
-                          echo '<span class="p-1 bg-primary" style="color:white;">1D</span>';
-                        } else {
-                          echo '<span class="p-1 bg-primary" style="color:white;">2D</span>';
-                        } ?>
-                        <?= $getDirectorDetails['director_name'] ?? 'NO Name' ?>
-                      </h6>
-                      <span class="text-black d-block"><?= $getCompany['location'] ?></span>
-                      <span class="badge bg-primary mt-2"> <?= $getCompany['company_name']; ?></span>
-                      <span class="badge bg-primary mt-2"> <strong> Project: </strong> <?php if ($getProject['project_name'] == null) {
-                                                                                          echo 'Null';
-                                                                                        } else {
-                                                                                          echo $getProject['project_name'];
-                                                                                        }; ?></span>
-                      <span class="badge bg-primary mt-2"> <strong> Brick: </strong> <?php if ($getBricks['brick_title'] == null) {
-                                                                                        echo 'Null';
-                                                                                      } else {
-                                                                                        echo $getBricks['brick_title'];
-                                                                                      }; ?> </span>
-                    </div>
-                    <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 text-center text-md-start">
-                      <p class="small text-black mb-1"><strong>Team-Up Request:</strong> "We are looking for a member to join our company to contribute"</p>
-                      <span class="text-black small">Requested on: <?= convertDatedmy($request['create_date']) ?></span>
-                    </div>
-                    <?php if ($request['status'] === 'Requested'): ?>
-                      <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                        <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Accepted') ?>'" class="btn btn-success btn-sm me-1" title="Accept"><i class="fa fa-check"></i> Accepet</button>
-                        <button type="button" onclick="window.location.href='<?= base_url('Home/teamupRequestUpdate?id=' . $request['id'] . '&status=Rejected') ?>'" class="btn btn-danger btn-sm" title="Reject"><i class="fa fa-times"></i> Reject</button>
-                      </div>
-                    <?php else: ?>
-                      <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
-                        <span class="text-<?= $request['status'] === 'Accepted' ? 'success' : 'danger' ?> btn-sm me-1"><i class="fa fa-<?= $request['status'] === 'Accepted' ? 'check' : 'times' ?>"></i> <?= $request['status'] ?></span>
-                        <a class="text-danger mx-3" title="Remove Member" href="<?= base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
+        <?php if (! empty($getTeamRequest)): ?>
 
-                      </div>
-                    <?php endif; ?>
-                  </div>
+        <?php foreach ($getTeamRequest as $request): ?>
+
+        <li class="col-12">
+          <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row" style="background:#eeeeee4f;">
+
+            <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow"
+            src="<?php echo base_url() ?>assets/images/img/user.png"
+            alt="user">
+
+            <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
+
+              <div class="row g-0 align-items-center">
+
+                <!-- LEFT INFO -->
+                <div class="col-xxl-3 col-xl-3 col-lg-3 col-md-3 mb-3 mb-md-0">
+
+                  <h6 class="mb-1">
+
+                    <?php
+                        $type = ($request['department_id'] == 0 || $request['department_id'] == null) ? "1D" : "2D";
+                    ?>
+
+                    <span class="p-1 bg-primary text-white"><?php echo $type ?></span>
+
+                    <?php echo $request['director_name'] ?? 'No Name' ?>
+
+                  </h6>
+
+                  <span class="text-black d-block">
+                    <?php echo $request['name'] ?? '' ?>
+                  </span>
+
+                  <span class="badge bg-primary mt-2">
+                    <?php echo $request['company_name'] ?? 'No Company' ?>
+                  </span>
+
+                  <?php if (!empty($request['project_name'])): ?>
+                    <span class="badge bg-primary mt-2">
+                      <strong>Project:</strong> <?= $request['project_name'] ?>
+                    </span>
+                  <?php endif; ?>
+
+                  <?php if (!empty($request['brick_title'])): ?>
+                    <span class="badge bg-primary mt-2">
+                      <strong>Brick:</strong> <?= $request['brick_title'] ?>
+                    </span>
+                  <?php endif; ?>
+
                 </div>
-              </div>
-            </li>
-          <?php endforeach;
-        else: ?>
-          <li class="col-12">
-            <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row border" style="background: #eeeeee4f;">
-              <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
-                <h6 class="mb-1 text-center text-secondary">No Team-Up Requests</h6>
+
+                <!-- CENTER TEXT -->
+                <div class="col-xxl-6 col-xl-6 col-lg-6 col-md-6 text-center text-md-start">
+
+                  <p class="small text-black mb-1">
+                    <strong>Team-Up Request:</strong>
+                    "We are looking for a member to join our company to contribute"
+                  </p>
+
+                  <span class="text-black small">
+                    Requested on: <?php echo convertDatedmy($request['create_date']) ?>
+                  </span>
+
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="col-xl-3 col-lg-3 col-md-3 justify-content-center justify-content-md-end mt-3 mt-md-0 d-flex">
+
+                  <?php if ($request['status'] === 'Requested'): ?>
+
+                    <button
+                    onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id='.$request['id'].'&status=Accepted') ?>'"
+                    class="btn btn-success btn-sm me-1">
+                      <i class="fa fa-check"></i> Accept
+                    </button>
+
+                    <button
+                    onclick="window.location.href='<?php echo base_url('Home/teamupRequestUpdate?id='.$request['id'].'&status=Rejected') ?>'"
+                    class="btn btn-danger btn-sm">
+                      <i class="fa fa-times"></i> Reject
+                    </button>
+
+                  <?php else: ?>
+
+                    <span class="text-<?php echo $request['status']=='Accepted'?'success':'danger' ?> btn-sm me-2">
+                      <i class="fa fa-<?php echo $request['status']=='Accepted'?'check':'times' ?>"></i>
+                      <?php echo $request['status'] ?>
+                    </span>
+
+                    <a class="text-danger"
+                    href="<?php echo base_url('Home/deleteAddedMember?id='.$request['id']) ?>"
+                    onclick="return confirm('Are you sure you want to delete this?');">
+                      <i class="fas fa-trash"></i>
+                    </a>
+
+                  <?php endif; ?>
+
+                </div>
+
               </div>
             </div>
-          </li>
+          </div>
+        </li>
+
+        <?php endforeach; ?>
+
+        <?php else: ?>
+
+        <li class="col-12">
+          <div class="p-3 rounded-4 text-center border" style="background:#eeeeee4f;">
+            <h6 class="text-secondary">No Team-Up Requests</h6>
+          </div>
+        </li>
+
         <?php endif; ?>
+
       </ul>
     </div>
 
     <div class="tab-pane fade" id="network" role="tabpanel" aria-labelledby="network-tab">
-      
+
       <ul class="row g-1 li_animate list-unstyled" id="MyClients">
-        <?php if(!empty($getAllNetworkRequest)) : ?>
+        <?php if (! empty($getAllNetworkRequest)): ?>
           <?php foreach ($getAllNetworkRequest as $request): ?>
 
-            <?php function requestButtonUI($status, $request_id) {
+            <?php function requestButtonUI($status, $request_id)
+                {
 
-              if ($status === 'pending') {
-                  return '
-                    <button class="btn btn-success btn-sm me-1 accept-btn" data-id="'.$request_id.'">
+                    if ($status === 'pending') {
+                        return '
+                    <button class="btn btn-success btn-sm me-1 accept-btn" data-id="' . $request_id . '">
                       <i class="fa fa-check"></i> Accept
                     </button>
-                    <button class="btn btn-warning btn-sm reject-btn" data-id="'.$request_id.'">
+                    <button class="btn btn-warning btn-sm reject-btn" data-id="' . $request_id . '">
                       <i class="fa fa-times"></i> Reject
                     </button>
                   ';
-              }
+                    }
 
-              if ($status === 'accepted') {
-                  return '
+                    if ($status === 'accepted') {
+                        return '
                     <button class="btn btn-secondary btn-sm" disabled>
                       <i class="fa fa-user-check"></i> Connected
                     </button>
                   ';
-              }
+                    }
 
-              if ($status === 'rejected') {
-                  return '
+                    if ($status === 'rejected') {
+                        return '
                     <button class="btn btn-danger btn-sm" disabled>
                       <i class="fa fa-ban"></i> Rejected
                     </button>
                   ';
-              }
+                    }
 
-              return '';
-            }
-          ?>
-          
+                    return '';
+                }
+            ?>
+
 
           <li class="col-12">
             <div class="p-3 rounded-4 d-flex flex-column flex-md-row" style="background:#eeeeee4f;">
 
               <img class="avatar lg rounded-circle img-thumbnail"
-                  src="<?= $request['user_image']
-                        ? base_url('uploads/user_profile/'.$request['user_image'])
-                        : base_url('assets/images/img/user.png') ?>">
+                  src="<?php echo $request['user_image']
+    ? base_url('uploads/user_profile/'.$request['user_image'])
+    : base_url('assets/images/img/user.png') ?>">
 
               <div class="ms-md-3 w-100 mt-3 mt-md-0">
                 <div class="row align-items-center">
 
                   <div class="col-md-3">
-                    <h6><?= $request['name'] ?></h6>
-                    <span class="text-black"><?= $request['city'] ?></span>
+                    <h6><?php echo $request['name'] ?></h6>
+                    <span class="text-black"><?php echo $request['city'] ?></span>
                     <span class="badge bg-primary mt-2 text-capitalize">
-                      <?= $request['status'] ?>
+                      <?php echo $request['status'] ?>
                     </span>
                   </div>
 
                   <div class="col-md-6">
-                    <p class="small mb-1"><?= $request['summary'] ?? 'Sent you a connection request.' ?></p>
+                    <p class="small mb-1"><?php echo $request['summary'] ?? 'Sent you a connection request.' ?></p>
                     <small>
-                      Requested: <?= date('d M Y', strtotime($request['created_at'])) ?>
+                      Requested: <?php echo date('d M Y', strtotime($request['created_at'])) ?>
                     </small>
                   </div>
 
                   <div class="col-md-3 d-flex justify-content-end">
-                    <?= requestButtonUI($request['status'], $request['request_id']) ?>
+                    <?php echo requestButtonUI($request['status'], $request['request_id']) ?>
                   </div>
 
                 </div>
@@ -372,7 +425,7 @@
       <!-- <ul class="row g-1 li_animate list-unstyled" id="DialogueRequests">
         <li class="col-12">
           <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row" style="background: #eeeeee4f;">
-            <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?= base_url() ?>assets/images/img/user.png" alt="Ravi Sharma">
+            <img class="avatar lg rounded-circle img-thumbnail ms-auto me-auto shadow" src="<?php echo base_url() ?>assets/images/img/user.png" alt="Ravi Sharma">
             <div class="ms-md-2 ms-lg-3 text-md-start text-center w-100 mt-4 mt-md-0">
               <div class="row g-0 align-items-center">
                 <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-2 mb-3 mb-md-0">
@@ -388,7 +441,7 @@
                 <div class="col-xl-2 col-lg-2 col-md-2 text-center text-md-end mt-3 mt-md-0 d-flex">
                   <button type="button" class="btn btn-success btn-sm me-1" title="Activate"><i class="fa fa-check"></i> Activate</button>
                   <button type="button" class="btn btn-warning btn-sm" title="Dispatch"><i class="fa fa-paper-plane"></i> Dispatch</button>
-                  <a class="text-danger mx-3" title="Remove Member" href="<?= base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
+                  <a class="text-danger mx-3" title="Remove Member" href="<?php echo base_url('Home/deleteAddedMember?id=' . $request['id']) ?>" onclick="return confirm('Are you sure you want to delete this?');"><i class="fas fa-trash"></i></a>
                 </div>
               </div>
             </div>
@@ -397,21 +450,21 @@
       </ul> -->
       <ul class="row g-1 li_animate list-unstyled" id="DialogueRequests">
 
-      <?php if (!empty($getDialogueRequest)): ?>
+      <?php if (! empty($getDialogueRequest)): ?>
           <?php foreach ($getDialogueRequest as $req): ?>
-              <li class="col-12" id="request_<?= (int)$req['dialogue_id'] ?>">
+              <li class="col-12" id="request_<?php echo (int)$req['dialogue_id'] ?>">
                   <div class="p-3 rounded-4 d-flex align-items-center flex-column flex-md-row"
                       style="background: #eeeeee4f;">
 
                       <!-- Sender Avatars -->
                       <div class="d-flex align-items-center gap-2 me-3">
-                          <?php if (!empty($req['senders'])): ?>
+                          <?php if (! empty($req['senders'])): ?>
                               <?php foreach ($req['senders'] as $sender): ?>
                                   <img class="avatar rounded-circle img-thumbnail shadow"
-                                      src="<?= !empty($sender['image']) 
-                                              ? base_url('uploads/user_profile/'.$sender['image']) 
-                                              : base_url('assets/images/img/user.png') ?>"
-                                      title="<?= htmlspecialchars($sender['name']) ?>">
+                                      src="<?php echo ! empty($sender['image'])
+    ? base_url('uploads/user_profile/'.$sender['image'])
+    : base_url('assets/images/img/user.png') ?>"
+                                      title="<?php echo htmlspecialchars($sender['name']) ?>">
                               <?php endforeach; ?>
                           <?php endif; ?>
                       </div>
@@ -422,9 +475,9 @@
                               <!-- Sender Names -->
                               <div class="col-xxl-3 col-md-3 mb-3 mb-md-0">
                                   <h6 class="mb-1">
-                                      <?= !empty($req['senders'])
-                                          ? htmlspecialchars(implode(', ', array_column($req['senders'], 'name')))
-                                          : 'Unknown Users' ?>
+                                      <?php echo ! empty($req['senders'])
+    ? htmlspecialchars(implode(', ', array_column($req['senders'], 'name')))
+    : 'Unknown Users' ?>
                                   </h6>
                                   <span class="text-muted small">
                                       sent you a dialogue request
@@ -435,7 +488,7 @@
                               <div class="col-xxl-5 col-md-5">
                                   <p class="small text-black mb-1">
                                       <strong>Dialogue:</strong>
-                                      “<?= nl2br(htmlspecialchars($req['dialogue'])) ?>”
+                                      “<?php echo nl2br(htmlspecialchars($req['dialogue'])) ?>”
                                   </p>
                               </div>
 
@@ -452,18 +505,18 @@
 
                               <!-- Actions -->
                               <div class="col-xl-2 col-md-2 text-center text-md-end mt-3 mt-md-0 d-flex justify-content-end gap-1">
-                                  <?php if ((int)$req['dialogue_status'] === 0): ?>
-                                      <button 
+                                  <?php if ((int) $req['dialogue_status'] === 0): ?>
+                                      <button
                                           type="button"
                                           class="btn btn-success btn-sm approve-dialogue"
-                                          data-id="<?= (int)$req['dialogue_id'] ?>">
+                                          data-id="<?php echo (int)$req['dialogue_id'] ?>">
                                           <i class="fa fa-check"></i>
                                       </button>
 
-                                      <button 
+                                      <button
                                           type="button"
                                           class="btn btn-danger btn-sm reject-dialogue"
-                                          data-id="<?= (int)$req['dialogue_id'] ?>">
+                                          data-id="<?php echo (int)$req['dialogue_id'] ?>">
                                           <i class="fa fa-times"></i>
                                       </button>
                                   <?php endif; ?>
@@ -485,43 +538,43 @@
 
 
     </div>
-      
+
     <div class="tab-pane fade" id="network" role="tabpanel" aria-labelledby="network-tab">
-      
+
       <ul class="row g-1 li_animate list-unstyled" id="MyClients">
-        <?php if(!empty($getAllNetworkRequest)) : ?>
+        <?php if (! empty($getAllNetworkRequest)): ?>
           <?php foreach ($getAllNetworkRequest as $request): ?>
 
-          
+
 
           <li class="col-12">
             <div class="p-3 rounded-4 d-flex flex-column flex-md-row" style="background:#eeeeee4f;">
 
               <img class="avatar lg rounded-circle img-thumbnail"
-                  src="<?= $request['user_image']
-                        ? base_url('uploads/user_profile/'.$request['user_image'])
-                        : base_url('assets/images/img/user.png') ?>">
+                  src="<?php echo $request['user_image']
+    ? base_url('uploads/user_profile/'.$request['user_image'])
+    : base_url('assets/images/img/user.png') ?>">
 
               <div class="ms-md-3 w-100 mt-3 mt-md-0">
                 <div class="row align-items-center">
 
                   <div class="col-md-3">
-                    <h6><?= $request['name'] ?></h6>
-                    <span class="text-black"><?= $request['city'] ?></span>
+                    <h6><?php echo $request['name'] ?></h6>
+                    <span class="text-black"><?php echo $request['city'] ?></span>
                     <span class="badge bg-primary mt-2 text-capitalize">
-                      <?= $request['status'] ?>
+                      <?php echo $request['status'] ?>
                     </span>
                   </div>
 
                   <div class="col-md-6">
-                    <p class="small mb-1"><?= $request['summary'] ?? 'Sent you a connection request.' ?></p>
+                    <p class="small mb-1"><?php echo $request['summary'] ?? 'Sent you a connection request.' ?></p>
                     <small>
-                      Requested: <?= date('d M Y', strtotime($request['created_at'])) ?>
+                      Requested: <?php echo date('d M Y', strtotime($request['created_at'])) ?>
                     </small>
                   </div>
 
                   <div class="col-md-3 d-flex justify-content-end">
-                    <?= requestButtonUI($request['status'], $request['request_id']) ?>
+                    <?php echo requestButtonUI($request['status'], $request['request_id']) ?>
                   </div>
 
                 </div>
@@ -542,43 +595,44 @@
     </div>
 
     <div class="tab-pane fade" id="appointment" role="tabpanel" aria-labelledby="appointment-tab">
-      
+
       <ul class="row g-1 li_animate list-unstyled" id="AppointmentRequests">
 
-        <?php if(!empty($getAppointmentRequets)) : ?>
+        <?php if (! empty($getAppointmentRequets)): ?>
 
         <?php
-          function appointmentButtonUI($status, $appointment_id) {
+            function appointmentButtonUI($status, $appointment_id)
+            {
 
-              if ($status === 'pending') {
-                  return '
-                      <button class="btn btn-success btn-sm me-1 accept-appointment" data-id="'.$appointment_id.'">
+                if ($status === 'pending') {
+                    return '
+                      <button class="btn btn-success btn-sm me-1 accept-appointment" data-id="' . $appointment_id . '">
                           <i class="fa fa-check"></i> Accept
                       </button>
-                      <button class="btn btn-warning btn-sm reject-appointment" data-id="'.$appointment_id.'">
+                      <button class="btn btn-warning btn-sm reject-appointment" data-id="' . $appointment_id . '">
                           <i class="fa fa-times"></i> Reject
                       </button>
                   ';
-              }
+                }
 
-              if ($status === 'accepted') {
-                  return '
+                if ($status === 'accepted') {
+                    return '
                       <button class="btn btn-secondary btn-sm" disabled>
                           <i class="fa fa-calendar-check"></i> Accepted
                       </button>
                   ';
-              }
+                }
 
-              if ($status === 'rejected') {
-                  return '
+                if ($status === 'rejected') {
+                    return '
                       <button class="btn btn-danger btn-sm" disabled>
                           <i class="fa fa-ban"></i> Rejected
                       </button>
                   ';
-              }
+                }
 
-              return '';
-          }
+                return '';
+            }
         ?>
 
         <?php foreach ($getAppointmentRequets as $appointment): ?>
@@ -592,26 +646,26 @@
                           <div class="d-flex align-items-center">
 
                               <img class="rounded-circle me-3 shadow"
-                                  src="<?= base_url("uploads/user_profile/$appointment[sender_image]") ?>"
+                                  src="<?php echo base_url("uploads/user_profile/$appointment[sender_image]") ?>"
                                   alt="User"
                                   width="60" height="60">
 
                               <div>
                                   <h6 class="mb-1">
-                                      <?= !empty($appointment['sender_name']) ? $appointment['sender_name'] : 'No Name' ?>
+                                      <?php echo ! empty($appointment['sender_name']) ? $appointment['sender_name'] : 'No Name' ?>
                                   </h6>
                                   <small class="text-muted">
-                                      <?= $appointment['sender_email'] ?>
+                                      <?php echo $appointment['sender_email'] ?>
                                   </small>
                               </div>
 
                           </div>
 
                           <div class="mt-3">
-                              <span class="badge 
-                                  <?= $appointment['status'] == 'pending' ? 'bg-warning text-dark' : 
-                                      ($appointment['status'] == 'accepted' ? 'bg-success' : 'bg-danger') ?>">
-                                  <?= ucfirst($appointment['status']) ?>
+                              <span class="badge
+                                  <?php echo $appointment['status'] == 'pending' ? 'bg-warning text-dark' :
+($appointment['status'] == 'accepted' ? 'bg-success' : 'bg-danger') ?>">
+                                  <?php echo ucfirst($appointment['status']) ?>
                               </span>
                           </div>
                       </div>
@@ -619,56 +673,56 @@
                       <div class="col-md-6 mb-3 mb-md-0">
 
                           <h6 class="fw-bold mb-2">
-                              <?= $appointment['company_name'] ?>
+                              <?php echo $appointment['company_name'] ?>
                           </h6>
 
                           <p class="mb-1">
                               <strong>Note:</strong>
-                              <?= $appointment['notes'] ?? 'Appointment request' ?>
+                              <?php echo $appointment['notes'] ?? 'Appointment request' ?>
                           </p>
 
-                          <?php if($appointment['bid_amount']){ ?>
+                          <?php if ($appointment['bid_amount']) {?>
                               <p class="mb-1">
                                   <strong>Bid:</strong>
-                                  <?= explode('|',$appointment['bid_curr'])[0] ?>
-                                  <?= $appointment['bid_amount'] ?>
-                                  <?= explode('|',$appointment['bid_curr'])[1] ?>
+                                  <?php echo explode('|',$appointment['bid_curr'])[0] ?>
+                                  <?php echo $appointment['bid_amount'] ?>
+                                  <?php echo explode('|',$appointment['bid_curr'])[1] ?>
                               </p>
-                          <?php } ?>
+                          <?php }?>
 
-                          <?php if($appointment['barter_bid']){ ?>
+                          <?php if ($appointment['barter_bid']) {?>
                               <p class="mb-1">
                                   <strong>Barter:</strong>
-                                  <?= $appointment['barter_bid'] ?>
+                                  <?php echo $appointment['barter_bid'] ?>
                               </p>
-                          <?php } ?>
+                          <?php }?>
 
                           <small class="text-muted">
                               <strong>Duration:</strong>
-                              <?= date('d M Y, h:i A', strtotime($appointment['start_datetime'])) ?>
+                              <?php echo date('d M Y, h:i A', strtotime($appointment['start_datetime'])) ?>
                               -
-                              <?= date('h:i A', strtotime($appointment['end_datetime'])) ?>
+                              <?php echo date('h:i A', strtotime($appointment['end_datetime'])) ?>
                           </small>
 
                       </div>
 
                       <div class="col-md-3 text-md-end">
 
-                          <?php if ($appointment['status'] === 'pending') { ?>
-                              <button class="btn btn-success btn-sm me-2 accept-appointment" 
-                                  data-id="<?= $appointment['id'] ?>">
+                          <?php if ($appointment['status'] === 'pending') {?>
+                              <button class="btn btn-success btn-sm me-2 accept-appointment"
+                                  data-id="<?php echo $appointment['id'] ?>">
                                   <i class="fa fa-check"></i> Accept
                               </button>
 
-                              <button class="btn btn-outline-danger btn-sm reject-appointment" 
-                                  data-id="<?= $appointment['id'] ?>">
+                              <button class="btn btn-outline-danger btn-sm reject-appointment"
+                                  data-id="<?php echo $appointment['id'] ?>">
                                   <i class="fa fa-times"></i> Reject
                               </button>
-                          <?php } else { ?>
+                          <?php } else {?>
                               <button class="btn btn-secondary btn-sm" disabled>
-                                  <?= ucfirst($appointment['status']) ?>
+                                  <?php echo ucfirst($appointment['status']) ?>
                               </button>
-                          <?php } ?>
+                          <?php }?>
 
                       </div>
 
@@ -720,7 +774,7 @@
     if (!request_id) return;
 
     try {
-      const response = await fetch("<?= base_url('Home/update_connection_status') ?>", {
+      const response = await fetch("<?php echo base_url('Home/update_connection_status') ?>", {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -776,7 +830,7 @@
       }
 
       $.ajax({
-          url: "<?= base_url('Calendar/updateDialogueStatus') ?>",
+          url: "<?php echo base_url('Calendar/updateDialogueStatus') ?>",
           type: "POST",
           dataType: "json",
           data: {
@@ -825,7 +879,7 @@
       let button = $(this);
 
       $.ajax({
-          url: "<?= base_url('home/updateStatus') ?>",
+          url: "<?php echo base_url('home/updateStatus') ?>",
           type: "POST",
           data: {
               id: appointmentId,
@@ -857,7 +911,7 @@
       let button = $(this);
 
       $.ajax({
-          url: "<?= base_url('home/updateStatus') ?>",
+          url: "<?php echo base_url('home/updateStatus') ?>",
           type: "POST",
           data: {
               id: appointmentId,

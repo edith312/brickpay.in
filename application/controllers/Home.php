@@ -893,6 +893,7 @@ class Home extends CI_Controller
             'id',
             'DESC'
         );
+        // dd($data['getTeamMembers']);
 
         $this->load->view('company/team-members', $data);
     }
@@ -3082,10 +3083,8 @@ class Home extends CI_Controller
             'created_by !=' => sessionId('freelancer_id')
         ];
 
-        $this->db->where('member_id', sessionId('freelancer_id'));
-        $this->db->where('created_by IS NULL', null, false);
-        $data['getTeamRequest'] = $this->CommonModal->getRowById('tbl_teamcompanymember', [], 'id', 'DESC');
-
+        $data['getTeamRequest'] = $this->HomeModal->getTeamRequest();
+        // dd($data['getTeamRequest']);
         
         // $data['getTeamRequest'] = $this->CommonModal->getRowById('tbl_teamcompanymember', ['member_id' => sessionId('freelancer_id'), 'created_by IS NULL' => null], 'id', 'DESC');
         $data['getAllBrickRequest'] = $this->CommonModal->getRowById('tbl_teamcompanymember', $where, 'id', 'DESC');
@@ -6761,6 +6760,9 @@ class Home extends CI_Controller
 
         $getid = $this->input->get('id');
         $status = $this->input->get('status');
+        // dp($getid);
+        // dp($status);
+        // die;
         $update = $this->CommonModal->updateRowById('tbl_teamcompanymember', 'id', $getid, ['status' => $status]);
         redirect($_SERVER['HTTP_REFERER']);
     }
@@ -7566,80 +7568,134 @@ class Home extends CI_Controller
 
             // Fetch team members
             // $team_conditions = $conditions;
-            $team_members = $this->CommonModal->getRowByMoreId('tbl_teamcompanymember', $team_conditions);
-
+            // $team_members = $this->CommonModal->getRowByMoreId('tbl_teamcompanymember', $team_conditions);
+            
             // Fetch departments
-            $departments = $this->CommonModal->getRowByMoreId('tbl_departments', $conditions);
-
+            // $departments = $this->CommonModal->getRowByMoreId('tbl_departments', $conditions);
+            // dd($departments);
             // Fetch department agreements
-            $agreements = $this->CommonModal->getRowByMoreId('tbl_department_agreements', $conditions);
+            // $agreements = $this->CommonModal->getRowByMoreId('tbl_department_agreements', $conditions);
 
             // Fetch user details for team members
-            $team_members = is_array($team_members) ? $team_members : [];
+            // $team_members = is_array($team_members) ? $team_members : [];
 
             // Extract member_id and ensure unique values
-            $user_ids = array_unique(array_column($team_members, 'member_id')) ?: [];
-            $users = [];
-            if (!empty($user_ids)) {
-                $this->db->select('id, name, email, user_image as avatar');
-                $this->db->where_in('id', $user_ids);
-                $query = $this->db->get('tbl_freelancer');
-                $users = $query->result_array();
-                $users = array_map(function ($user) {
-                    return [
-                        'id' => $user['id'],
-                        'name' => !empty($user['name']) ? $user['name'] : 'No Name',
-                        'email' => $user['email'],
-                        'avatar' => !empty($user['avatar']) ? base_url() . 'uploads/user_profile/' . $user['avatar'] : base_url() . 'assets/user-icon.png'
-                    ];
-                }, $users);
-            }
+            // $user_ids = array_unique(array_column($team_members, 'member_id')) ?: [];
+            // dd($user_ids);
+            // $users = [];
+            // if (!empty($user_ids)) {
+            //     $this->db->select('id, name, email, user_image as avatar');
+            //     $this->db->where_in('id', $user_ids);
+            //     $query = $this->db->get('tbl_freelancer');
+            //     $users = $query->result_array();
+            //     $users = array_map(function ($user) {
+            //         return [
+            //             'id' => $user['id'],
+            //             'name' => !empty($user['name']) ? $user['name'] : 'No Name',
+            //             'email' => $user['email'],
+            //             'avatar' => !empty($user['avatar']) ? base_url() . 'uploads/user_profile/' . $user['avatar'] : base_url() . 'assets/user-icon.png'
+            //         ];
+            //     }, $users);
+            // }
 
             // Structure the response
-            $structured_depts = [];
-            foreach ($departments as $dept) {
+            // $structured_depts = [];
+            // foreach ($departments as $dept) {
                 // Filter members for this department
-                $dept_members = array_filter($team_members, function ($member) use ($dept) {
-                    return $member['department_id'] === $dept['id'];
-                });
+                // $dept_members = array_filter($team_members, function ($member) use ($dept) {
+                //     return $member['department_id'] === $dept['id'];
+                // });
 
                 // Map members
-                $members = array_map(function ($member) use ($users) {
-                    $user = array_values(array_filter($users, function ($u) use ($member) {
-                        return $u['id'] === $member['member_id'];
-                    }))[0] ?? [];
-                    return [
-                        'team_row_id' => $member['id'] ?? '',
-                        'id' => $user['id'] ?? '',
-                        'name' => $user['name'] ?? 'Unknown',
-                        'email' => $user['email'] ?? '',
-                        'avatar' => $user['avatar'] ?? base_url() . 'assets/user-icon.png',
-                        'nickname' => $member['nickname'] ?? ''
-                    ];
-                }, $dept_members);
+                // $members = array_map(function ($member) use ($users) {
+                //     $user = array_values(array_filter($users, function ($u) use ($member) {
+                //         return $u['id'] === $member['member_id'];
+                //     }))[0] ?? [];
+                //     return [
+                //         'team_row_id' => $member['id'] ?? '',
+                //         'id' => $user['id'] ?? '',
+                //         'name' => $user['name'] ?? 'Unknown',
+                //         'email' => $user['email'] ?? '',
+                //         'avatar' => $user['avatar'] ?? base_url() . 'assets/user-icon.png',
+                //         'nickname' => $member['nickname'] ?? ''
+                //     ];
+                // }, $dept_members);
 
                 // Filter agreements for this department
-                $dept_agreements = is_array($agreements) ? array_filter($agreements, function ($agreement) use ($dept) {
-                    return $agreement['department_id'] === $dept['id'];
-                }) : [];
+            //     $dept_agreements = is_array($agreements) ? array_filter($agreements, function ($agreement) use ($dept) {
+            //         return $agreement['department_id'] === $dept['id'];
+            //     }) : [];
 
-                $agreements_array = array_map(function ($agreement) {
-                    $file_path = !empty($agreement['file_path']) ? base_url() . ltrim($agreement['file_path'], '/') : '';
-                    return [
-                        'id' => $agreement['id'],
-                        'file_name' => $agreement['file_name'] ?? 'Unnamed File',
-                        'file_path' => $file_path,
-                        'uploaded_at' => $agreement['uploaded_at'] ?? date('Y-m-d H:i:s')
+            //     $agreements_array = array_map(function ($agreement) {
+            //         $file_path = !empty($agreement['file_path']) ? base_url() . ltrim($agreement['file_path'], '/') : '';
+            //         return [
+            //             'id' => $agreement['id'],
+            //             'file_name' => $agreement['file_name'] ?? 'Unnamed File',
+            //             'file_path' => $file_path,
+            //             'uploaded_at' => $agreement['uploaded_at'] ?? date('Y-m-d H:i:s')
+            //         ];
+            //     }, $dept_agreements);
+
+            //     $structured_depts[] = [
+            //         'id' => $dept['id'],
+            //         'name' => $dept['name'],
+            //         'members' => array_values($members), // Ensure members is an array
+            //         'agreements' => array_values($agreements_array)
+            //     ];
+            // }
+            $where = [
+                'company_id' => $company_id,
+                'project_id' => $project_id,
+                'brick_id'   => $brick_id,
+                'status'     => 'Accepted'
+            ];
+
+            $rows = $this->HomeModal->getTeamStructure($where);
+            // dd($rows);
+            $departments = [];
+
+            foreach ($rows as $row) {
+
+                $dept_id = $row['department_id'];
+
+                if (!isset($departments[$dept_id])) {
+
+                    $departments[$dept_id] = [
+                        'id' => $dept_id,
+                        'name' => $row['department_name'],
+                        'members' => [],
+                        'agreements' => []
                     ];
-                }, $dept_agreements);
+                }
 
-                $structured_depts[] = [
-                    'id' => $dept['id'],
-                    'name' => $dept['name'],
-                    'members' => array_values($members), // Ensure members is an array
-                    'agreements' => array_values($agreements_array)
-                ];
+                // Add member
+                if (!empty($row['member_id'])) {
+
+                    $departments[$dept_id]['members'][] = [
+                        'team_row_id' => $row['team_row_id'],
+                        'id' => $row['member_id'],
+                        'name' => $row['name'] ?? 'No Name',
+                        'email' => $row['email'],
+                        'avatar' => !empty($row['user_image'])
+                            ? base_url('uploads/user_profile/'.$row['user_image'])
+                            : base_url('assets/user-icon.png'),
+                        'nickname' => $row['nickname']
+                    ];
+                }
+
+                // Add agreement
+                if (!empty($row['agreement_id'])) {
+
+                    $departments[$dept_id]['agreements'][] = [
+                        'id' => $row['agreement_id'],
+                        'file_name' => $row['file_name'],
+                        'file_path' => base_url($row['file_path']),
+                        'uploaded_at' => $row['uploaded_at']
+                    ];
+                }
             }
+
+            $structured_depts = array_values($departments);
 
             echo json_encode([
                 'status' => 'success',

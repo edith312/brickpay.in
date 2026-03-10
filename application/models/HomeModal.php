@@ -528,4 +528,69 @@ class HomeModal extends CI_Model
             'updated_at' => date('Y-m-d H:i:s')
         ]);
     }
+
+    public function getTeamRequest(){
+        $this->db->select('tcm.*, tcm.id as id, d.name, c.company_name, p.project_name, b.brick_title, cd.director_name');
+        $this->db->from('teamcompanymember tcm');
+        $this->db->join('departments d', 'tcm.department_id = d.id', 'left');
+        $this->db->join('companies c', 'c.id = d.company_id', 'left');
+        $this->db->join('projects p', 'p.id = d.project_id', 'left');
+        $this->db->join('bricks b', 'b.id = d.brick_id', 'left');
+        $this->db->join('company_directory cd', 'cd.company_id = c.id', 'left');
+        $this->db->where('tcm.member_id', sessionId('freelancer_id'));
+        $this->db->where('tcm.created_by IS NULL', null, false);
+        $query = $this->db->get();
+        return $query->result_array();
+    }
+
+    public function getTeamStructure($where){
+        $this->db->select('
+            d.id AS department_id,
+            d.name AS department_name,
+
+            tcm.id AS team_row_id,
+            tcm.member_id,
+            tcm.department_id AS tcm_department_id,
+            tcm.nickname,
+
+            f.id AS freelancer_id,
+            f.name,
+            f.email,
+            f.user_image,
+
+            da.id AS agreement_id,
+            da.file_name,
+            da.file_path,
+            da.uploaded_at
+
+        ');
+
+        $this->db->from('tbl_departments d');
+
+        $this->db->join(
+            'tbl_teamcompanymember tcm',
+            "d.id = tcm.department_id AND tcm.status = 'Accepted'",
+            'left'
+        );
+
+        $this->db->join(
+            'tbl_department_agreements da',
+            'da.department_id = d.id',
+            'left'
+        );
+
+        $this->db->join(
+            'tbl_freelancer f',
+            'tcm.member_id = f.id',
+            'left'
+        );
+
+        $this->db->where('d.company_id', $where['company_id']);
+        $this->db->where('d.project_id', $where['project_id']);
+        $this->db->where('d.brick_id', $where['brick_id']);
+
+        $query = $this->db->get();
+
+        return $query->result_array();
+    }
 }
