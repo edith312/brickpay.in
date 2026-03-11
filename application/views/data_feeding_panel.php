@@ -505,7 +505,7 @@
         background: black;
     }
     .black-line-wide {
-        width: 40vw !important;
+        width: 10vw !important;
     }
     .timeline-wrapper{
         margin-top: 14px;
@@ -1116,6 +1116,15 @@
                                 data-box="#box_permAndCombbox"
                                 draggable="true"
                             >Permutation & Combination</button>
+                        </div>
+                        <div class="mx-2">
+                            <button class="btn btn-sm tab-btn draggable-btn text-white" style="background-color: #04d6e5ff !important;" id=""
+                                data-url="<?= base_url('Calendar/timeStamp') ?>"
+                                data-type="timeStamp"
+                                data-target="#textDataContainer9"
+                                data-box="#box_timeStampbox"
+                                draggable="true"
+                            >Timestamps</button>
                         </div>
                     </div>
                     <div class="content_adding__container borderBoxesAreaContainer mt-4">

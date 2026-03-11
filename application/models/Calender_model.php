@@ -71,15 +71,15 @@ class Calender_model extends CI_Model
         $insert = [
             'user_id'       => $data['user_id'],
             'date'          => $data['date'],
-            'opening_time'  => $data['schedule_type'] === 0 ? $data['opening_time'] : null,
-            'closing_time'  => $data['schedule_type'] === 0 ? $data['closing_time'] : null,
+            'opening_time'  => $data['schedule_type'] == 0 ? $data['opening_time'] : null,
+            'closing_time'  => $data['schedule_type'] == 0 ? $data['closing_time'] : null,
             'schedule_type' => $data['schedule_type'],
             'finaldatetime' => $data['finaldatetime'] ?? null,
             'timeline_type' => $data['timeline_type'],
             'created_date'  => date('Y-m-d H:i:s'),
             'updated_date'  => date('Y-m-d H:i:s'),
         ];
-
+        // dd($insert);
         if($data['company_id']){
             $insert['company_id'] = $data['company_id'];
         }elseif($data['project_id']){

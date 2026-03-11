@@ -5748,13 +5748,22 @@ class Calendar extends CI_Controller
         }
         // dd($timeline_data);
         $timelineId = $this->Calender_model->getOrCreateTimeline($timeline_data);
-        
-        if($company_id){
-            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&company_id=$company_id";
-        }elseif($project_id){
-            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&project_id=$project_id";
-        }else{
-            $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId";
+        if($schedule_type == 0){
+            if($company_id){
+                $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId&company_id=$company_id";
+            }elseif($project_id){
+                $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId&project_id=$project_id";
+            }else{
+                $redirect_url = base_url('calendar/data-feeding-panel') . "?id=$timelineId";
+            }
+        }else if($schedule_type == 1){
+            if($company_id){
+                $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&company_id=$company_id";
+            }elseif($project_id){
+                $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId&project_id=$project_id";
+            }else{
+                $redirect_url = base_url('calendar/data-feeding-panel-future') . "?id=$timelineId";
+            }
         }
 
         if ($timelineId) {
