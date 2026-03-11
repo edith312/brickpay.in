@@ -95,7 +95,7 @@ class Calendar extends CI_Controller
         /////////////////////////////////////////////////////////
 
         $calendar = $this->getTimelineDataForPanel($timeline_id);
-
+        // dd($calendar);
         /////////////////////////////////////////////////////////
         // 🌍 PUBLIC MODE
         /////////////////////////////////////////////////////////
@@ -4292,6 +4292,76 @@ class Calendar extends CI_Controller
         ]);
     }
 
+    public function saveTimestamp()
+    {
+        if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
+        $edit_id = $this->input->post('id');
+        $s_timestamp  = $this->input->post('s_timestamp');
+        $e_timestamp  = $this->input->post('e_timestamp');
+        $timeline_item_id = $this->input->post('timeline_item_id');
+
+        if (empty($s_timestamp) && empty($e_timestamp)) {
+            echo json_encode(['success' => false, 'message' => 'Start and End Timestamp is required']);
+            return;
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $now = date('Y-m-d H:i:s');
+
+        $timelineData = $this->handleTimeline($user_id);
+        if ($timelineData === false) {
+            echo json_encode(['success' => false, 'message' => 'Timeline error']);
+            return;
+        }
+
+        $data = [
+            's_timestamp'  => $s_timestamp,
+            'e_timestamp'  => $e_timestamp,
+            'updated_date' => $now,
+            'timeline_item_id' => $timeline_item_id,
+        ];
+
+        if (!empty($edit_id)) {
+            $this->db->where('id', $edit_id)->where('user_id', $user_id)
+                    ->update('tbl_calendar_timestamp', $data);
+
+            $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+
+            echo json_encode(['success' => true, 'message' => 'TimeStamp updated', 'html' => $html]);
+            return;
+        }
+
+        $data['user_id'] = $user_id;
+        $data['created_date'] = $now;
+
+        $this->db->insert('tbl_calendar_timestamp', $data);
+        $insertId = $this->db->insert_id();
+
+        $timeline = json_decode($this->input->post('timeline'), true);
+
+        if (!empty($timeline)) {
+            $this->Calender_model->syncTimelineItems(
+                $timelineData['new_timeline_item'] ?? null,
+                $user_id,
+                $timeline,
+                $insertId,
+                'timestamp' // 👈 content_type
+            );
+        }
+
+        $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+
+        echo json_encode([
+            'success' => true,
+            'message' => 'TimeStamp saved successfully!',
+            'html'    => $html
+        ]);
+    }
+
     public function saveBlackLine()
     {
         if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
@@ -4395,7 +4465,7 @@ class Calendar extends CI_Controller
             'age' => 'calendar_age',
             'body_part' => 'calendar_body_part',
             'ethnicity' => 'calendar_ethnicity',
-            'character' => 'calendar_character'
+            'character' => 'calendar_character',
         ];
 
         $calendar_timeline = [];
@@ -4441,6 +4511,11 @@ class Calendar extends CI_Controller
                     ]);
                     $finance_total = $finance_total + $finance['amount'];
                     $content['finance'] = $finance;
+
+                    $timestamp = $this->CommonModal->getRowWhere('calendar_timestamp', [
+                        'timeline_item_id' => $item['id']
+                    ]);
+                    $content['timestamp'] = $timestamp;
                 }
 
                 if ($item['content_type'] == 'video') {

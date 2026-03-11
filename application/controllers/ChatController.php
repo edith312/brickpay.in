@@ -80,19 +80,25 @@ class ChatController extends CI_Controller
     {
         $user_id = sessionId('freelancer_id');
 
-        $this->db->select('
-        tbl_chat.chat_with_user_id,
-        freelancer.id,
-        freelancer.name,
-        freelancer.email,
-        freelancer.phone,
-        freelancer.user_image
-    ');
-        $this->db->from('tbl_chat');
-        $this->db->join('freelancer', 'freelancer.id = tbl_chat.chat_with_user_id');
-        $this->db->where('tbl_chat.user_id', $user_id);
+        $sql = "
+            SELECT f.id, f.name, f.email, f.phone, f.user_image
+            FROM tbl_freelancer f
+            JOIN (
+                SELECT chat_with_user_id AS user_id
+                FROM tbl_chat
+                WHERE user_id = ?
 
-        $users = $this->db->get()->result_array();
+                UNION
+
+                SELECT user_id
+                FROM tbl_chat
+                WHERE chat_with_user_id = ?
+            ) u ON u.user_id = f.id
+        ";
+
+        $query = $this->db->query($sql, [$user_id, $user_id]);
+
+        $users = $query->result_array();
 
         $html = $this->load->view(
             'chat/user_list',
@@ -140,7 +146,37 @@ class ChatController extends CI_Controller
         echo json_encode(['success' => true, 'messages' => $messages]);
     }
 
+    public function send_message()
+    {
+        if (!sessionId('freelancer_id')) {
+            echo json_encode(['success' => false]);
+            return;
+        }
 
+        $room_id = $this->input->post('room_id');
+        $message = trim($this->input->post('message'));
+        $sender  = sessionId('freelancer_id');
+
+        if (!$room_id || !$message) {
+            echo json_encode(['success' => false]);
+            return;
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+
+        $data = [
+            'chat_room_id' => $room_id,
+            'sender_id' => $sender,
+            'message' => $message,
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+
+        $insert = $this->db->insert('chat_messages', $data);
+
+        echo json_encode([
+            'success' => (bool)$insert
+        ]);
+    }
 
 
     // Controller End

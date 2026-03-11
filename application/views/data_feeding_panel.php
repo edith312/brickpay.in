@@ -1119,10 +1119,10 @@
                         </div>
                         <div class="mx-2">
                             <button class="btn btn-sm tab-btn draggable-btn text-white" style="background-color: #04d6e5ff !important;" id=""
-                                data-url="<?= base_url('Calendar/timeStamp') ?>"
-                                data-type="timeStamp"
+                                data-url="<?= base_url('Calendar/timestamp') ?>"
+                                data-type="timestamp"
                                 data-target="#textDataContainer9"
-                                data-box="#box_timeStampbox"
+                                data-box="#box_timestampbox"
                                 draggable="true"
                             >Timestamps</button>
                         </div>
@@ -2082,8 +2082,34 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+                        <div class="box_timestampbox tab-box" id="box_timestampbox">
+                            <h6> Timestamps Box </h6>
+                            <div class="position-relative">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="s_time" class="form-lable">Start Time</label>
+                                        <input id="s_time" type="time" class="form-control mt-3" name="s_timestamp" placeholder="">
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="e_time" class="form-lable">End Time</label>
+                                        <input id="e_time" type="time" class="form-control mt-3" name="e_timestamp" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="press_release_container" style="overflow-y: auto; max-height: 500px;"></div>
+                            <div class="mx-2 text-center mt-5">
+                                <button class="btn btn-dark btn-sm save-btn"
+                                        data-type="timestamp"
+                                        data-url="<?= base_url('Calendar/saveTimestamp') ?>">
+                                    Update
+                                </button>
+                            </div>
+                            <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
+                        </div>
                     </div>
-                    <div class="">Total Finance: <?= $calendar['finance_total']?> </div>
+                   <div class="fw-semibold">
+                        Total Finance: <span class="text-success">₹ <?= number_format($calendar['finance_total'], 2) ?></span>
+                    </div>
                     <div class="text-center">
                     <?php if($permission['permission_type'] != 'viewer'){ ?>
                         <button class="btn btn-sm btn-dark mx-auto" onclick="alert('Data saved successfully!')">
@@ -2221,7 +2247,7 @@
         console.log("wrapper",wrapper)
         console.log("timelineItemId", timelineItemId);
 
-        const allowedTypes = ['video', 'image', 'user', 'finance', 'audio'];
+        const allowedTypes = ['video', 'image', 'user', 'finance', 'audio', 'timestamp'];
 
         if (allowedTypes.includes(type) && timelineItemId) {
             formData.append('timeline_item_id', timelineItemId);
@@ -2500,7 +2526,19 @@
                 formData.append("character", character);
                 break;
             }
+            case "timestamp": {
+                const s_timestamp = $("#box_timestampbox input[name='s_timestamp']").val();
+                const e_timestamp = $("#box_timestampbox input[name='e_timestamp']").val();
 
+                if (!s_timestamp && !e_timestamp) {
+                    alert('Please enter start and end timestamp');
+                    return;
+                }
+
+                formData.append("s_timestamp", s_timestamp);
+                formData.append("e_timestamp", e_timestamp);
+                break;
+            }
 
         }
         // console.table([...formData.entries()]);
@@ -3465,7 +3503,7 @@
     let draggedElement = null;
     let canDropNewItem = true;
     let activeDroppedWrapper = null;
-    const NO_NEW_WRAPPER_TYPES = ['black_line','dialogue','finance'];
+    const NO_NEW_WRAPPER_TYPES = ['black_line','dialogue','finance','timestamp'];
     
 
     document.addEventListener('dragstart', (e) => {

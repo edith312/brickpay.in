@@ -535,7 +535,7 @@
 
     });
 </script>
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<!-- <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 
 <script>
     const socket = io('http://localhost:3000');
@@ -670,6 +670,159 @@
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
     }
+</script> -->
+
+<script>
+
+const CURRENT_USER_ID = <?= sessionId('freelancer_id') ?>;
+let currentRoom = null;
+
+
+/* ===========================
+   USER CLICK → OPEN CHAT
+=========================== */
+
+$('#userListContainer')
+.off('click','.chat-user')
+.on('click','.chat-user',function(e){
+
+    e.preventDefault();
+
+    const userId = $(this).data('user-id');
+    if(!userId) return;
+
+    $('.chat-user').removeClass('active');
+    $(this).addClass('active');
+
+    $.post("<?= base_url('chatController/get_room') ?>",{user_id:userId},function(res){
+
+        if(!res.success) return;
+
+        currentRoom = res.room_id;
+
+        $('.theme_chat_header h6').text(res.user?.name || '');
+
+        loadMessages(currentRoom);
+
+    },'json');
+
+});
+
+
+
+/* ===========================
+   SEND MESSAGE
+=========================== */
+
+$(document)
+.off('click','.chatmoduleinputsend button')
+.on('click','.chatmoduleinputsend button',function(e){
+
+    e.preventDefault();
+    sendChatMessage();
+
+});
+
+
+$(document)
+.off('keypress','input[name="chatsender"]')
+.on('keypress','input[name="chatsender"]',function(e){
+
+    if(e.which===13){
+
+        e.preventDefault();
+        sendChatMessage();
+
+    }
+
+});
+
+
+
+/* ===========================
+   SEND MESSAGE FUNCTION
+=========================== */
+
+function sendChatMessage(){
+
+    const input = $('input[name="chatsender"]');
+    const message = input.val().trim();
+
+    if(!message || !currentRoom) return;
+
+    $.post("<?= base_url('chatController/send_message') ?>",{
+
+        room_id: currentRoom,
+        sender_id: CURRENT_USER_ID,
+        message: message
+
+    },function(res){
+
+        if(res.success){
+
+            input.val('');
+
+            // reload messages
+            loadMessages(currentRoom);
+
+        }
+
+    },'json');
+
+}
+
+
+
+/* ===========================
+   LOAD MESSAGES
+=========================== */
+
+function loadMessages(roomId){
+
+    $.post("<?= base_url('chatController/get_messages') ?>",{room_id:roomId},function(res){
+
+        let html='';
+
+        res.messages.forEach(msg=>{
+
+            html+=`
+            <span class="messageUniquiId
+            ${msg.sender_id == CURRENT_USER_ID ? 'UserMessageSender':'UserMessageReceiver'}">
+            ${escapeHtml(msg.message)}
+            </span><br><br>
+            `;
+
+        });
+
+        $('.UserMessageSenderReceiver').html(html);
+
+        scrollToBottom();
+
+    },'json');
+
+}
+
+
+
+function scrollToBottom(){
+
+    const el=document.querySelector('.theme_chat_body_container');
+    if(el) el.scrollTop=el.scrollHeight;
+
+}
+
+
+function escapeHtml(text){
+
+    return text
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
 </script>
 
 <!-- Shiv Web Developer -->

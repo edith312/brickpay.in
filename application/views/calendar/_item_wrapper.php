@@ -263,7 +263,41 @@
             </div>
 
         <?php endif; ?>
+        
+        <?php if (!empty($item['timestamp'])): ?>
 
+            <div class="d-inline-flex flex-column align-items-start justify-content-center gap-2 text-center">
+
+                <button 
+                    class="btn btn-sm tab-btn text-white d-inline w-fill-content"
+                    style="background-color: #04d6e5ff !important;"
+                    data-url="<?= base_url('Calendar/timestamp_box') ?>"
+                    data-type="timestamp"
+                    data-target="#textDataContainer9"
+                    data-box="#box_timestampbox">
+
+                    Timestamp
+                </button>
+
+                <span class="badge bg-dark mx-auto">
+
+                    <?php
+                    $start = !empty($item['timestamp']['s_timestamp']) && $item['timestamp']['s_timestamp'] != '0000-00-00 00:00:00'
+                        ? date('h:i A', strtotime($item['s_timestamp']))
+                        : '';
+
+                    $end = !empty($item['timestamp']['e_timestamp']) && $item['timestamp']['e_timestamp'] != '0000-00-00 00:00:00'
+                        ? date('h:i A', strtotime($item['timestamp']['e_timestamp']))
+                        : '';
+
+                    echo trim($start . ' - ' . $end);
+                    ?>
+
+                </span>
+
+            </div>
+
+        <?php endif; ?>
     </div>
 
     <?php
