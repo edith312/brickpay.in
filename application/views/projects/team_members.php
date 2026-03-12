@@ -58,6 +58,123 @@
         color: #fff;
         border-color: #0d6efd;
     }
+    .row.timeline-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 40px;
+    }
+    .label {
+        width: 200px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .line {
+        flex-grow: 1;
+        height: 2px;
+        background: #007bff;
+        position: relative;
+        margin: 0 20px;
+        min-width: 100px;
+    }
+
+    .circle {
+        width: 40px;
+        height: 40px;
+        background: #fff;
+        border: 3px solid #007bff;
+        border-radius: 50%;
+        position: absolute;
+        top: -19px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .circle-name {
+        position: absolute;
+        top: 45px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: #333;
+        white-space: nowrap;
+    }
+
+    .active-status {
+        width: 10px;
+        height: 10px;
+        background: #28a745;
+        border-radius: 50%;
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+
+    .doc-icon {
+        position: absolute;
+        left: -20px;
+        top: -12px;
+        font-size: 24px;
+        color: #fd7e14;
+        cursor: pointer;
+        background: #fff;
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+    }
+
+    .doc-icon:hover {
+        color: #e65c00;
+        transform: scale(1.1) translateY(-12px) translateX(-20px);
+    }
+
+    .tooltip {
+        display: none;
+        position: absolute;
+        background: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        font-size: 12px;
+        max-width: 300px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    .doc-tooltip {
+        display: none;
+        position: absolute;
+        background: #333;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        font-size: 12px;
+        max-width: 300px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        margin-bottom: 5px;
+    }
+
+    .circle:hover .tooltip,
+    .doc-icon:hover .doc-tooltip {
+        display: block;
+    }
 </style>
 
 <div class="ps-md-4 pe-md-3 px-2 py-3 page-body">

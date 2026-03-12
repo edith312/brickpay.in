@@ -593,4 +593,66 @@ class HomeModal extends CI_Model
 
         return $query->result_array();
     }
+
+    public function getCompaniesWithTeam($user_id)
+    {
+        $this->db->select("DISTINCT c.*,
+            CASE 
+                WHEN c.user_id = ". $this->db->escape($user_id) ."
+                THEN 1 
+                ELSE 0 
+            END as is_owner
+        ", FALSE);
+        $this->db->from('tbl_companies c');
+
+        $this->db->join(
+            'teamcompanymember tcm',
+            "tcm.company_id = c.id AND tcm.member_id = '$user_id' AND tcm.status = 'Accepted'",
+            'left'
+        );
+
+        $this->db->where("(c.user_id = '$user_id' OR tcm.member_id = '$user_id')");
+        $this->db->where('c.transaction_status', '1');
+        $this->db->where('c.status', 'Active');
+
+        $this->db->order_by('c.id', 'DESC');
+
+        $query = $this->db->get();
+        // echo $this->db->last_query();
+        // die;
+        return $query->result_array();
+    }
+
+    public function getProjectsWithTeam($user_id, $company_id = null)
+    {
+        $this->db->select("DISTINCT p.*,
+            CASE 
+                WHEN p.user_id = ". $this->db->escape($user_id) ."
+                THEN 1 
+                ELSE 0 
+            END as is_owner
+        ", FALSE);
+
+        $this->db->from('projects p');
+
+        $this->db->join(
+            'teamcompanymember tcm',
+            "tcm.project_id = p.id 
+            AND tcm.member_id = ".$this->db->escape($user_id)." 
+            AND tcm.status = 'Accepted'",
+            'left'
+        );
+
+        $this->db->where("(p.user_id = ".$this->db->escape($user_id)." OR tcm.member_id = ".$this->db->escape($user_id).")");
+        $this->db->where('p.transaction_status', '1');
+        $this->db->where('p.project_status', 'Active');
+
+        if ($company_id) {
+            $this->db->where('p.company_id', $company_id);
+        }
+
+        $this->db->order_by('p.id', 'DESC');
+
+        return $this->db->get()->result_array();
+    }
 }

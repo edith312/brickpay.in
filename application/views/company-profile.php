@@ -98,9 +98,11 @@
                             <div class="project-cell">Equity Dilution: (<?= $company['equity_dilution'] ?> %)</div>
                             <div class="project-cell">Team: 0 Members</div>
                             <div class="project-cell mx-auto">
-                                <a href="<?= base_url('company/company-trash?id=' . $company['id']) ?>" title="Delete Company" class="text-danger" onclick="return confirm('Are you sure you want to delete this company?');">
-                                    <i class="bi bi-trash"></i>
-                                </a>
+                                <?php if($company['is_owner'] == 1): ?>
+                                    <a href="<?= base_url('company/company-trash?id=' . $company['id']) ?>" title="Delete Company" class="text-danger" onclick="return confirm('Are you sure you want to delete this company?');">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                <?php endif; ?>
                             </div>
                         </div>
                 <?php endforeach;

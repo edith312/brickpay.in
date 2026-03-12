@@ -160,9 +160,11 @@
         <div class="card p-md-4 p-2">
             <h4 class="mb-md-0 mb-4">Company Preview</h4>
             <div class="d-flex justify-content-center justify-content-md-end align-items-center mb-4 gap-2">
-                <a href="<?= base_url('company/company-edit?id=' . $getProfile['id']) ?>" class="btn btn-primary">
-                    Edit
-                </a>
+                <?php if($is_owner == 1): ?>
+                    <a href="<?= base_url('company/company-edit?id=' . $getProfile['id']) ?>" class="btn btn-primary">
+                        Edit
+                    </a>
+                <?php endif; ?>
                 <a href="#" class="btn btn-primary">
                     <i class="bi bi-plus-lg me-1"></i> Follow
                 </a>

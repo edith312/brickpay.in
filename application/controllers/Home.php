@@ -787,38 +787,72 @@ class Home extends CI_Controller
         $this->load->view('role_employment');
     }
 
+    // public function project_profile(): void
+    // {
+    //     if (!sessionId('freelancer_id')) {
+    //         redirect(base_url(''));
+    //     }
+
+    //     $company_id = $this->input->get('company_id');
+    //     $data['title'] = 'Project Profile';
+    //     $this->load->view('includes/header-link', $data);
+
+    //     if($company_id){
+    //         $data['getProjects'] = $this->CommonModal->getRowByIdInOrder('projects', [
+    //             'user_id' => sessionId('freelancer_id'), 
+    //             'transaction_status' => '1', 
+    //             'project_status' => 'Active',
+    //             'company_id' => $company_id
+    //         ], 'id', 'DESC');
+    //     }else{
+    //         $data['getProjects'] = $this->CommonModal->getRowByIdInOrder('projects', [
+    //             'user_id' => sessionId('freelancer_id'), 
+    //             'transaction_status' => '1', 
+    //             'project_status' => 'Active',
+    //         ], 'id', 'DESC');
+    //     }
+
+    //     $data['getUser'] = $this->CommonModal->getSingleRowById('tbl_freelancer', 'id = ' . sessionId('freelancer_id'));
+    //     $data['getCompanyCount'] = $this->CommonModal->getNumRows('companies', ['user_id' => sessionId('freelancer_id')]);
+    //     $data['numOfCountries'] = $this->CommonModal->runQuery("SELECT COUNT(DISTINCT location) AS total_countries FROM tbl_companies WHERE user_id = " . sessionId('freelancer_id'));
+    //     // echo "<pre>";
+    //     // print_r($data['getProjects']); die;
+    //     $this->load->view('project-profile', $data);
+    // }
+
     public function project_profile(): void
     {
         if (!sessionId('freelancer_id')) {
             redirect(base_url(''));
         }
 
+        $user_id = sessionId('freelancer_id');
         $company_id = $this->input->get('company_id');
+
         $data['title'] = 'Project Profile';
         $this->load->view('includes/header-link', $data);
 
-        if($company_id){
-            $data['getProjects'] = $this->CommonModal->getRowByIdInOrder('projects', [
-                'user_id' => sessionId('freelancer_id'), 
-                'transaction_status' => '1', 
-                'project_status' => 'Active',
-                'company_id' => $company_id
-            ], 'id', 'DESC');
-        }else{
-            $data['getProjects'] = $this->CommonModal->getRowByIdInOrder('projects', [
-                'user_id' => sessionId('freelancer_id'), 
-                'transaction_status' => '1', 
-                'project_status' => 'Active',
-            ], 'id', 'DESC');
-        }
+        $data['getProjects'] = $this->HomeModal->getProjectsWithTeam($user_id, $company_id);
 
-        $data['getUser'] = $this->CommonModal->getSingleRowById('tbl_freelancer', 'id = ' . sessionId('freelancer_id'));
-        $data['getCompanyCount'] = $this->CommonModal->getNumRows('companies', ['user_id' => sessionId('freelancer_id')]);
-        $data['numOfCountries'] = $this->CommonModal->runQuery("SELECT COUNT(DISTINCT location) AS total_countries FROM tbl_companies WHERE user_id = " . sessionId('freelancer_id'));
-        // echo "<pre>";
-        // print_r($data['getProjects']); die;
+        $data['getUser'] = $this->CommonModal->getSingleRowById(
+            'tbl_freelancer',
+            'id = '.$user_id
+        );
+
+        $data['getCompanyCount'] = $this->CommonModal->getNumRows(
+            'companies',
+            ['user_id' => $user_id]
+        );
+
+        $data['numOfCountries'] = $this->CommonModal->runQuery(
+            "SELECT COUNT(DISTINCT location) AS total_countries 
+            FROM tbl_companies 
+            WHERE user_id = ".$user_id
+        );
+
         $this->load->view('project-profile', $data);
     }
+
     public function create_team_member(): void
     {
         if (!sessionId('freelancer_id')) {
@@ -833,6 +867,7 @@ class Home extends CI_Controller
         if (!sessionId('freelancer_id')) {
             redirect(base_url(''));
         }
+
         $getId = $this->input->get('id');
         $data['title'] = 'Company Preview';
         $company_id = sessionId('company_id');
@@ -865,6 +900,8 @@ class Home extends CI_Controller
         ]);
         
         $data['company_id'] = $company_id;
+
+        $data['is_owner'] = sessionId('freelancer_id') == $data['getProfile']['user_id'];
 
         $this->load->view('company-preview', $data);
     }
@@ -1115,6 +1152,8 @@ class Home extends CI_Controller
         }
 
         $data['reportsByYear'] = $reportsByYear;
+        $data['is_owner'] = sessionId('freelancer_id') == $data['getProject']['user_id'];
+        
         // dd($data);
         // dd($reportsByYear);
         // echo "<pre>";
@@ -3013,17 +3052,49 @@ class Home extends CI_Controller
         $this->load->view('manage-tasks');
     }
 
+    // public function company_profile(): void
+    // {
+    //     if (!sessionId('freelancer_id')) {
+    //         redirect(base_url(''));
+    //     }
+    //     $data['title'] = 'company Profile';
+    //     $this->load->view('includes/header-link', $data);
+    //     $data['getCompanies'] = $this->CommonModal->getRowByIdInOrder('companies', ['user_id' => sessionId('freelancer_id'), 'transaction_status' => '1', 'status' => 'Active'], 'id', 'DESC');
+    //     $data['getUser'] = $this->CommonModal->getSingleRowById('tbl_freelancer', 'id = ' . sessionId('freelancer_id'));
+    //     $data['getCompanyCount'] = $this->CommonModal->getNumRows('companies', ['user_id' => sessionId('freelancer_id')]);
+    //     $data['numOfCountries'] = $this->CommonModal->runQuery("SELECT COUNT(DISTINCT location) AS total_countries FROM tbl_companies WHERE user_id = " . sessionId('freelancer_id'));
+    //     $this->load->view('company-profile', $data);
+    // }
+    
     public function company_profile(): void
     {
         if (!sessionId('freelancer_id')) {
             redirect(base_url(''));
         }
+
+        $user_id = sessionId('freelancer_id');
+
         $data['title'] = 'company Profile';
         $this->load->view('includes/header-link', $data);
-        $data['getCompanies'] = $this->CommonModal->getRowByIdInOrder('companies', ['user_id' => sessionId('freelancer_id'), 'transaction_status' => '1', 'status' => 'Active'], 'id', 'DESC');
-        $data['getUser'] = $this->CommonModal->getSingleRowById('tbl_freelancer', 'id = ' . sessionId('freelancer_id'));
-        $data['getCompanyCount'] = $this->CommonModal->getNumRows('companies', ['user_id' => sessionId('freelancer_id')]);
-        $data['numOfCountries'] = $this->CommonModal->runQuery("SELECT COUNT(DISTINCT location) AS total_countries FROM tbl_companies WHERE user_id = " . sessionId('freelancer_id'));
+
+        $data['getCompanies'] = $this->HomeModal->getCompaniesWithTeam($user_id);
+
+        $data['getUser'] = $this->CommonModal->getSingleRowById(
+            'tbl_freelancer',
+            'id = '.$user_id
+        );
+
+        $data['getCompanyCount'] = $this->CommonModal->getNumRows(
+            'companies',
+            ['user_id' => $user_id]
+        );
+
+        $data['numOfCountries'] = $this->CommonModal->runQuery("
+            SELECT COUNT(DISTINCT location) AS total_countries 
+            FROM tbl_companies 
+            WHERE user_id = $user_id
+        ");
+
         $this->load->view('company-profile', $data);
     }
 

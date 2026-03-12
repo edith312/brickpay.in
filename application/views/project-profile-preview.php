@@ -690,12 +690,14 @@
                       <div class="d-flex justify-content-between align-items-center mb-4">
                           <h4 class="mb-0">Project Details</h4>
                           <div class="d-flex align-items-center">
-                              <a href="<?= base_url('company/edit-project?id=' . $getProject['id']) ?>" class="btn btn-warning me-2">
+                              <?php if($is_owner) :?>
+                                <a href="<?= base_url('company/edit-project?id=' . $getProject['id']) ?>" class="btn btn-warning me-2">
                                   <i class="bi bi-pencil"></i> Edit
-                              </a>
-                              <a href="<?= base_url('company/project-trash?id=' . $getProject['id']) ?>" title="Delete Project" class="text-danger btn btn-danger me-2" onclick="return confirm('Are you sure you want to delete this project?');">
+                                </a>
+                                <a href="<?= base_url('company/project-trash?id=' . $getProject['id']) ?>" title="Delete Project" class="text-danger btn btn-danger me-2" onclick="return confirm('Are you sure you want to delete this project?');">
                                   <i class="bi bi-trash text-white"></i>
-                              </a>
+                                </a>
+                              <?php endif;?>
                               <a href="<?= base_url("company/project-team-members?id=$getProject[id]") ?>" class="btn btn-dark me-2" id="temmembersBtnWrapper" >
                                   <i class="bi bi-person-plus me-1"></i> Team Members
                               </a>

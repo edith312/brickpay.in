@@ -209,6 +209,11 @@
                 border-radius: 0px 10px 10px 0px !important;
 
             }
+
+            .chat-highlight {
+                background-color: #fff3a3 !important;
+                transition: background-color 0.5s ease;
+            }
         </style>
 
         <div class="row">
@@ -230,7 +235,7 @@
                     <!--SINGLE USER CHAT HERE  -->
                     <div class="theme_chat_header">
                         <div class="row p-0 g-0 m-0">
-                            <div class="col-12 col-md-6 col-lg-6">
+                            <div class="col-12">
                                 <div class="team-member-card theme-user-header me-1">
                                     <img src="<?= !empty($user['user_image'])
                                                     ? base_url('uploads/user_profile/' . $user['user_image'])
@@ -240,6 +245,14 @@
                                         <h6>
                                             <?= $user['name'] ?: 'No Name' ?>
                                         </h6>
+                                    </div>
+
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" id="chatSearchInput" class="form-control form-control-sm" placeholder="Search message...">
+
+                                        <div class="pe-2">
+                                            <i class="fa-solid fa-magnifying-glass" id="searchChatBtn" style="cursor:pointer;"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -264,26 +277,6 @@
 
                             <!-- SENDER  / Receiver Chats-->
                             <div class="UserMessageSenderReceiver">
-                                <span class="messageUniquiId UserMessageSender">Hii</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageReceiver">Hello</span><br /> <br />
-
-                                <span class="messageUniquiId UserMessageSender">Abhi Kis Module par work kar rahe
-                                    ho?</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageReceiver">I'm Currently Working on. Chat Module
-                                </span><br /> <br />
-                                <span class="messageUniquiId UserMessageReceiver">ab meeting kal karte hai </span><br />
-                                <br />
-                                <span class="messageUniquiId UserMessageReceiver"> Okay? </span><br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Okay</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Done</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageReceiver">Thank You !</span><br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Welcome</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Work Complete Hua?</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Hello</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Kaha Gaye?</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Meeting Kare?</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageSender">Yes, Plz Join</span> <br /> <br />
-                                <span class="messageUniquiId UserMessageReceiver">Yes Joining </span><br /> <br />
 
                             </div>
                         </div>
@@ -822,7 +815,46 @@ function escapeHtml(text){
     .replace(/'/g,"&#039;");
 
 }
+$('#searchChatBtn').on('click', function () {
 
+    const searchText = $('#chatSearchInput').val().toLowerCase().trim();
+    if (!searchText) return;
+
+    let found = false;
+
+    const messages = $('.messageUniquiId').get().reverse();
+
+    $(messages).each(function () {
+
+        const msg = $(this).text().toLowerCase();
+
+        if (msg.includes(searchText)) {
+
+            const container = $('.theme_chat_body_container');
+
+            container.animate({
+                scrollTop: $(this).offset().top 
+                    - container.offset().top 
+                    + container.scrollTop() - 100
+            }, 300);
+
+            $(this).addClass('chat-highlight');
+
+            setTimeout(() => {
+                $(this).removeClass('chat-highlight');
+            }, 500);
+
+            found = true;
+            return false;
+        }
+
+    });
+
+    if (!found) {
+        alert('Message not found');
+    }
+
+});
 </script>
 
 <!-- Shiv Web Developer -->
