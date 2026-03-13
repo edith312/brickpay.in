@@ -71,6 +71,7 @@ $route['company/police-court'] = 'Home/police_court';
 $route['company/medical-identity'] = 'Home/medical_identity';
 $route['company/medical-identity-trash'] = 'Home/medical_identity_trash';
 $route['company/save-political-data'] = 'Home/save_political_data';
+$route['company/medical-defence'] = 'Home/medical_defence';
 
 
 

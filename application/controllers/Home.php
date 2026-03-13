@@ -1532,6 +1532,15 @@ class Home extends CI_Controller
         }
     }
 
+    public function medical_defence()
+    {
+        $this->load->view('includes/header');
+        $this->load->view('includes/header-link', $data);
+        $this->load->view('medical_defence');
+        $this->load->view('includes/footer');
+        $this->load->view('includes/footer-link');
+    }
+
     public function medical_identity()
     {
         if (!sessionId('freelancer_id')) {
@@ -9514,6 +9523,298 @@ class Home extends CI_Controller
 
         $deleted = $this->CommonModal->deleteRowById(
             'police_court',
+            [
+                'id' => $id
+            ]
+        );
+
+        echo json_encode([
+            'success' => (bool) $deleted
+        ]);
+    }
+
+    public function save_defence_data() {
+
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $defence_text = $this->input->post('defence_text');
+
+        $form_data = [
+            'user_id' => sessionId('freelancer_id'),
+            'defence_text' => $defence_text
+        ];
+
+        $data_id = $this->CommonModal->insertRowReturnId('defence_medical',$form_data);
+
+        $res = [];
+
+        if($data_id){
+
+            $res = [
+                'success' => true,
+                'data_id' => $data_id
+            ];
+
+        }else {
+            $res = [
+                'success' => false,
+                'data_id' => $data_id
+            ];
+        }
+        echo json_encode($res);
+    }
+
+    public function get_defence_data() {
+
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $defence_medical_data = $this->CommonModal->getRowsWhere('defence_medical', [
+            'user_id' => sessionId('freelancer_id'),
+            'medical_text' => null
+        ]);
+
+        echo json_encode($defence_medical_data);
+    }
+
+    public function update_defence_data()
+    {
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id');
+        $id      = $this->input->post('id');
+        $text    = $this->input->post('defence_text');
+
+        if (empty($id) || empty($text)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid data'
+            ]);
+            return;
+        }
+
+        // 🔒 Ownership check
+        $exists = $this->CommonModal->getSingleRowById(
+            'defence_medical',
+            [
+                'id' => $id,
+                'user_id' => $user_id
+            ]
+        );
+
+        if (!$exists) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+            return;
+        }
+
+        $form_data = [
+            'user_id' => sessionId('freelancer_id'),
+            'defence_text' => $text
+        ];
+
+        $updated = $this->CommonModal->updateRowById(
+            'defence_medical',
+            'id',
+            $id,
+            $form_data
+            
+        );
+
+        echo json_encode([
+            'success' => (bool) $updated
+        ]);
+    }
+
+    public function delete_defence_data()
+    {
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id');
+        $id      = $this->input->post('id');
+
+        if (empty($id)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid ID'
+            ]);
+            return;
+        }
+
+        // 🔒 Ownership check
+        $exists = $this->CommonModal->getSingleRowById(
+            'defence_medical',
+            [
+                'id' => $id,
+                'user_id' => $user_id
+            ]
+        );
+
+        if (!$exists) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+            return;
+        }
+
+        $deleted = $this->CommonModal->deleteRowById(
+            'defence_medical',
+            [
+                'id' => $id
+            ]
+        );
+
+        echo json_encode([
+            'success' => (bool) $deleted
+        ]);
+    }
+    
+    public function save_medical_data() {
+
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $medical_text = $this->input->post('medical_text');
+
+        $form_data = [
+            'user_id' => sessionId('freelancer_id'),
+            'medical_text' => $medical_text
+        ];
+
+        $data_id = $this->CommonModal->insertRowReturnId('defence_medical',$form_data);
+
+        $res = [];
+
+        if($data_id){
+
+            $res = [
+                'success' => true,
+                'data_id' => $data_id
+            ];
+
+        }else {
+            $res = [
+                'success' => false,
+                'data_id' => $data_id
+            ];
+        }
+        echo json_encode($res);
+    }
+
+    public function get_medical_data() {
+
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $defence_medical_data = $this->CommonModal->getRowsWhere('defence_medical', [
+            'user_id' => sessionId('freelancer_id'),
+            'defence_text' => null
+        ]);
+
+        echo json_encode($defence_medical_data);
+    }
+
+    public function update_medical_data()
+    {
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id');
+        $id      = $this->input->post('id');
+        $text    = $this->input->post('medical_text');
+
+        if (empty($id) || empty($text)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid data'
+            ]);
+            return;
+        }
+
+        // 🔒 Ownership check
+        $exists = $this->CommonModal->getSingleRowById(
+            'defence_medical',
+            [
+                'id' => $id,
+                'user_id' => $user_id
+            ]
+        );
+
+        if (!$exists) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+            return;
+        }
+
+        $form_data = [
+            'user_id' => sessionId('freelancer_id'),
+            'medical_text' => $text
+        ];
+
+        $updated = $this->CommonModal->updateRowById(
+            'defence_medical',
+            'id',
+            $id,
+            $form_data
+            
+        );
+
+        echo json_encode([
+            'success' => (bool) $updated
+        ]);
+    }
+
+    public function delete_medical_data()
+    {
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id');
+        $id      = $this->input->post('id');
+
+        if (empty($id)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Invalid ID'
+            ]);
+            return;
+        }
+
+        // 🔒 Ownership check
+        $exists = $this->CommonModal->getSingleRowById(
+            'defence_medical',
+            [
+                'id' => $id,
+                'user_id' => $user_id
+            ]
+        );
+
+        if (!$exists) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Unauthorized'
+            ]);
+            return;
+        }
+
+        $deleted = $this->CommonModal->deleteRowById(
+            'defence_medical',
             [
                 'id' => $id
             ]

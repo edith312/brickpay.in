@@ -349,6 +349,7 @@
 									<li><a href="<?= base_url('company/3d-world') ?>" aria-label="Project Grid">2.12 3D World </a></li>
 									<li><a href="<?= base_url('company/police-court') ?>" aria-label="Project Grid">2.17 Police & Court </a></li>
 									<li><a href="<?= base_url('company/map') ?>" aria-label="Project Grid">2.13 Map </a></li>
+									<li><a href="<?= base_url('company/medical-defence') ?>" aria-label="Project Grid">2.18 Medical & Defence </a></li>
 									<li><a href="<?= base_url('company/medical-identity') ?>" aria-label="Project Grid">2.19 Medical Identity </a></li>
 
 
