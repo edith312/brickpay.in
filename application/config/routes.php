@@ -64,6 +64,7 @@ $route['company/degree/(:any)'] = 'Home/degree/$1';
 $route['company/industries/department'] = 'Home/department';
 $route['company/market-research'] = 'Home/market_research';
 $route['company/reverse-process'] = 'Home/reverse_process';
+$route['company/language'] = 'Home/language';
 $route['company/crm'] = 'Home/crm';
 $route['company/revenue'] = 'Home/revenue';
 $route['company/plant-manufacturing-production'] = 'Home/plant_manufacturing_production';

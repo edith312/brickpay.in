@@ -1448,6 +1448,21 @@ class Home extends CI_Controller
         $this->load->view('includes/footer-link');
     }
 
+    public function language()
+    {
+        if (!sessionId('freelancer_id')) {
+            redirect(base_url(''));
+        }
+
+        $data['title'] = 'Language';
+
+        $this->load->view('includes/header');
+        $this->load->view('includes/header-link', $data);
+        $this->load->view('map/language');
+        $this->load->view('includes/footer');
+        $this->load->view('includes/footer-link');
+    }
+
     public function crm()
     {
         if (!sessionId('freelancer_id')) {
