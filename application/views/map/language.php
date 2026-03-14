@@ -14,6 +14,25 @@
         text-align: center;
         font-weight: bold;
     }
+
+    .char-btn{
+        width:40px;
+        height:40px;
+        font-size:18px;
+        font-weight:bold;
+        border:2px solid black;
+        background:white;
+        cursor:pointer;
+    }
+
+    .char-btn:hover{
+        background:#f0f0f0;
+    }
+
+    .char-btn:active{
+        transform:scale(0.9);
+        background:#d4f1ff;
+    }
 </style>
 
 <div class="page-body pt-1 px-2">
@@ -148,10 +167,17 @@
 
             <td>
                 <?php
-                    if (isset($characters[$key][$i])) {
-                        echo $characters[$key][$i] . "<br>";
-                    }
-                    ?>
+                if (isset($characters[$key][$i])) {
+                    $char = $characters[$key][$i];
+                ?>
+                    <button 
+                        class="char-btn"
+                        onclick="speakChar('<?= $char ?>','<?= $key ?>')">
+                        <?= $char ?>
+                    </button>
+                <?php
+                }
+                ?>
             </td>
 
             <?php }?>
@@ -162,3 +188,30 @@
 
     </table>
 </div>
+
+<script>
+    function speakChar(char, lang){
+
+        const langMap = {
+            english: "en-US",
+            hindi: "hi-IN",
+            spanish: "es-ES",
+            arabic: "ar-SA",
+            bengali: "bn-BD",
+            portuguese: "pt-PT",
+            russian: "ru-RU",
+            japanese: "ja-JP",
+            punjabi: "pa-IN",
+            german: "de-DE"
+        };
+
+        const speech = new SpeechSynthesisUtterance(char);
+
+        speech.lang = langMap[lang] || "en-US";
+        speech.rate = 0.8;
+        speech.pitch = 1;
+
+        speechSynthesis.cancel(); // stop previous
+        speechSynthesis.speak(speech);
+    }
+</script>

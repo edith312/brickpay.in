@@ -1147,7 +1147,7 @@ class Calendar extends CI_Controller
         $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
 
         $edit_id = $this->input->post('id');
-        $textbox = trim($this->input->post('textbox'));
+        $textbox = $this->input->post('textbox');
         $schedule_type = $this->input->post('scheduleType');
 
         if (empty($textbox)) {
