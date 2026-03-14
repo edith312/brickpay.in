@@ -1,5 +1,5 @@
 <div class="timeline-output text-output">
-    <span><?= htmlspecialchars($item['textbox_description']) ?></span>
+    <span><?= nl2br(htmlspecialchars($item['textbox_description'])) ?></span>
     <span class="edit-item">
         <i class="bi bi-pencil" title="Edit"></i>
     </span>
