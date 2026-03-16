@@ -1367,24 +1367,45 @@
                                 </div>
 
                                 <div class="modal-body text-start">
-                                    <h4 class="mb-2">Book Appointment</h4>
+                                    <div class="mb-3">
+                                        <label class="form-label">Book Appointment For</label>
+
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="bookingTypeSwitch">
+                                            <label class="form-check-label" for="bookingTypeSwitch">
+                                                Toggle to Book for User
+                                            </label>
+                                        </div>
+
+                                    </div>
 
                                     <form id="appointmentForm">
-                                        
-                                        <div class="mb-3">
-                                            <label class="form-label">Company</label>
-                                                <select class="form-select" aria-label="Company Search" id="selected_company">
-                                                    <option value="" selected>Select Company</option>
-                                                    <?php foreach($companies as $c) : ?>
-                                                        <option value="<?= $c['id'] ?>"><?= $c['company_name'] ?></option>
-                                                    <?php endforeach;?>
-                                                </select>
-                                            <button type="button" id="search_project_btn" class="btn btn-info btn-sm text-white mt-2">Search Project</button>
-                                        </div>
+                                        <div id="company_booking_section">
+                                            <div class="mb-3">
+                                                <label class="form-label">Company</label>
+                                                    <select class="form-select" aria-label="Company Search" id="selected_company">
+                                                        <option value="" selected>Select Company</option>
+                                                        <?php foreach($companies as $c) : ?>
+                                                            <option value="<?= $c['id'] ?>"><?= $c['company_name'] ?></option>
+                                                        <?php endforeach;?>
+                                                    </select>
+                                                <button type="button" id="search_project_btn" class="btn btn-info btn-sm text-white mt-2">Search Project</button>
+                                            </div>
 
-                                        <div id="projects_container" class="mb-3">
-                                            
-                                        </div>
+                                            <div id="projects_container" class="mb-3">
+                                                
+                                            </div>
+                                        </div>    
+                                        <div id="user_booking_section" style="display:none;">
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Select User</label>
+
+                                                <input class="form-control" id="team-member-input" name='user_search' placeholder='Search user by name' value=''>
+
+                                            </div>
+
+                                        </div>                                    
 
                                         <div class="mb-3">
                                             <label class="form-label">Start Date Time</label>
@@ -6325,10 +6346,52 @@
         })
     })
 
+    // $("#save_calendar_appointment_btn").on("click", function () {
+
+    //     let company_id = $("#selected_company").val();
+    //     let project_id = $("#selected_project").val(); // if radio
+    //     let start = $("input[name='appointment_start_date_time']").val();
+    //     let end = $("input[name='appointment_end_date_time']").val();
+    //     let notes = $("textarea[name='notes']").val();
+    //     let bid_cur = $("select[name='currency_symbol']").val();
+    //     let bid_amount = $("input[name='bid_amount']").val();
+    //     let barter_bid = $("textarea[name='barter_bid']").val();
+
+    //     if (!company_id || !start || !end) {
+    //         alert("All fields are required!");
+    //         return;
+    //     }
+
+    //     $.ajax({
+    //         url: "<?= base_url('appointment/store') ?>",
+    //         type: "POST",
+    //         data: {
+    //             company_id: company_id,
+    //             project_id: project_id,
+    //             start_datetime: start,
+    //             end_datetime: end,
+    //             notes: notes,
+    //             bid_cur: bid_cur,
+    //             bid_amount: bid_amount,
+    //             barter_bid: barter_bid
+    //         },
+    //         dataType: "json",
+    //         success: function (response) {
+
+    //             if (response.success) {
+    //                 alert("Appointment Booked Successfully!");
+    //                 $("#appointmentModal").modal("hide");
+    //             } else {
+    //                 alert(response.message);
+    //             }
+    //         }
+    //     });
+
+    // });
     $("#save_calendar_appointment_btn").on("click", function () {
 
         let company_id = $("#selected_company").val();
-        let project_id = $("#selected_project").val(); // if radio
+        let project_id = $("#selected_project").val();
         let start = $("input[name='appointment_start_date_time']").val();
         let end = $("input[name='appointment_end_date_time']").val();
         let notes = $("textarea[name='notes']").val();
@@ -6336,8 +6399,41 @@
         let bid_amount = $("input[name='bid_amount']").val();
         let barter_bid = $("textarea[name='barter_bid']").val();
 
-        if (!company_id || !start || !end) {
-            alert("All fields are required!");
+        let booking_type = $("#user_booking_section").is(":visible") ? "user" : "company";
+
+        let selected_users = [];
+
+        // GET TAGIFY USERS
+        if (booking_type === "user") {
+
+            let tagifyValue = $("#team-member-input").val();
+
+            if (tagifyValue) {
+
+                let parsed = JSON.parse(tagifyValue);
+
+                parsed.forEach(function (u) {
+                    selected_users.push(u.value); // user id
+                });
+
+            }
+
+            if (selected_users.length === 0) {
+                alert("Please select at least one user");
+                return;
+            }
+
+        } else {
+
+            if (!company_id) {
+                alert("Please select company");
+                return;
+            }
+
+        }
+
+        if (!start || !end) {
+            alert("Start and End date required");
             return;
         }
 
@@ -6345,27 +6441,174 @@
             url: "<?= base_url('appointment/store') ?>",
             type: "POST",
             data: {
+
+                booking_type: booking_type,
+
                 company_id: company_id,
                 project_id: project_id,
+
+                users: selected_users,
+
                 start_datetime: start,
                 end_datetime: end,
                 notes: notes,
+
                 bid_cur: bid_cur,
                 bid_amount: bid_amount,
                 barter_bid: barter_bid
+
             },
             dataType: "json",
+
             success: function (response) {
 
                 if (response.success) {
+
                     alert("Appointment Booked Successfully!");
+
                     $("#appointmentModal").modal("hide");
+
+                    $("#appointmentForm")[0].reset();
+
                 } else {
+
                     alert(response.message);
+
                 }
+
             }
+
         });
 
+    });
+</script>
+
+<script>
+    $('#bookingTypeSwitch').on('change', function () {
+
+        if ($(this).is(':checked')) {
+
+            // USER BOOKING
+            $('#company_booking_section').hide();
+            $('#user_booking_section').show();
+
+        } else {
+
+            // COMPANY BOOKING
+            $('#company_booking_section').show();
+            $('#user_booking_section').hide();
+
+        }
+
+    });
+
+    var inputElm = document.querySelector('#team-member-input');
+
+    function tagTemplate(tagData) {
+        return `
+        <tag title="${tagData.email || ''}" 
+                contenteditable='false' 
+                spellcheck='false' 
+                tabIndex="-1" 
+                class="tagify__tag" 
+                value="${tagData.value}">
+            <x title='' class='tagify__tag__removeBtn' role='button' aria-label='remove tag'></x>
+            <div class="d-flex align-items-center">
+                <img src="${tagData.avatar || 'assets/user-icon.png'}" 
+                        class="rounded-circle me-2" 
+                        style="width: 24px; height: 24px;">
+                <div>
+                    <div class="fw-bold">${tagData.label || tagData.value}</div>
+                    <small class="text-muted">${tagData.email || ''}</small>
+                </div>
+            </div>
+        </tag>
+    `;
+    }
+
+    function suggestionItemTemplate(tagData) {
+        return `
+        <div ${this.getAttributes(tagData)}
+            class='tagify__dropdown__item d-flex align-items-center ${tagData.class ? tagData.class : ""}'
+            tabindex="0"
+            role="option">
+            ${ tagData.avatar ? `
+            <div class='tagify__dropdown__item__avatar-wrap'>
+                <img onerror="this.style.visibility='hidden'" class="avatar rounded me-2" src="${tagData.avatar}">
+            </div>` : ''
+            }
+            <div>
+                <div class="fw-bold">${tagData.label || tagData.value}</div>
+                <small class="text-muted">${tagData.email || ''}</small>
+            </div>
+        </div>
+    `;
+    }
+
+    function dropdownHeaderTemplate(suggestions) {
+        return `
+        <div class="${this.settings.classNames.dropdownItem} ${this.settings.classNames.dropdownItem}__addAll">
+            <strong>${this.value.length ? `Add remaining ${suggestions.length}` : 'Add All'}</strong>
+            <span>${suggestions.length} members</span>
+        </div>
+    `;
+    }
+
+    // INISILIZE USER SEARCH
+    var tagify = new Tagify(inputElm, {
+        tagTextProp: 'name',
+        enforceWhitelist: true,
+        skipInvalid: true,
+        dropdown: {
+            closeOnSelect: false,
+            enabled: 0,
+            classname: 'users-list',
+            searchKeys: ['name', 'email']
+        },
+        templates: {
+            tag: tagTemplate,
+            dropdownItem: suggestionItemTemplate,
+            dropdownHeader: dropdownHeaderTemplate
+        },
+        whitelist: []
+    });
+
+    tagify.on('input', function(e) {
+        var value = e.detail.value.trim();
+        tagify.loading(true);
+
+        fetch('<?php echo base_url('Home/searchUsers'); ?>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    search: value
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                tagify.loading(false);
+                if (data.success && Array.isArray(data.users)) {
+                    tagify.settings.whitelist = data.users.map(user => ({
+                        value: user.id,
+                        name: user.name,
+                        label: user.name,
+                        email: user.email,
+                        avatar: user.avatar || 'assets/user-icon.png'
+                    }));
+                    tagify.dropdown.show(value);
+                } else {
+                    tagify.settings.whitelist = [];
+                    tagify.dropdown.hide();
+                    alert('No users found or invalid response from server.');
+                }
+            })
+            .catch(error => {
+                tagify.loading(false);
+                console.error('Error searching users:', error);
+                alert('Failed to search users: ' + error.message);
+            });
     });
 </script>
 <!-- Shiv Web Developer -->

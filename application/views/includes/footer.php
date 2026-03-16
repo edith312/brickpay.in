@@ -166,7 +166,7 @@
 
             .theme_chat_body_container {
                 width: 100%;
-				height: 46vh;
+				height: 38vh;
                 padding: 20px;
                 overflow-y: scroll;
             }
@@ -235,40 +235,51 @@
                     <!--SINGLE USER CHAT HERE  -->
                     <div class="theme_chat_header">
                         <div class="row p-0 g-0 m-0">
-                            <div class="col-12">
+                            <div class="col-6">
+                                <!-- CURRENT USER -->
                                 <div class="team-member-card theme-user-header me-1">
-                                    <img src="<?= !empty($user['user_image'])
-                                                    ? base_url('uploads/user_profile/' . $user['user_image'])
-                                                    : base_url('assets/user-icon.png') ?>" alt="Profile">
+                                    <?php 
+                                    $current_user_id = sessionId('freelancer_id');
+                                    $user = $this->CommonModal->getRowById('tbl_freelancer','id',$current_user_id)[0] ?? null;
+                                    ?>
+
+                                    <img id="currentUserImg"
+                                        src="<?= !empty($user['user_image']) 
+                                            ? base_url('uploads/user_profile/'.$user['user_image']) 
+                                            : base_url('assets/user-icon.png') ?>">
 
                                     <div class="team-member-info">
-                                        <h6>
-                                            <?= $user['name'] ?: 'No Name' ?>
-                                        </h6>
+                                        <h6 id="currentUserName"><?= $user['name'] ?? 'Me' ?></h6>
                                     </div>
 
-                                    <div class="d-flex align-items-center">
-                                        <input type="text" id="chatSearchInput" class="form-control form-control-sm" placeholder="Search message...">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <!-- CHAT PARTNER -->
+                                <div class="team-member-card theme-user-header">
 
-                                        <div class="pe-2">
-                                            <i class="fa-solid fa-magnifying-glass" id="searchChatBtn" style="cursor:pointer;"></i>
-                                        </div>
+                                    <img id="chatPartnerImg"
+                                        src="<?= base_url('assets/user-icon.png') ?>">
+
+                                    <div class="team-member-info">
+                                        <h6 id="chatPartnerName">Select User</h6>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <input type="text" id="chatSearchInput"
+                                        class="form-control form-control-sm"
+                                        placeholder="Search message...">
+
+                                    <div class="pe-2">
+                                        <i class="fa-solid fa-magnifying-glass"
+                                        id="searchChatBtn"
+                                        style="cursor:pointer;"></i>
                                     </div>
                                 </div>
                             </div>
-                            <!-- <div class="col-12 col-md-6 col-lg-6">
-                                <div class="team-member-card theme-user-header">
-                                    <img src="<?= !empty($user['user_image'])
-                                                    ? base_url('uploads/user_profile/' . $user['user_image'])
-                                                    : base_url('assets/user-icon.png') ?>" alt="Profile">
-
-                                    <div class="team-member-info">
-                                        <h6>
-                                            <?= $user['name'] ?: 'No Name' ?>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div> -->
                         </div>
 
                     </div>
@@ -693,7 +704,19 @@ $('#userListContainer')
 
         currentRoom = res.room_id;
 
-        $('.theme_chat_header h6').text(res.user?.name || '');
+        $('#chatPartnerName').text(res.user?.name || 'User');
+
+        if(res.user?.user_image){
+            $('#chatPartnerImg').attr(
+                'src',
+                "<?= base_url('uploads/user_profile/') ?>" + res.user.user_image
+            );
+        }else{
+            $('#chatPartnerImg').attr(
+                'src',
+                "<?= base_url('assets/user-icon.png') ?>"
+            );
+        }
 
         loadMessages(currentRoom);
 

@@ -1556,6 +1556,15 @@ class Home extends CI_Controller
         $this->load->view('includes/footer-link');
     }
 
+    public function e_commerce()
+    {
+        $this->load->view('includes/header');
+        $this->load->view('includes/header-link', $data);
+        $this->load->view('e_commerce');
+        $this->load->view('includes/footer');
+        $this->load->view('includes/footer-link');
+    }
+
     public function medical_identity()
     {
         if (!sessionId('freelancer_id')) {
@@ -3102,7 +3111,7 @@ class Home extends CI_Controller
         $this->load->view('includes/header-link', $data);
 
         $data['getCompanies'] = $this->HomeModal->getCompaniesWithTeam($user_id);
-
+        // dd($data['getCompanies']);
         $data['getUser'] = $this->CommonModal->getSingleRowById(
             'tbl_freelancer',
             'id = '.$user_id

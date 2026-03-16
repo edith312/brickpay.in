@@ -78,7 +78,7 @@
                         <div class="project-row">
                             <div class="project-cell index"><?= $i++; ?></div>
                             <div class="project-cell"><?= $company['company_name'] ?? 'No Name' ?></div>
-                            <div class="project-cell">Total Bricks: 0</div>
+                            <div class="project-cell">Total Bricks: <?= $this->CommonModal->countRowsByCondition('bricks', ['company_id' => $company['id']])?></div>
                             <div class="project-cell">Country: <?= $company['location'] ?></div>
                             <div class="project-cell text-center" style="padding: 2px;">
                                 <a href="<?= base_url('company/company-preview?id=' . $company['id']) ?>" title="View Details">
@@ -96,7 +96,7 @@
                             <div class="project-cell">TAM: <?= $company['tan_number'] ?></div>
                             <div class="project-cell">Valuation: <?= $company['valuation'] ?></div>
                             <div class="project-cell">Equity Dilution: (<?= $company['equity_dilution'] ?> %)</div>
-                            <div class="project-cell">Team: 0 Members</div>
+                            <div class="project-cell">Team Size: <?= $company['total_members'] ?></div>
                             <div class="project-cell mx-auto">
                                 <?php if($company['is_owner'] == 1): ?>
                                     <a href="<?= base_url('company/company-trash?id=' . $company['id']) ?>" title="Delete Company" class="text-danger" onclick="return confirm('Are you sure you want to delete this company?');">

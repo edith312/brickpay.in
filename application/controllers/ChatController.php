@@ -121,11 +121,11 @@ class ChatController extends CI_Controller
         $roomId = $this->ChatModel->get_or_create_room($currentUser, $targetUser);
 
         $user = $this->db
-            ->select('id, name')
+            ->select('id, name, user_image')
             ->where('id', $targetUser)
             ->get('freelancer')
             ->row_array();
-
+        
         echo json_encode([
             'success' => true,
             'room_id' => $roomId,

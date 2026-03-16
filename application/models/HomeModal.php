@@ -596,18 +596,37 @@ class HomeModal extends CI_Model
 
     public function getCompaniesWithTeam($user_id)
     {
-        $this->db->select("DISTINCT c.*,
+        $this->db->select("
+            c.*,
             CASE 
-                WHEN c.user_id = ". $this->db->escape($user_id) ."
+                WHEN c.user_id = ".$this->db->escape($user_id)."
                 THEN 1 
                 ELSE 0 
-            END as is_owner
+            END as is_owner,
+            COUNT(DISTINCT tcm_all.member_id) as total_members
         ", FALSE);
+
         $this->db->from('tbl_companies c');
 
         $this->db->join(
+            'tbl_departments d',
+            'c.id = d.company_id AND d.project_id IS NULL AND d.brick_id IS NULL'
+        );
+
+        // check if current user belongs
+        $this->db->join(
             'teamcompanymember tcm',
-            "tcm.company_id = c.id AND tcm.member_id = '$user_id' AND tcm.status = 'Accepted'",
+            "tcm.department_id = d.id 
+            AND tcm.member_id = '$user_id' 
+            AND tcm.status = 'Accepted'",
+            'left'
+        );
+
+        // join again to count all accepted members
+        $this->db->join(
+            'teamcompanymember tcm_all',
+            "tcm_all.department_id = d.id 
+            AND tcm_all.status = 'Accepted'",
             'left'
         );
 
@@ -615,11 +634,12 @@ class HomeModal extends CI_Model
         $this->db->where('c.transaction_status', '1');
         $this->db->where('c.status', 'Active');
 
+        $this->db->group_by('c.id');
+
         $this->db->order_by('c.id', 'DESC');
 
         $query = $this->db->get();
-        // echo $this->db->last_query();
-        // die;
+
         return $query->result_array();
     }
 
