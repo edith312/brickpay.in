@@ -852,6 +852,16 @@ class Home extends CI_Controller
 
         $this->load->view('project-profile', $data);
     }
+    
+    public function getProjectsWithTeam(){
+
+        $user_id = sessionId('freelancer_id');
+        $company_id = $this->input->post('company_id');
+        $getProjects = $this->HomeModal->getProjectsWithTeam($user_id, $company_id);
+        echo json_encode(['success' => true, 'projects' => $getProjects]);
+
+    }
+
 
     public function create_team_member(): void
     {
@@ -4057,7 +4067,9 @@ class Home extends CI_Controller
                 redirect(base_url());
             }
             $data['title'] = 'Create Brick';
-            $data['getCompanies'] = $this->CommonModal->getRowByIdInOrder('companies', ['user_id' => sessionId('freelancer_id'), 'status' => 'Active'], 'id', 'DESC');
+            // $data['getCompanies'] = $this->CommonModal->getRowByIdInOrder('companies', ['user_id' => sessionId('freelancer_id'), 'status' => 'Active'], 'id', 'DESC');
+            $data['getCompanies'] = $this->HomeModal->getCompaniesWithTeam(sessionId('freelancer_id'));
+
             $this->load->view('includes/header-link', $data);
             $this->load->view('post_task', $data);
         } else {

@@ -610,7 +610,8 @@ class HomeModal extends CI_Model
 
         $this->db->join(
             'tbl_departments d',
-            'c.id = d.company_id AND d.project_id IS NULL AND d.brick_id IS NULL'
+            'c.id = d.company_id AND d.project_id IS NULL AND d.brick_id IS NULL',
+            'left'
         );
 
         // check if current user belongs
@@ -645,6 +646,7 @@ class HomeModal extends CI_Model
 
     public function getProjectsWithTeam($user_id, $company_id = null)
     {
+
         $this->db->select("DISTINCT p.*,
             CASE 
                 WHEN p.user_id = ". $this->db->escape($user_id) ."
