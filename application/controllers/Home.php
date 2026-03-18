@@ -6781,15 +6781,32 @@ class Home extends CI_Controller
         }
     }
 
+    // public function fetchProjectsForBricks()
+    // {
+    //     if (!sessionId('freelancer_id')) {
+    //         redirect(base_url(''));
+    //     }
+
+    //     $companyID = $this->input->post('company_id');
+    //     $getProjects = $this->CommonModal->getRowByMoreId('tbl_projects', ['company_id' => $companyID, 'project_status' => 'Active']);
+    //     echo json_encode(['success' => true, 'projects' => $getProjects]);
+    // }
+
     public function fetchProjectsForBricks()
     {
         if (!sessionId('freelancer_id')) {
             redirect(base_url(''));
         }
 
+        $user_id   = sessionId('freelancer_id');
         $companyID = $this->input->post('company_id');
-        $getProjects = $this->CommonModal->getRowByMoreId('tbl_projects', ['company_id' => $companyID, 'project_status' => 'Active']);
-        echo json_encode(['success' => true, 'projects' => $getProjects]);
+
+        $projects = $this->HomeModal->getEditableProjectsForBrick($user_id, $companyID);
+
+        echo json_encode([
+            'success'  => true,
+            'projects' => $projects
+        ]);
     }
 
     public function userPaymentSuccess()

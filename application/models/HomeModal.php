@@ -644,12 +644,45 @@ class HomeModal extends CI_Model
         return $query->result_array();
     }
 
+    // public function getProjectsWithTeam($user_id, $company_id = null)
+    // {
+
+    //     $this->db->select("DISTINCT p.*,
+    //         CASE 
+    //             WHEN p.user_id = ". $this->db->escape($user_id) ."
+    //             THEN 1 
+    //             ELSE 0 
+    //         END as is_owner
+    //     ", FALSE);
+
+    //     $this->db->from('projects p');
+
+    //     $this->db->join(
+    //         'teamcompanymember tcm',
+    //         "tcm.project_id = p.id 
+    //         AND tcm.member_id = ".$this->db->escape($user_id)." 
+    //         AND tcm.status = 'Accepted'",
+    //         'left'
+    //     );
+
+    //     $this->db->where("(p.user_id = ".$this->db->escape($user_id)." OR tcm.member_id = ".$this->db->escape($user_id).")");
+    //     $this->db->where('p.transaction_status', '1');
+    //     $this->db->where('p.project_status', 'Active');
+
+    //     if ($company_id) {
+    //         $this->db->where('p.company_id', $company_id);
+    //     }
+
+    //     $this->db->order_by('p.id', 'DESC');
+
+    //     return $this->db->get()->result_array();
+    // }
     public function getProjectsWithTeam($user_id, $company_id = null)
     {
-
-        $this->db->select("DISTINCT p.*,
+        $this->db->select("
+            DISTINCT p.*,
             CASE 
-                WHEN p.user_id = ". $this->db->escape($user_id) ."
+                WHEN p.user_id = ".$this->db->escape($user_id)."
                 THEN 1 
                 ELSE 0 
             END as is_owner
@@ -657,21 +690,133 @@ class HomeModal extends CI_Model
 
         $this->db->from('projects p');
 
+        // project departments
         $this->db->join(
-            'teamcompanymember tcm',
-            "tcm.project_id = p.id 
-            AND tcm.member_id = ".$this->db->escape($user_id)." 
-            AND tcm.status = 'Accepted'",
+            'tbl_departments pd',
+            'pd.project_id = p.id',
             'left'
         );
 
-        $this->db->where("(p.user_id = ".$this->db->escape($user_id)." OR tcm.member_id = ".$this->db->escape($user_id).")");
+        // company departments
+        $this->db->join(
+            'tbl_departments cd',
+            'cd.company_id = p.company_id AND cd.project_id IS NULL',
+            'left'
+        );
+
+        // project department membership
+        $this->db->join(
+            'teamcompanymember tcm_project',
+            "tcm_project.department_id = pd.id
+            AND tcm_project.member_id = ".$this->db->escape($user_id)."
+            AND tcm_project.status = 'Accepted'",
+            'left'
+        );
+
+        // company department membership
+        $this->db->join(
+            'teamcompanymember tcm_company',
+            "tcm_company.department_id = cd.id
+            AND tcm_company.member_id = ".$this->db->escape($user_id)."
+            AND tcm_company.status = 'Accepted'",
+            'left'
+        );
+
+        // permission table
+        $this->db->join(
+            'permissions_new perm',
+            "perm.entity_type = 'project'
+            AND perm.entity_id = p.id",
+            'left'
+        );
+
+        $this->db->where("
+            (
+                p.user_id = ".$this->db->escape($user_id)."
+                OR tcm_project.member_id IS NOT NULL
+                OR (
+                    tcm_company.member_id IS NOT NULL
+                    AND perm.permission IS NOT NULL
+                )
+            )
+        ");
+
         $this->db->where('p.transaction_status', '1');
         $this->db->where('p.project_status', 'Active');
 
         if ($company_id) {
             $this->db->where('p.company_id', $company_id);
         }
+
+        $this->db->order_by('p.id', 'DESC');
+
+        $query = $this->db->get();
+        // echo $this->db->last_query(); die;
+        return $query->result_array();
+    }
+
+    public function getEditableProjectsForBrick($user_id, $companyID)
+    {
+        $this->db->distinct();
+        $this->db->select("p.id, p.project_name");
+
+        $this->db->from('tbl_projects p');
+
+        // project departments
+        $this->db->join(
+            'tbl_departments pd',
+            'pd.project_id = p.id',
+            'left'
+        );
+
+        // company departments
+        $this->db->join(
+            'tbl_departments cd',
+            'cd.company_id = p.company_id AND cd.project_id IS NULL',
+            'left'
+        );
+
+        // project team membership
+        $this->db->join(
+            'tbl_teamcompanymember tcm_project',
+            "tcm_project.department_id = pd.id
+            AND tcm_project.member_id = '$user_id'
+            AND tcm_project.status = 'Accepted'",
+            'left'
+        );
+
+        // company team membership
+        $this->db->join(
+            'tbl_teamcompanymember tcm_company',
+            "tcm_company.department_id = cd.id
+            AND tcm_company.member_id = '$user_id'
+            AND tcm_company.status = 'Accepted'",
+            'left'
+        );
+
+        // permission table
+        $this->db->join(
+            'tbl_permissions_new perm',
+            "perm.entity_type = 'project'
+            AND perm.entity_id = p.id
+            AND perm.target_team = 'company'
+            AND perm.permission = 'editor'",
+            'left'
+        );
+
+        $this->db->where('p.company_id', $companyID);
+        $this->db->where('p.project_status', 'Active');
+
+        $this->db->where("
+            (
+                p.user_id = '$user_id'
+                OR tcm_project.member_id IS NOT NULL
+                OR (
+                    tcm_company.member_id IS NOT NULL
+                    AND perm.id IS NOT NULL
+                )
+            )
+        ");
 
         $this->db->order_by('p.id', 'DESC');
 

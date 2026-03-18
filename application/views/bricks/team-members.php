@@ -173,7 +173,7 @@
                 </li>
             </ul>
             <div class="ms-auto">
-                <a href="<?= base_url('company/create-team') ?>" class="btn btn-primary w-auto d-inline-block">Manage Team</a>
+                <a href="<?= base_url('company/create-team-new') ?>" class="btn btn-primary w-auto d-inline-block">Manage Team</a>
             </div>
         </div>
 
