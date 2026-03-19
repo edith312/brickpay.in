@@ -73,7 +73,7 @@ $route['company/medical-identity'] = 'Home/medical_identity';
 $route['company/medical-identity-trash'] = 'Home/medical_identity_trash';
 $route['company/save-political-data'] = 'Home/save_political_data';
 $route['company/medical-defence'] = 'Home/medical_defence';
-$route['company/e-commerce'] = 'Home/e_commerce';
+$route['company/e-commerce'] = 'Products';
 
 
 
