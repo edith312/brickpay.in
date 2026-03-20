@@ -3,8 +3,9 @@
     <div class="row">
         <div class="col-12">
             <div class="text-end">
-                <a class="btn btn-secondary" href="<?= base_url('products/add') ?>">Add New</a>
+                <a class="btn btn-secondary" href="<?= base_url('company/product/add') ?>">Add New</a>
                 <a class="btn btn-secondary" id="my_products">My Products</a>
+                <a class="btn btn-secondary" href="<?= base_url('cart') ?>">My Cart <span class="badge bg-primary"><?= $cart_count ?></span></a>
             </div>
         </div>
     </div>
@@ -62,4 +63,20 @@
         fetchMyProducts(page = 0)
     })
 
+    $(document).on('click', '.add-to-cart', function(){
+        let product_id = $(this).data('id');
+
+        $.ajax({
+            url: "<?= base_url('cart/add') ?>",
+            type: "POST",
+            data: { product_id: product_id },
+            dataType: "json",
+            success: function(res){
+                if(res.success){
+                    alert('Added to cart');
+                    $('#cart-count').text(res.count);
+                }
+            }
+        });
+    });
 </script>

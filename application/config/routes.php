@@ -74,7 +74,9 @@ $route['company/medical-identity-trash'] = 'Home/medical_identity_trash';
 $route['company/save-political-data'] = 'Home/save_political_data';
 $route['company/medical-defence'] = 'Home/medical_defence';
 $route['company/e-commerce'] = 'Products';
-
+$route['company/product/add'] = 'Products/add';
+$route['company/product/(:any)'] = 'Products/product_view';
+$route['cart'] = 'cart/index';
 
 
 

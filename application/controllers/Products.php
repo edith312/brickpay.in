@@ -6,11 +6,13 @@ class Products extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Product_model');
-        $this->load->library('pagination');
+        $this->load->model('Cart_model');
     }
 
     public function index() {
-
+        $cart_count = $this->Cart_model->cart_count($user_id);
+        $data['cart_count'] = $cart_count;
+        
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);
         $this->load->view('includes/footer-link');
@@ -70,10 +72,12 @@ class Products extends CI_Controller
 
         // Image Upload
         if (!empty($_FILES['image']['name'])) {
-            $config['upload_path'] = './uploads/product_images/';
+            $config['upload_path'] = FCPATH . 'uploads/product_images/';
             $config['allowed_types'] = 'jpg|jpeg|png|webp';
 
-            $this->load->library('upload', $config);
+            $this->load->library('upload');
+
+            $this->upload->initialize($config);
 
             if ($this->upload->do_upload('image')) {
                 $uploadData = $this->upload->data();
@@ -84,5 +88,21 @@ class Products extends CI_Controller
         $this->db->insert('tbl_products', $data);
 
         redirect('products');
+    }
+
+    public function product_view(){
+
+        $slug = $this->uri->segment(3);
+
+        $product = $this->CommonModal->getSingleRowById('products', [
+            'slug' => $slug
+        ]);
+        $data['product'] = $product;
+        // dd($product);
+        $this->load->view('includes/header');
+        $this->load->view('includes/header-link', $data);
+        $this->load->view('includes/footer-link');
+        $this->load->view('products/view');
+        $this->load->view('includes/footer');
     }
 }

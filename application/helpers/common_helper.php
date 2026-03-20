@@ -981,3 +981,14 @@ if (!function_exists('dp')) {
         echo '</pre>';
     }
 }
+
+if (!function_exists('limit_words')) {
+    function limit_words($text, $limit = 30)
+    {
+        $words = explode(' ', strip_tags($text));
+        if (count($words) <= $limit) {
+            return $text;
+        }
+        return implode(' ', array_slice($words, 0, $limit)) . '...';
+    }
+}
