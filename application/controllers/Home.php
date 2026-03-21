@@ -1473,6 +1473,14 @@ class Home extends CI_Controller
         $this->load->view('includes/footer-link');
     }
 
+    public function third_dimension(){
+        $this->load->view('includes/header');
+        $this->load->view('includes/header-link', $data);
+        $this->load->view('map/third_dimension');
+        $this->load->view('includes/footer');
+        $this->load->view('includes/footer-link');
+    }
+
     public function crm()
     {
         if (!sessionId('freelancer_id')) {

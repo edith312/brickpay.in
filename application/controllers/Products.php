@@ -10,6 +10,13 @@ class Products extends CI_Controller
     }
 
     public function index() {
+        // ==========================
+        // AUTH
+        // ==========================
+        if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
+            redirect(base_url(''));
+        }
+        
         $cart_count = $this->Cart_model->cart_count($user_id);
         $data['cart_count'] = $cart_count;
         

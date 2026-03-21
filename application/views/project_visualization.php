@@ -84,6 +84,9 @@
                     <div class="box"><span class="label">JV</span></div>
                 </div>
             </div>
+
+            <hr>
+            <h6 class="text-center">3D</h6>
         </div>
     </div>
 </div>

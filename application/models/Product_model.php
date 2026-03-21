@@ -2,13 +2,16 @@
 
 class Product_model extends CI_Model
 {
-    public function getProducts($page){
+    public function getProducts($page, $user_id = null){
 
         $limit = 10;
         $offset = $limit * $page;
 
         $this->db->select('*');
         $this->db->from('products');
+        if(! empty($user_id)){
+            $this->db->where('user_id', $user_id);
+        }
         // $this->db->limit($limit, $offset);
 
         $query = $this->db->get();

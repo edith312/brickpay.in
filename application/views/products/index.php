@@ -1,5 +1,5 @@
 <div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
-    <h4 class="text-center mb-5">Products</h4>
+    <h4 class="text-center mb-5" id="page-title">Products</h4>
     <div class="row">
         <div class="col-12">
             <div class="text-end">
@@ -51,6 +51,7 @@
                 if(res.success){
                     $('#products-container').empty();
                     $('#products-container').append(res.html);
+                    $('#page-title').text('My Products')
                 }
             },
             error: function (err) {
