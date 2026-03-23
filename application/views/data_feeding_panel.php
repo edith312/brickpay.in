@@ -708,10 +708,10 @@
                         </div>
                         <div class="mx-2">
                             <button class="btn btn-sm tab-btn draggable-btn text-white" style="background-color: #04d6e5ff !important;" id=""
-                                data-url="<?= base_url('Calendar/getOtherLinksdata') ?>"
+                                data-url="<?= base_url('Calendar/getCoordinates') ?>"
                                 data-type="coordinates"
                                 data-target="#textDataContainer9"
-                                data-box="#box_connectionbox"
+                                data-box="#box_coordinatesbox"
                                 draggable="true"
                             ><a class="text-light" href="<?= base_url('company/coordinates') ?>">3D Coordinates</a></button>
                         </div>
@@ -2106,6 +2106,34 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+                        <div class="box_coordinatesbox tab-box" id="box_coordinatesbox">
+                            <h6> Coordinates Box </h6>
+                            <div class="position-relative">
+                                <div class="row">
+                                    <div class="col-2">
+                                        <label for="x_cord" class="form-lable">X</label>
+                                        <input id="x_cord" type="number" class="form-control mt-3" name="x_cord" placeholder="">
+                                    </div>
+                                    <div class="col-2">
+                                        <label for="y_cord" class="form-lable">Y</label>
+                                        <input id="y_cord" type="number" class="form-control mt-3" name="y_cord" placeholder="">
+                                    </div>
+                                    <div class="col-2">
+                                        <label for="z_cord" class="form-lable">Z</label>
+                                        <input id="z_cord" type="number" class="form-control mt-3" name="z_cord" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="press_release_container" style="overflow-y: auto; max-height: 500px;"></div>
+                            <div class="mx-2 text-center mt-5">
+                                <button class="btn btn-dark btn-sm save-btn"
+                                        data-type="coordinates"
+                                        data-url="<?= base_url('Calendar/saveCoordinates') ?>">
+                                    Update
+                                </button>
+                            </div>
+                            <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
+                        </div>
                     </div>
                    <div class="fw-semibold">
                         Total Finance: <span class="text-success">₹ <?= number_format($calendar['finance_total'], 2) ?></span>
@@ -2538,6 +2566,15 @@
                 formData.append("s_timestamp", s_timestamp);
                 formData.append("e_timestamp", e_timestamp);
                 break;
+            }
+            case "coordinates": {
+                const x_cord = $("#x_cord").val();
+                const y_cord = $("#y_cord").val();
+                const z_cord = $("#z_cord").val();
+
+                formData.append("x_cord", x_cord);
+                formData.append("y_cord", y_cord);
+                formData.append("z_cord", z_cord);
             }
 
         }
@@ -3508,10 +3545,11 @@
 
     document.addEventListener('dragstart', (e) => {
         if (!e.target.classList.contains('draggable-btn')) return;
-
+        
         draggedElement = e.target;
 
         const dropZone = document.getElementById('new-timeline-dropzone');
+        
         const type = e.target.dataset.type;
 
         if (!dropZone) return;
@@ -3520,6 +3558,7 @@
 
         // ❌ Don't show new drop box for restricted types (black_line etc.)
         if (isRestricted) {
+            console.log('item is restricted to drop');
             dropZone.style.display = 'none';
         } 
         // ✅ Show for normal types

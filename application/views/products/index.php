@@ -1,3 +1,8 @@
+<style>
+    .pencil-icon{
+        right: 20;
+    }
+</style>
 <div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
     <h4 class="text-center mb-5" id="page-title">Products</h4>
     <div class="row">
@@ -79,5 +84,30 @@
                 }
             }
         });
+    });
+
+    $(document).on('click', '.delete-btn', function (){
+        let id = $(this).data('id');
+
+        if (!confirm('Delete this product?')) return;
+
+        $.ajax({
+            url: "<?= base_url('products/delete') ?>",
+            type: "POST",
+            data: { id: id },
+            dataType: "json",
+            success: function(res){
+                if(res.success){
+                    location.reload(); // simple way
+                } else {
+                    alert('Delete failed');
+                }
+            }
+        });
+    });
+
+    $(document).on('click', '.edit-btn', function (){
+        let id = $(this).data('id');
+        window.location.href = "<?= base_url('products/add/') ?>" + id;
     });
 </script>

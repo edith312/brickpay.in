@@ -233,6 +233,13 @@
                 data-box="#box_characterbox"
             >Character</button>
             ',
+        'coordinates' => '
+            <button class="btn btn-sm tab-btn text-white" style="background-color: #04d6e5ff !important;" id=""
+                data-type="coordinates"
+                data-target="#textDataContainer9"
+                data-box="#box_coordinatesbox"
+            >3D Coordinates</button>
+            ',
     ];
     ?>
 <div class="dropped-item mb-2 dropped-item-draggable"

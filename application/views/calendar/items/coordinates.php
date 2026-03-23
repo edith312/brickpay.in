@@ -1,28 +1,22 @@
-
-
-<div class="page-body pt-1 px-2">
-    <?php $this->load->view('map/header')?>
-    <h5 class="text-center">Third Dimension</h5>
-    <div id="chart" style="width:100%; height:100vh;"></div>
+<div class="timeline-output text-output">
+    <div id="chart"></div>
+    <span class="edit-item">
+        <i class="bi bi-pencil" title="Edit"></i>
+    </span>
+    <span class="delete-item">
+        <i class="bi bi-trash delete-item" title="Delete"></i>
+    </span>
 </div>
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 <script>
-    // 🔥 Sample data (replace with CI3 data later)
-    const x = [];
-    const y = [];
-    const z = [];
+    const data = <?= json_encode($item) ?>;
+   
+    const x = [Number(data.x_cord)];
+    const y = [Number(data.y_cord)];
+    const z = [Number(data.z_cord)];
 
-    for (let i = 0; i < 300; i++) {
-        x.push((Math.random() - 0.5) * 10);
-        y.push((Math.random() - 0.5) * 10);
-        z.push((Math.random() - 0.5) * 10);
-    }
-    console.log(x)
-    console.log(y)
-    console.log(z)
-    // 🔥 Scatter plot
     const trace = {
         x: x,
         y: y,

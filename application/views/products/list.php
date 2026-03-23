@@ -1,7 +1,7 @@
 <div class="row">
     <?php foreach($products as $p) {?>
         <div class="col-lg-3 col-md-4 col-6">
-            <div class="card">
+            <div class="card position-relative">
                 <a href="<?= base_url('company/product/') . $p['slug'] ?>">
                     <img src="<?= base_url('uploads/product_images/') . $p['image'] ?>" class="card-img-top object-fit-cover" alt="Product Image" style="height: 150px !important;">
                     <div class="card-body">
@@ -24,6 +24,15 @@
                     <button class="btn btn-primary btn-sm add-to-cart" data-id="<?= $p['id'] ?>">Add to Cart</button>
                     <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-heart"></i></button>
                 </div>
+                <?php if($p['user_id'] == sessionId('freelancer_id')) { ?>
+                    <span class="edit-btn position-absolute top-0 pencil-icon text-primary" data-id="<?= $p['id'] ?>">
+                        <i class="bi bi-pencil"></i>
+                    </span>
+
+                    <span class="delete-btn position-absolute top-0 text-danger end-0" data-id="<?= $p['id'] ?>">
+                        <i class="bi bi-trash"></i>
+                    </span>
+                <?php } ?>
             </div>
         </div>
     <?php }?>
