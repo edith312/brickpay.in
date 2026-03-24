@@ -7,6 +7,8 @@ class Products extends CI_Controller
         parent::__construct();
         $this->load->model('Product_model');
         $this->load->model('Cart_model');
+        $this->load->model('Wishlist_model');
+        $this->load->model('Review_model');
     }
 
     public function index() {
@@ -16,9 +18,21 @@ class Products extends CI_Controller
         if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
             redirect(base_url(''));
         }
-        
+        $user_id = sessionId('freelancer_id');
+
         $cart_count = $this->Cart_model->cart_count($user_id);
+
+        $wishlist_count = $this->CommonModal->countRowsByCondition('tbl_wishlist', [
+            'user_id' => $user_id
+        ]);
+
+        $my_product_count = $this->CommonModal->countRowsByCondition('tbl_products', [
+            'user_id' => $user_id
+        ]);
+
         $data['cart_count'] = $cart_count;
+        $data['wishlist_count'] = $wishlist_count;
+        $data['my_product_count'] = $my_product_count;
         
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);
@@ -48,7 +62,7 @@ class Products extends CI_Controller
         $page = $this->input->post('page');
         $user_id = sessionId('freelancer_id');
 
-        $products = $this->Product_model->getProducts($page, $user_id);
+        $products = $this->Product_model->getMyProducts($page, $user_id);
         $data['products'] = $products;
         // dd($data['products']);
         $html = $this->load->view('products/list', $data, true);
@@ -76,33 +90,6 @@ class Products extends CI_Controller
         $this->load->view('includes/footer');
     }
 
-    // public function save()
-    // {
-    //     $this->load->model('Product_model');
-    //     $user_id = sessionId('freelancer_id');
-
-    //     $data = $this->input->post();
-    //     $data['user_id'] = $user_id;
-
-    //     // Image Upload
-    //     if (!empty($_FILES['image']['name'])) {
-    //         $config['upload_path'] = FCPATH . 'uploads/product_images/';
-    //         $config['allowed_types'] = 'jpg|jpeg|png|webp';
-
-    //         $this->load->library('upload');
-
-    //         $this->upload->initialize($config);
-
-    //         if ($this->upload->do_upload('image')) {
-    //             $uploadData = $this->upload->data();
-    //             $data['image'] = $uploadData['file_name'];
-    //         }
-    //     }
-        
-    //     $this->db->insert('tbl_products', $data);
-
-    //     redirect('products');
-    // }
     public function save()
     {
         $this->load->model('Product_model');
@@ -165,7 +152,42 @@ class Products extends CI_Controller
         $product = $this->CommonModal->getSingleRowById('products', [
             'slug' => $slug
         ]);
+
+        $user_id = sessionId('freelancer_id');
+
+        $cart_count = $this->Cart_model->cart_count($user_id);
+
+        $wishlist_count = $this->CommonModal->countRowsByCondition('tbl_wishlist', [
+            'user_id' => $user_id
+        ]);
+
+        $my_product_count = $this->CommonModal->countRowsByCondition('tbl_products', [
+            'user_id' => $user_id
+        ]);
+
+        $wishlist = $this->CommonModal->getSingleRowById('tbl_wishlist', [
+            'product_id' => $product['id'],
+            'user_id' => $user_id
+        ]);
+        
+        $data['wishlist_status'] = !empty($wishlist) ? 1 : 0;
+
+        $data['cart_count'] = $cart_count;
+        $data['wishlist_count'] = $wishlist_count;
+        $data['my_product_count'] = $my_product_count;
         $data['product'] = $product;
+
+        $reviews = $this->Review_model->getByProduct($product['id']);
+    
+        $avg_rating = $this->Review_model->getAverage($product['id']);
+        $data['avg_rating'] = round($avg_rating, 1);
+        
+        $review_count = count($reviews);
+        $data['review_count'] = $review_count;
+
+        $data['reviews'] = $reviews;
+        $data['avg_rating'] = round($avg_rating, 1);
+
         // dd($product);
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);
@@ -248,4 +270,5 @@ class Products extends CI_Controller
 
         echo json_encode(['success' => $delete]);
     }
+
 }

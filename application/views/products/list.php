@@ -10,19 +10,20 @@
                         <div class="d-flex justify-content-between align-items-start g-3 align-items-xl-center flex-column flex-xl-row">
                             <span class="mb-0">₹<?= number_format($p['price'], 2) ?></span>
                             <div class="d-flex">
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-fill text-warning"></i>
-                                <i class="bi bi-star-half text-warning"></i>
-                                <small class="text-muted">(4.5)</small>
+                                <?php for($i=1; $i<=5; $i++): ?>
+                                    <i class="bi <?= $i <= round($p['avg_rating']) ? 'bi-star-fill text-warning' : 'bi-star' ?>"></i>
+                                <?php endfor; ?>
+
+                                <small class="text-muted ms-1">
+                                    (<?= number_format($p['avg_rating'], 1) ?>)
+                                </small>
                             </div>
                         </div>
                     </div>
                     </a>
                 <div class="card-footer d-flex justify-content-between bg-light">
                     <button class="btn btn-primary btn-sm add-to-cart" data-id="<?= $p['id'] ?>">Add to Cart</button>
-                    <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-heart"></i></button>
+                    <button class="btn btn-outline-secondary btn-sm add-wishlist" data-id="<?= $p['id'] ?>"><i class="bi <?= $p['wishlist_status'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?>"></i></button>
                 </div>
                 <?php if($p['user_id'] == sessionId('freelancer_id')) { ?>
                     <span class="edit-btn position-absolute top-0 pencil-icon text-primary" data-id="<?= $p['id'] ?>">

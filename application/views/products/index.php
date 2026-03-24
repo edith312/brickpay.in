@@ -3,13 +3,15 @@
         right: 20;
     }
 </style>
+
 <div class="ps-md-4 pe-md-3 px-2 py-3 page-body">
     <h4 class="text-center mb-5" id="page-title">Products</h4>
     <div class="row">
         <div class="col-12">
             <div class="text-end">
                 <a class="btn btn-secondary" href="<?= base_url('company/product/add') ?>">Add New</a>
-                <a class="btn btn-secondary" id="my_products">My Products</a>
+                <a class="btn btn-secondary" id="my_products">My Products <span class="badge bg-primary"><?= $my_product_count ?></span></a>
+                <a class="btn btn-secondary" id="my_wishlist">My Wishlist <span class="badge bg-primary"><?= $wishlist_count ?></span></a>
                 <a class="btn btn-secondary" href="<?= base_url('cart') ?>">My Cart <span class="badge bg-primary"><?= $cart_count ?></span></a>
             </div>
         </div>
@@ -98,7 +100,7 @@
             dataType: "json",
             success: function(res){
                 if(res.success){
-                    location.reload(); // simple way
+                    fetchProducts()
                 } else {
                     alert('Delete failed');
                 }
@@ -110,4 +112,48 @@
         let id = $(this).data('id');
         window.location.href = "<?= base_url('products/add/') ?>" + id;
     });
+
+    $(document).on('click', '.add-wishlist', function (){
+        let id = $(this).data('id');
+        // console.log('this', $(this).data());
+        $.ajax({
+            url: "<?= base_url('wishlist/add_remove') ?>",
+            type: "POST",
+            data: { id: id },
+            dataType: "json",
+            success: function(res){
+                if(res.success){
+                    fetchProducts();
+                    alert(res.msg);
+                } else {
+                    alert(res.msg);
+                }
+            },
+            error: function(err) {
+                console.log(err)
+            }
+        });
+    });
+
+    $(document).on('click', '#my_wishlist', function () {
+
+        $.ajax({
+            url: "<?= base_url('wishlist/get') ?>",
+            type: "GET",
+            dataType: "json",
+            success: function(res){
+                if(res.success){
+                    $('#products-container').empty();
+                    $('#products-container').append(res.html);
+                    $('#page-title').text('My Wishlist')
+                } else {
+                    
+                }
+            },
+            error: function(err) {
+                console.log(err)
+            }
+        });
+
+    })
 </script>

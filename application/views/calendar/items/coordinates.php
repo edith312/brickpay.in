@@ -12,7 +12,7 @@
 
 <script>
     const data = <?= json_encode($item) ?>;
-   
+
     const x = [Number(data.x_cord)];
     const y = [Number(data.y_cord)];
     const z = [Number(data.z_cord)];
