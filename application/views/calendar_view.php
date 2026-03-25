@@ -3034,7 +3034,7 @@
                         res.timelines.forEach(item => {
                             console.log("item",item)
                             const startMin = toMinutes(item.opening_time);
-                            const endMin = toMinutes(item.closing_time);
+                            const endMin = toMinutes(item.closing_time, true);
 
                             const slotStartMin = toMinutes(slotTime);
                             const slotEndMin = slotStartMin + 60;
@@ -3087,7 +3087,7 @@
                             const opening_time = item.create_date.split(' ')[1]
                             const startMin = toMinutes(opening_time);
                             const closing_time = addMinutesToTime(opening_time);
-                            const endMin = toMinutes(closing_time);
+                            const endMin = toMinutes(closing_time, true);
 
                             const slotStartMin = toMinutes(slotTime);
                             const slotEndMin = slotStartMin + 60;
@@ -3140,7 +3140,7 @@
                             const opening_time = item.start_datetime.split(' ')[1];
                             const closing_time = item.end_datetime.split(' ')[1];
                             const startMin = toMinutes(opening_time);
-                            const endMin = toMinutes(closing_time);
+                            const endMin = toMinutes(closing_time, true);
                             // console.log("startMin",startMin)
                             // console.log("endMin",endMin)
                             const slotStartMin = toMinutes(slotTime);
@@ -3791,8 +3791,8 @@
     });
 
 
-    function toMinutes(t) {
-        if (t === "00:00:00") return 1440;
+    function toMinutes(t, isClosing = false) {
+        if (t === "00:00:00" && isClosing == true) return 1440;
         let [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
