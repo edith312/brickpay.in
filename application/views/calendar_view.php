@@ -3792,6 +3792,7 @@
 
 
     function toMinutes(t) {
+        if (t === "00:00:00") return 1440;
         let [h, m] = t.split(':').map(Number);
         return h * 60 + m;
     }
