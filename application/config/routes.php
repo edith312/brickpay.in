@@ -78,6 +78,8 @@ $route['company/e-commerce'] = 'Products';
 $route['company/product/add'] = 'Products/add';
 $route['company/product/(:any)'] = 'Products/product_view';
 $route['cart'] = 'cart/index';
+$route['company/all-nearby-me'] = 'Home/all_nearby_me';
+
 
 
 

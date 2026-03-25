@@ -75,74 +75,161 @@ class Products extends CI_Controller
         echo json_encode($res);
     }
 
-    public function add() {
+    // public function add() {
+    //     $id = $this->uri->segment(3);
+    //     $data = [];
+    //     if($id){
+    //         $product = $this->CommonModal->getSingleRowById('products', ['id' => $id]);
+    //         $data['product'] = $product;
+    //     }
+    //     // dd($data);
+    //     $this->load->view('includes/header');
+    //     $this->load->view('includes/header-link', $data);
+    //     $this->load->view('includes/footer-link');
+    //     $this->load->view('products/form');
+    //     $this->load->view('includes/footer');
+    // }
+
+    // public function save()
+    // {
+    //     $this->load->model('Product_model');
+    //     $user_id = sessionId('freelancer_id');
+
+    //     $data = $this->input->post();
+    //     $id = $this->input->post('id');
+
+    //     $data['user_id'] = $user_id;
+
+    //     // Image Upload
+    //     if (!empty($_FILES['image']['name'])) {
+    //         $config['upload_path'] = FCPATH . 'uploads/product_images/';
+    //         $config['allowed_types'] = 'jpg|jpeg|png|webp';
+
+    //         $this->load->library('upload');
+    //         $this->upload->initialize($config);
+
+    //         if ($this->upload->do_upload('image')) {
+    //             $uploadData = $this->upload->data();
+    //             $data['image'] = $uploadData['file_name'];
+
+    //             // delete old image (only in edit)
+    //             if ($id) {
+    //                 $old = $this->db->get_where('tbl_products', [
+    //                     'id' => $id,
+    //                     'user_id' => $user_id
+    //                 ])->row_array();
+
+    //                 if (!empty($old['image'])) {
+    //                     $oldPath = FCPATH . 'uploads/product_images/' . $old['image'];
+    //                     if (file_exists($oldPath)) {
+    //                         unlink($oldPath);
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     if ($id) {
+    //         // 🔥 UPDATE
+    //         unset($data['id']); // safety
+
+    //         $this->db->where('id', $id);
+    //         $this->db->where('user_id', $user_id);
+    //         $this->db->update('tbl_products', $data);
+
+    //     } else {
+    //         // 🔥 INSERT
+    //         $this->db->insert('tbl_products', $data);
+    //     }
+
+    //     redirect('products');
+    // }
+
+    public function add()
+    {
         $id = $this->uri->segment(3);
         $data = [];
-        if($id){    
-            $product = $this->CommonModal->getSingleRowById('products', ['id' => $id]);
+
+        if ($id) {
+            $product = $this->Product_model->getProductWithImages($id);
+
             $data['product'] = $product;
+            $data['product_images'] = $product['images'];
         }
-        // dd($data);
+
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);
         $this->load->view('includes/footer-link');
-        $this->load->view('products/form');
+        $this->load->view('products/form', $data);
         $this->load->view('includes/footer');
     }
 
     public function save()
     {
-        $this->load->model('Product_model');
+
         $user_id = sessionId('freelancer_id');
 
         $data = $this->input->post();
-        $id = $this->input->post('id');
+        $id   = $this->input->post('id');
 
         $data['user_id'] = $user_id;
 
-        // Image Upload
-        if (!empty($_FILES['image']['name'])) {
-            $config['upload_path'] = FCPATH . 'uploads/product_images/';
-            $config['allowed_types'] = 'jpg|jpeg|png|webp';
+        // ✅ Save product first
+        $product_id = $this->saveProduct($data, $id, $user_id);
 
-            $this->load->library('upload');
-            $this->upload->initialize($config);
-
-            if ($this->upload->do_upload('image')) {
-                $uploadData = $this->upload->data();
-                $data['image'] = $uploadData['file_name'];
-
-                // delete old image (only in edit)
-                if ($id) {
-                    $old = $this->db->get_where('tbl_products', [
-                        'id' => $id,
-                        'user_id' => $user_id
-                    ])->row_array();
-
-                    if (!empty($old['image'])) {
-                        $oldPath = FCPATH . 'uploads/product_images/' . $old['image'];
-                        if (file_exists($oldPath)) {
-                            unlink($oldPath);
-                        }
-                    }
-                }
-            }
-        }
-
-        if ($id) {
-            // 🔥 UPDATE
-            unset($data['id']); // safety
-
-            $this->db->where('id', $id);
-            $this->db->where('user_id', $user_id);
-            $this->db->update('tbl_products', $data);
-
-        } else {
-            // 🔥 INSERT
-            $this->db->insert('tbl_products', $data);
-        }
+        // ✅ Upload multiple images
+        $this->uploadMultipleImages($product_id);
 
         redirect('products');
+    }
+
+    private function saveProduct($data, $id, $user_id)
+    {
+        if ($id) {
+            unset($data['id']);
+
+            $this->Product_model->updateProduct($id, $user_id, $data);
+            return $id;
+
+        } else {
+            return $this->Product_model->insertProduct($data);
+        }
+    }
+
+    private function uploadMultipleImages($product_id)
+    {
+        if (empty($_FILES['images']['name'][0])) return;
+
+        $files = $_FILES['images'];
+        $count = count($files['name']);
+
+        for ($i = 0; $i < $count; $i++) {
+
+            $_FILES['file']['name']     = $files['name'][$i];
+            $_FILES['file']['type']     = $files['type'][$i];
+            $_FILES['file']['tmp_name'] = $files['tmp_name'][$i];
+            $_FILES['file']['error']    = $files['error'][$i];
+            $_FILES['file']['size']     = $files['size'][$i];
+
+            $config = [
+                'upload_path'   => FCPATH . 'uploads/product_images/',
+                'allowed_types' => 'jpg|jpeg|png|webp',
+                'file_name'     => time() . '_' . $i
+            ];
+
+            $this->upload->initialize($config);
+
+            if ($this->upload->do_upload('file')) {
+
+                $uploadData = $this->upload->data();
+
+                // ✅ move DB to model
+                $this->Product_model->insertProductImage([
+                    'product_id' => $product_id,
+                    'image'      => $uploadData['file_name']
+                ]);
+            }
+        }
     }
 
     public function product_view(){
@@ -152,6 +239,11 @@ class Products extends CI_Controller
         $product = $this->CommonModal->getSingleRowById('products', [
             'slug' => $slug
         ]);
+
+        // 🔥 ADD THIS (from model ideally)
+        $product_images = $this->Product_model->getProductImages($product['id']);
+
+        $data['product_images'] = $product_images;
 
         $user_id = sessionId('freelancer_id');
 
@@ -271,4 +363,22 @@ class Products extends CI_Controller
         echo json_encode(['success' => $delete]);
     }
 
+    public function delete_image()
+    {
+        $id = $this->input->post('id');
+
+        $img = $this->db->get_where('product_images', ['id' => $id])->row_array();
+
+        if ($img) {
+            $path = FCPATH . 'uploads/product_images/' . $img['image'];
+
+            if (file_exists($path)) {
+                unlink($path);
+            }
+
+            $this->db->delete('product_images', ['id' => $id]);
+        }
+
+        echo json_encode(['success' => true]);
+    }
 }

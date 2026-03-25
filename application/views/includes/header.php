@@ -352,6 +352,7 @@
 									<li><a href="<?= base_url('company/medical-defence') ?>" aria-label="Project Grid">2.18 Medical & Defence </a></li>
 									<li><a href="<?= base_url('company/medical-identity') ?>" aria-label="Project Grid">2.19 Medical Identity </a></li>
 									<li><a href="<?= base_url('company/e-commerce') ?>" aria-label="Project Grid">2.20 E-Commerce </a></li>
+									<li><a href="<?= base_url('company/all-nearby-me') ?>" aria-label="Project Grid">2.21 All Nearby Me </a></li>
 
 
 									<!-- <li><a href="<?= base_url('manage_tasks') ?>" aria-label="Analytics">Manage Tasks</a></li>

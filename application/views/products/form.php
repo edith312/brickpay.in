@@ -96,13 +96,36 @@
                 <div class="mb-3">
                     <label class="form-label">Product Image</label>
 
-                    <input type="file" name="image" class="form-control mb-2" id="imageInput">
-
+                    <input type="file" name="images[]" multiple class="form-control mb-2" id="imageInput">
+                    <div id="previewContainer" class="d-flex flex-wrap gap-2"></div>
                     <!-- Old Image Preview -->
-                    <?php if (isset($product) && !empty($product['image'])): ?>
+                    <!-- <?php if (isset($product) && !empty($product['image'])): ?>
                         <img src="<?= base_url('uploads/product_images/' . $product['image']) ?>"
                              class="img-fluid rounded mb-2"
                              style="max-height: 150px;">
+                    <?php endif; ?> -->
+                    <?php if (isset($product_images) && !empty($product_images)): ?>
+                        <div class="mb-3">
+                            <label class="form-label">Product Gallery</label>
+
+                            <div class="d-flex flex-wrap gap-2">
+                                <?php foreach ($product_images as $img): ?>
+                                    <div style="position:relative;">
+                                        <img src="<?= base_url('uploads/product_images/'.$img['image']) ?>"
+                                            style="height:80px; width:80px; object-fit:cover;"
+                                            class="rounded border">
+
+                                        <!-- OPTIONAL DELETE BUTTON -->
+                                        <button type="button"
+                                            class="btn btn-danger btn-sm"
+                                            style="position:absolute; top:0; right:0; padding:2px 6px;"
+                                            onclick="deleteImage(<?= $img['id'] ?>)">
+                                            ×
+                                        </button>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
                     <?php endif; ?>
 
                     <!-- New Preview -->
@@ -176,18 +199,34 @@
     });
 
     // 🔥 Image preview
+
     $('#imageInput').change(function(){
-        const file = this.files[0];
-        if (file) {
-            const reader = new FileReader();
+        $('#previewContainer').html(''); // reset
 
-            reader.onload = function(e){
-                $('#previewImage')
-                    .attr('src', e.target.result)
-                    .removeClass('d-none');
-            }
+        const files = this.files;
 
-            reader.readAsDataURL(file);
+        if (files) {
+            [...files].forEach(file => {
+                const reader = new FileReader();
+
+                reader.onload = function(e){
+                    $('#previewContainer').append(`
+                        <img src="${e.target.result}" 
+                            class="rounded"
+                            style="height:100px; width:100px; object-fit:cover;">
+                    `);
+                }
+
+                reader.readAsDataURL(file);
+            });
         }
     });
+
+    function deleteImage(id) {
+        if (!confirm('Delete this image?')) return;
+
+        $.post("<?= base_url('products/delete_image') ?>", {id}, function(res){
+            location.reload();
+        });
+    }
 </script>

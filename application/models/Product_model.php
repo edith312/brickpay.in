@@ -53,4 +53,49 @@ class Product_model extends CI_Model
         $query = $this->db->get();
         return $query->result_array();
     }
+
+    public function getProductById($id)
+    {
+        return $this->db
+            ->where('id', $id)
+            ->get('tbl_products')
+            ->row_array();
+    }
+
+    public function getProductImages($product_id)
+    {
+        return $this->db
+            ->where('product_id', $product_id)
+            ->get('product_images')
+            ->result_array();
+    }
+
+    public function getProductWithImages($id)
+    {
+        $product = $this->getProductById($id);
+
+        if ($product) {
+            $product['images'] = $this->getProductImages($id);
+        }
+
+        return $product;
+    }
+
+    public function insertProductImage($data)
+    {
+        return $this->db->insert('product_images', $data);
+    }
+
+    public function insertProduct($data)
+    {
+        $this->db->insert('tbl_products', $data);
+        return $this->db->insert_id();
+    }
+
+    public function updateProduct($id, $user_id, $data)
+    {
+        $this->db->where('id', $id);
+        $this->db->where('user_id', $user_id);
+        return $this->db->update('tbl_products', $data);
+    }
 }

@@ -30,10 +30,42 @@
     </div>
     <div class="row">
         <!-- Product Images -->
-        <div class="col-md-6 mb-4">
+        <!-- <div class="col-md-6 mb-4">
             <img src="<?= base_url('uploads/product_images/') . $product['image'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image" id="mainImage">
             <div class="d-flex justify-content-between">
                 <img src="<?= base_url('uploads/product_images/') . $product['image'] ?>" alt="Thumbnail 1" class="thumbnail rounded active" onclick="changeImage(event, this.src)">
+            </div>
+        </div> -->
+        <div class="col-md-6 mb-4">
+
+            <!-- MAIN IMAGE -->
+            <?php 
+                $mainImage = !empty($product_images) 
+                    ? $product_images[0]['image'] 
+                    : $product['image']; 
+            ?>
+
+            <img src="<?= base_url('uploads/product_images/' . $mainImage) ?>"
+                class="img-fluid rounded mb-3 product-image"
+                id="mainImage">
+
+            <!-- THUMBNAILS -->
+            <div class="d-flex flex-wrap gap-2">
+
+                <!-- MAIN IMAGE AS FIRST -->
+                <img src="<?= base_url('uploads/product_images/' . $product['image']) ?>"
+                    class="thumbnail rounded active"
+                    onclick="changeImage(event, this.src)">
+
+                <!-- MULTIPLE IMAGES -->
+                <?php if (!empty($product_images)): ?>
+                    <?php foreach ($product_images as $img): ?>
+                        <img src="<?= base_url('uploads/product_images/' . $img['image']) ?>"
+                            class="thumbnail rounded"
+                            onclick="changeImage(event, this.src)">
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
             </div>
         </div>
 
