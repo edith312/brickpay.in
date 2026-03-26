@@ -1474,6 +1474,89 @@ class Calendar extends CI_Controller
         ]);
     }
 
+    public function saveMinistry()
+    {
+        if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
+
+        $edit_id = $this->input->post('id');
+        $ministry = trim($this->input->post('ministry'));
+        $schedule_type = $this->input->post('scheduleType');
+
+        if (empty($ministry)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Ministry cannot be empty!'
+            ]);
+            return;
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $now = date('Y-m-d H:i:s');
+
+        $timelineData = $this->handleTimeline($user_id);
+
+        if ($timelineData === false) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Timeline error'
+            ]);
+            return;
+        }
+        
+        $data = [
+            'ministry'            => $ministry,
+            'schedule_type'       => $timelineData['schedule_type'],
+            'openingtime'         => $timelineData['openingtime_db'],
+            'closingtime'         => $timelineData['closingtime_db'],
+            'finaldatetime'       => $timelineData['finaldatetime_db'],
+            'updated_date'        => $now
+        ];
+
+        if (!empty($edit_id)) {
+            $this->db->where('id', $edit_id)
+                    ->where('user_id', $user_id)
+                    ->update('tbl_calendar_ministry', $data);
+
+            $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Ministry updated successfully!',
+                'html'    => $html
+            ]);
+            return;
+        }
+
+        $data['user_id']      = $user_id;
+        $data['created_date'] = $now;
+
+        $this->db->insert('tbl_calendar_ministry', $data);
+        $insertId = $this->db->insert_id();
+
+        $timeline = json_decode($this->input->post('timeline'), true);
+
+        if (!empty($timeline)) {
+            $this->Calender_model->syncTimelineItems(
+                $timelineData['new_timeline_item'] ?? null,
+                $user_id,
+                $timeline,
+                $insertId
+            );
+        }
+
+        $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+        // echo $html; die;
+        echo json_encode([
+            'success' => true,
+            'message' => 'Ministry saved successfully!',
+            'html'    => $html
+        ]);
+    }
+
     public function saveEthnicity()
     {
         if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
@@ -4554,6 +4637,7 @@ class Calendar extends CI_Controller
             'ethnicity' => 'calendar_ethnicity',
             'character' => 'calendar_character',
             'coordinates' => 'calendar_coordinates',
+            'ministry' => 'calendar_ministry',
         ];
 
         $calendar_timeline = [];

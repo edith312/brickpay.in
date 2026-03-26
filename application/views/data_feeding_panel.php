@@ -1034,6 +1034,15 @@
                                 draggable="true"
                             >Screen Cropper</button>
                         </div>
+                        <div class="mx-2">
+                            <button class="btn btn-sm tab-btn draggable-btn text-white" style="background-color: #04d6e5ff !important;" id=""
+                                data-url="<?= base_url('Calendar/') ?>"
+                                data-type="ministry"
+                                data-target="#textDataContainer9"
+                                data-box="#box_ministrybox"
+                                draggable="true"
+                            >Ministry</button>
+                        </div>
                     </div>
                     <div class="d-flex flex-wrap mt-4 align-items-center gap-1">
                         <div class="mx-2">
@@ -2134,6 +2143,49 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+                        <div class="box_ministrybox tab-box" id="box_ministrybox">
+                            <h6> Ministry Box </h6>
+                            <div class="position-relative">
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <label class="form-label">Select Ministry</label>
+                                        <select class="form-select" name="ministry" id="ministry">
+                                            <option value="">-- Select Ministry --</option>
+
+                                            <option>Ministry of Home Affairs</option>
+                                            <option>Ministry of Finance</option>
+                                            <option>Ministry of Defence</option>
+                                            <option>Ministry of External Affairs</option>
+                                            <option>Ministry of Education</option>
+                                            <option>Ministry of Health and Family Welfare</option>
+                                            <option>Ministry of Road Transport and Highways</option>
+                                            <option>Ministry of Railways</option>
+                                            <option>Ministry of Commerce and Industry</option>
+                                            <option>Ministry of Agriculture and Farmers Welfare</option>
+                                            <option>Ministry of Housing and Urban Affairs</option>
+                                            <option>Ministry of Power</option>
+                                            <option>Ministry of Environment, Forest and Climate Change</option>
+                                            <option>Ministry of Labour and Employment</option>
+                                            <option>Ministry of Information and Broadcasting</option>
+                                            <option>Ministry of Electronics and Information Technology</option>
+                                            <option>Ministry of Tourism</option>
+                                            <option>Ministry of Women and Child Development</option>
+                                            <option>Ministry of MSME</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="press_release_container" style="overflow-y: auto; max-height: 500px;"></div>
+                            <div class="mx-2 text-center mt-5">
+                                <button class="btn btn-dark btn-sm save-btn"
+                                        data-type="ministry"
+                                        data-url="<?= base_url('Calendar/saveMinistry') ?>">
+                                    Update
+                                </button>
+                            </div>
+                            <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
+                        </div>
                     </div>
                    <div class="fw-semibold">
                         Total Finance: <span class="text-success">₹ <?= number_format($calendar['finance_total'], 2) ?></span>
@@ -2575,6 +2627,11 @@
                 formData.append("x_cord", x_cord);
                 formData.append("y_cord", y_cord);
                 formData.append("z_cord", z_cord);
+            }
+            case "ministry": {
+                const ministry = $("#ministry").val();
+
+                formData.append("ministry", ministry);
             }
 
         }

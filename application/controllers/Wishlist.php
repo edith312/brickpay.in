@@ -64,7 +64,7 @@ class Wishlist extends CI_Controller
         $user_id = sessionId('freelancer_id');
 
         $products = $this->Wishlist_model->get_wishlist($user_id); 
-
+        // dd($products);
         $data['products'] = $products;
 
         $html = $this->load->view('products/list', $data, true);

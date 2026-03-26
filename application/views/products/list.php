@@ -3,7 +3,16 @@
         <div class="col-lg-3 col-md-4 col-6">
             <div class="card position-relative">
                 <a href="<?= base_url('company/product/') . $p['slug'] ?>">
-                    <img src="<?= base_url('uploads/product_images/') . $p['image'] ?>" class="card-img-top object-fit-cover" alt="Product Image" style="height: 150px !important;">
+                    <?php 
+                        $image = !empty($p['gallery_image']) 
+                            ? $p['gallery_image'] 
+                            : $p['image']; 
+                    ?>
+
+                    <img src="<?= base_url('uploads/product_images/') . $image ?>" 
+                        class="card-img-top object-fit-cover" 
+                        alt="Product Image"
+                        style="height: 150px !important;">
                     <div class="card-body">
                         <h5 class="card-title text-dark"><?= limit_words($p['name'], 5) ?></h5>
                         <p class="card-text text-secondary"><?= limit_words($p['description'], 20) ?></p>
