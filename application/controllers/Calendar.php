@@ -1220,6 +1220,90 @@ class Calendar extends CI_Controller
             'html'    => $html
         ]);
     }
+
+    public function savegjpb()
+    {
+        if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
+            redirect(base_url(''));
+        }
+
+        $user_id = sessionId('freelancer_id') ?? sessionId('admin_id');
+
+        $edit_id = $this->input->post('id');
+        $gjpb = $this->input->post('gjpb');
+        $schedule_type = $this->input->post('scheduleType');
+
+        if (empty($gjpb)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'GJ / PB cannot be empty!'
+            ]);
+            return;
+        }
+
+        date_default_timezone_set('Asia/Kolkata');
+        $now = date('Y-m-d H:i:s');
+
+        $timelineData = $this->handleTimeline($user_id);
+
+        if ($timelineData === false) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Timeline error'
+            ]);
+            return;
+        }
+        
+        $data = [
+            'gjpb' => $gjpb,
+            'schedule_type'       => $timelineData['schedule_type'],
+            'openingtime'         => $timelineData['openingtime_db'],
+            'closingtime'         => $timelineData['closingtime_db'],
+            'finaldatetime'       => $timelineData['finaldatetime_db'],
+            'updated_date'        => $now
+        ];
+
+        if (!empty($edit_id)) {
+            $this->db->where('id', $edit_id)
+                    ->where('user_id', $user_id)
+                    ->update('tbl_calendar_gjpb', $data);
+
+            $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'GJ / PB updated successfully!',
+                'html'    => $html
+            ]);
+            return;
+        }
+
+        $data['user_id']      = $user_id;
+        $data['created_date'] = $now;
+
+        $this->db->insert('tbl_calendar_gjpb', $data);
+        $insertId = $this->db->insert_id();
+
+        $timeline = json_decode($this->input->post('timeline'), true);
+
+        if (!empty($timeline)) {
+            $this->Calender_model->syncTimelineItems(
+                $timelineData['new_timeline_item'] ?? null,
+                $user_id,
+                $timeline,
+                $insertId
+            );
+        }
+
+        $html = $this->renderTimelineHtmlForPanel($timelineData['timeline_id']);
+        // echo $html; die;
+        echo json_encode([
+            'success' => true,
+            'message' => 'GJ / PB saved successfully!',
+            'html'    => $html
+        ]);
+    }
+
     public function saveCoordinates()
     {
         if (!sessionId('freelancer_id') && !sessionId('admin_id')) {
@@ -4638,6 +4722,7 @@ class Calendar extends CI_Controller
             'character' => 'calendar_character',
             'coordinates' => 'calendar_coordinates',
             'ministry' => 'calendar_ministry',
+            'gjpb' => 'calendar_gjpb',
         ];
 
         $calendar_timeline = [];

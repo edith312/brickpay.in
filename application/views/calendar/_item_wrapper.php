@@ -247,6 +247,13 @@
                 data-box="#box_ministrybox"
             >Ministry</button>
             ',
+        'gjpb' => '
+            <button class="btn btn-sm tab-btn text-white" style="background-color: #04d6e5ff !important;" id=""
+                data-type="gjpb"
+                data-target="#textDataContainer9"
+                data-box="#box_gjpbbox"
+            >GJ / PB</button>
+            ',
     ];
     ?>
 <div class="dropped-item mb-2 dropped-item-draggable"

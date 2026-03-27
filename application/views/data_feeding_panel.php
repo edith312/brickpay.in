@@ -1043,6 +1043,15 @@
                                 draggable="true"
                             >Ministry</button>
                         </div>
+                        <div class="mx-2">
+                            <button class="btn btn-sm tab-btn draggable-btn text-white" style="background-color: #04d6e5ff !important;" id=""
+                                data-url="<?= base_url('Calendar/') ?>"
+                                data-type="gjpb"
+                                data-target="#textDataContainer9"
+                                data-box="#box_gjpbbox"
+                                draggable="true"
+                            >GJ / PB</button>
+                        </div>
                     </div>
                     <div class="d-flex flex-wrap mt-4 align-items-center gap-1">
                         <div class="mx-2">
@@ -2186,6 +2195,48 @@
                             </div>
                             <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
                         </div>
+                        <div class="box_gjpbbox tab-box" id="box_gjpbbox">
+                            <h6> GJ / PB Box </h6>
+                            <div class="position-relative">
+                                <div class="row">
+                                    <div class="mb-3">
+                                        <select class="form-select" name="gjpb" id="gjpb">
+                                            <option value="">Select Location</option>
+
+                                            <!-- Gujarat -->
+                                            <optgroup label="Gujarat (GJ)">
+                                                <option value="GJ-01|380001">GJ-01 Ahmedabad (380001)</option>
+                                                <option value="GJ-02|360001">GJ-02 Rajkot (360001)</option>
+                                                <option value="GJ-03|390001">GJ-03 Vadodara (390001)</option>
+                                                <option value="GJ-05|395003">GJ-05 Surat (395003)</option>
+                                                <option value="GJ-06|364001">GJ-06 Bhavnagar (364001)</option>
+                                                <option value="GJ-18|382021">GJ-18 Gandhinagar (382021)</option>
+                                            </optgroup>
+
+                                            <!-- Punjab -->
+                                            <optgroup label="Punjab (PB)">
+                                                <option value="PB-01|143001">PB-01 Amritsar (143001)</option>
+                                                <option value="PB-02|144001">PB-02 Jalandhar (144001)</option>
+                                                <option value="PB-03|147001">PB-03 Patiala (147001)</option>
+                                                <option value="PB-04|151001">PB-04 Bathinda (151001)</option>
+                                                <option value="PB-05|143521">PB-05 Gurdaspur (143521)</option>
+                                                <option value="PB-10|141001">PB-10 Ludhiana (141001)</option>
+                                                <option value="PB-65|160055">PB-65 Mohali (160055)</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="press_release_container" style="overflow-y: auto; max-height: 500px;"></div>
+                            <div class="mx-2 text-center mt-5">
+                                <button class="btn btn-dark btn-sm save-btn"
+                                        data-type="gjpb"
+                                        data-url="<?= base_url('Calendar/savegjpb') ?>">
+                                    Update
+                                </button>
+                            </div>
+                            <div id="textDataContainerContact" style="overflow-y:scroll;"></div>
+                        </div>
                     </div>
                    <div class="fw-semibold">
                         Total Finance: <span class="text-success">₹ <?= number_format($calendar['finance_total'], 2) ?></span>
@@ -2632,6 +2683,11 @@
                 const ministry = $("#ministry").val();
 
                 formData.append("ministry", ministry);
+            }
+            case "gjpb": {
+                const gjpb = $("#gjpb").val();
+
+                formData.append("gjpb", gjpb);
             }
 
         }
