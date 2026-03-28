@@ -43,11 +43,19 @@ class Products extends CI_Controller
 
     public function ajax_list() {        
         $this->load->library('pagination');
-        $page = $this->input->post('page');
+        $page = (int) $this->input->post('page');
+        $query = $this->input->post('query');
+        // var_dump($query); die;
+        $limit = 12;
 
-        $products = $this->Product_model->getProducts($page);
+        $products = $this->Product_model->getProducts($page, FALSE, $limit, $query);
         $data['products'] = $products;
+        $product_count = $this->CommonModal->countRowsByCondition('tbl_products');
+        $no_of_pages = ceil($product_count / $limit);
+        $data['no_of_pages'] = $no_of_pages;
+        $data['current_page'] = $page;
         // dd($data['products']);
+        // dd($data['product_count']);
         $html = $this->load->view('products/list', $data, true);
 
         $res = [
@@ -61,9 +69,14 @@ class Products extends CI_Controller
     public function my_ajax_list() {
         $page = $this->input->post('page');
         $user_id = sessionId('freelancer_id');
+        $limit = 12;
 
-        $products = $this->Product_model->getMyProducts($page, $user_id);
+        $products = $this->Product_model->getMyProducts($page, $user_id, $limit);
         $data['products'] = $products;
+        $product_count = $this->CommonModal->countRowsByCondition('tbl_products');
+        $no_of_pages = ceil($product_count / $limit);
+        $data['no_of_pages'] = $no_of_pages;
+        $data['current_page'] = $page;
         // dd($data['products']);
         $html = $this->load->view('products/list', $data, true);
 

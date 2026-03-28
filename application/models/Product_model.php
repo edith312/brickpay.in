@@ -2,9 +2,8 @@
 
 class Product_model extends CI_Model
 {
-    public function getProducts($page, $user_id = null)
+    public function getProducts($page, $user_id = null, $limit = 12, $query = null)
     {
-        $limit = 10;
         $offset = $limit * $page;
 
         $this->db->select('
@@ -37,17 +36,21 @@ class Product_model extends CI_Model
 
         $this->db->join('tbl_reviews r', 'r.product_id = p.id', 'left', FALSE);
 
+        if($query){
+            $this->db->like('p.name', $query, 'both');
+        }
+
         $this->db->group_by('p.id');
 
         $this->db->limit($limit, $offset);
 
         $query = $this->db->get();
+        // echo $this->db->last_query(); die;
         return $query->result_array();
     }
 
-    public function getMyProducts($page, $user_id){
+    public function getMyProducts($page, $user_id, $limit = 12, $query = null){
 
-        $limit = 10;
         $offset = $limit * $page;
 
         $this->db->select('
@@ -80,7 +83,9 @@ class Product_model extends CI_Model
 
         $this->db->join('tbl_reviews r', 'r.product_id = p.id', 'left', FALSE);
         $this->db->where('p.user_id', $user_id);
-        
+        if($query){
+            $this->db->like('p.name', $query, 'both');
+        }
         $this->db->group_by('p.id');
 
         $this->db->limit($limit, $offset);

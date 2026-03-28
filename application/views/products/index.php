@@ -16,6 +16,11 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-3">
+            <input type="text" name="search" id="search_product" class="form-control" placeholder="Search Products by Name">
+        </div>
+    </div>
     <div id="products-container">
 
     </div>
@@ -24,14 +29,16 @@
 <script>
     $(document).ready(function () {
         fetchProducts();
+        $('#search_product').on('keyup', searchHandler);
     })
 
-    function fetchProducts(page = 0) {
+    function fetchProducts(page = 0, query = '') {
         $.ajax({
             url: "<?= base_url('products/ajax_list') ?>",
             type: "POST",
             data: {
                 'page' : page,
+                'query': query
             },
             dataType: 'json',
             success: function (res) {
@@ -46,7 +53,7 @@
         })
     }
 
-    function fetchMyProducts(page = 0) {
+    function fetchMyProducts(page = 0, query = '') {
         $.ajax({
             url: "<?= base_url('products/my_ajax_list') ?>",
             type: "POST",
@@ -156,4 +163,29 @@
         });
 
     })
+
+    $(document).on('click', '.page-item', function () {
+        if($(this).hasClass('disabled')) exit();
+        let page = $(this).data('id');
+        console.log($(this).data())
+        fetchProducts(page)
+    })
+
+    function debounce(func, delay) {
+        let timer;
+        return function () {
+            let context = this;
+            let args = arguments;
+
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                func.apply(context, args);
+            }, delay);
+        };
+    }
+
+    const searchHandler = debounce(function () {
+        let query = $('#search_product').val().trim();
+        fetchProducts(0, query);
+    }, 500); // 500ms delay
 </script>

@@ -31,7 +31,7 @@
                     </div>
                     </a>
                 <div class="card-footer d-flex justify-content-between bg-light">
-                    <button class="btn btn-primary btn-sm add-to-cart" data-id="<?= $p['id'] ?>">Add to Cart</button>
+                    <button class="btn btn-primary bg-primary btn-sm add-to-cart" data-id="<?= $p['id'] ?>">Add to Cart</button>
                     <button class="btn btn-outline-secondary btn-sm add-wishlist" data-id="<?= $p['id'] ?>"><i class="bi <?= $p['wishlist_status'] ? 'bi-heart-fill text-danger' : 'bi-heart' ?>"></i></button>
                 </div>
                 <?php if($p['user_id'] == sessionId('freelancer_id')) { ?>
@@ -47,6 +47,15 @@
         </div>
     <?php }?>
     <div class="col-12">
-        
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item <?= $current_page == 0 ? 'disabled' : '' ?>"" data-id="<?= $current_page - 1 ?>"><a class="page-link" href="#">Previous</a></li>
+                <?php for($i = 0; $i < $no_of_pages; $i++) {?>
+                    <li class="page-item <?= $current_page == $i ? 'active' : '' ?>" data-id="<?= $i ?>"><a class="page-link" href="#"><?= $i + 1 ?></a></li>
+                <?php }?>
+                <li class="page-item <?= $current_page == ($no_of_pages - 1) ? 'disabled' : '' ?>" data-id="<?= $current_page + 1 ?>"><a class="page-link" href="#">Next</a></li>
+            </ul>
+        </nav>
     </div>
 </div>
+
