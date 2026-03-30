@@ -170,6 +170,9 @@ class Products extends CI_Controller
             $data['product_images'] = $product['images'];
         }
 
+        $categories = $this->CommonModal->getRowsWhere('tbl_product_cat');
+        $data['categories'] = $categories;
+        // dd($data);
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);
         $this->load->view('includes/footer-link');
@@ -253,6 +256,10 @@ class Products extends CI_Controller
             'slug' => $slug
         ]);
 
+        $cat_details = $this->CommonModal->getSingleRowById('product_cat',[
+            'id' => $product['category_id']
+        ]);
+        $data['cat_details'] = $cat_details;
         // 🔥 ADD THIS (from model ideally)
         $product_images = $this->Product_model->getProductImages($product['id']);
 
@@ -293,6 +300,7 @@ class Products extends CI_Controller
         $data['reviews'] = $reviews;
         $data['avg_rating'] = round($avg_rating, 1);
 
+        // dd($data);
         // dd($product);
         $this->load->view('includes/header');
         $this->load->view('includes/header-link', $data);

@@ -71,6 +71,7 @@
 
         <!-- Product Details -->
         <div class="col-md-6">
+            <h6 class="mb-3"><?= $cat_details['cat_name'] ?></h6>
             <h2 class="mb-3"><?= $product['name'] ?></h2>
             <!-- <p class="text-muted mb-4">SKU: WH1000XM4</p> -->
             <div class="mb-3">

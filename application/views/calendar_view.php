@@ -2672,6 +2672,7 @@
 <script>
     let EVENTS = [];
     let TIMELINES = [];
+    let RES = [];
     document.addEventListener("DOMContentLoaded", function () {
 
         const closeBtn = document.getElementById("closeBtn");
@@ -2939,12 +2940,15 @@
 
                 const container = $('.timingshowcase_date');
 
-                container.stop().animate({ height: isMinutesOpen ? 300 : 100 }, 200);
+                container.stop().animate({ height: isMinutesOpen ? 300 : 100 }, 200, function (){
+                    renderAllEvents(RES)
+                });
 
                 $('.minutes_showcase_area')
                     .toggleClass('active', isMinutesOpen)
                     .find('span span')
                     .toggle(isMinutesOpen);
+                
             }
             
             $('#pmToggleBtn, #amToggleBtn').on('click', function () {
@@ -3001,194 +3005,12 @@
                     dateStr
                 },
                 success: function (res) {
-                    const eventColumnMap = new Map();
-                    let columns = [];
                     // EVENTS = res.events;
                     TIMELINES = res.timelines;
+                    RES = res;
                     // console.log(res);
                     // return;
-                    $("#timeListAM li, #timeListPM li").each(function () {
-
-                        let slotTime = $(this).data("time");
-                        let dateCheck = dateStr; // YYYY-MM-DD
-                        let slotHour = slotTime.split(':')[0];
-
-                        // console.log("slotTime", slotTime);
-                        // console.log("slotHour", slotHour);
-                        // console.log("slotHourType", typeof(slotHour));
-
-                        // 🔴 CLEAR OLD EVENTS
-                        $(this).find(".event-item").remove();
-
-                        // 🔵 POSITION MANAGEMENT
-                        let baseLeft = 0;
-                        // let increment = 9;
-                        let leftCount = 0;
-                        let height = 0;
-                        let topOffset = -8;
-                        let bottomOffset = 0;
-                        // let columns = [];
-                        // console.log(eventColumnMap);
-                        // console.log(columns);
-
-                        res.timelines.forEach(item => {
-                            console.log("item",item)
-                            const startMin = toMinutes(item.opening_time);
-                            const endMin = toMinutes(item.closing_time, true);
-
-                            const slotStartMin = toMinutes(slotTime);
-                            const slotEndMin = slotStartMin + 60;
-
-                            // overlap check
-                            if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
-
-                            // height math
-                            const rowHeight = 300;
-                            const oneMinHeight = rowHeight / 60;
-
-                            const visibleStart = Math.max(startMin, slotStartMin);
-                            const visibleEnd = Math.min(endMin, slotEndMin);
-
-                            const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
-                            const height = (visibleEnd - visibleStart) * oneMinHeight;
-                            // console.log('item.id', item.data.id);
-
-                            const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
-
-                            if (colIndex === null) {
-                                console.warn('Timeline full, skipping event:', item.id);
-                                return;
-                            }
-
-                            const minutesArea = $(this).find('.minutes_showcase_area_content');
-
-                            const col9width = minutesArea.outerWidth();
-                            let col1width = col9width / 9;
-
-                            const leftPos = col1width * colIndex;
-                            const width = col1width;
-
-                            minutesArea.append(renderEvent({
-                                // ...getEventRenderConfig(item),
-                                bg: "#b7d7ff",
-                                border: "#1a73e8",
-                                time: `${item.opening_time} - ${item.closing_time}`,
-                                top: topOffset,
-                                height,
-                                left: leftPos,
-                                width: width,
-                                timeline_id: item.id,
-                                text: 'event'
-                            }));
-                        });
-                        
-                        res.bricks.forEach(item => {
-                            console.log("item",item)
-                            const opening_time = item.create_date.split(' ')[1]
-                            const startMin = toMinutes(opening_time);
-                            const closing_time = addMinutesToTime(opening_time);
-                            const endMin = toMinutes(closing_time, true);
-
-                            const slotStartMin = toMinutes(slotTime);
-                            const slotEndMin = slotStartMin + 60;
-
-                            // overlap check
-                            if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
-
-                            // height math
-                            const rowHeight = 300;
-                            const oneMinHeight = rowHeight / 60;
-
-                            const visibleStart = Math.max(startMin, slotStartMin);
-                            const visibleEnd = Math.min(endMin, slotEndMin);
-
-                            const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
-                            const height = (visibleEnd - visibleStart) * oneMinHeight;
-                            // console.log('item.id', item.data.id);
-
-                            const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
-
-                            if (colIndex === null) {
-                                console.warn('Timeline full, skipping event:', item.id);
-                                return;
-                            }
-
-                            const minutesArea = $(this).find('.minutes_showcase_area_content');
-
-                            const col9width = minutesArea.outerWidth();
-                            let col1width = col9width / 9;
-
-                            const leftPos = col1width * colIndex;;
-                            const width = col1width;
-
-                            minutesArea.append(renderEvent({
-                                // ...getEventRenderConfig(item),
-                                bg: "#b7d7ff",
-                                border: "#1a73e8",
-                                time: `${opening_time} - ${closing_time}`,
-                                top: topOffset,
-                                height,
-                                left: leftPos,
-                                width: width,
-                                timeline_id: item.id,
-                                text: 'brick'
-                            }));
-                        });
-                        
-                        res.appointments.forEach(item => {
-                            console.log("item",item)
-                            const opening_time = item.start_datetime.split(' ')[1];
-                            const closing_time = item.end_datetime.split(' ')[1];
-                            const startMin = toMinutes(opening_time);
-                            const endMin = toMinutes(closing_time, true);
-                            // console.log("startMin",startMin)
-                            // console.log("endMin",endMin)
-                            const slotStartMin = toMinutes(slotTime);
-                            const slotEndMin = slotStartMin + 60;
-
-                            // overlap check
-                            if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
-
-                            // height math
-                            const rowHeight = 300;
-                            const oneMinHeight = rowHeight / 60;
-
-                            const visibleStart = Math.max(startMin, slotStartMin);
-                            const visibleEnd = Math.min(endMin, slotEndMin);
-
-                            const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
-                            const height = (visibleEnd - visibleStart) * oneMinHeight;
-                            // console.log('item.id', item.data.id);
-
-                            const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
-
-                            if (colIndex === null) {
-                                console.warn('Timeline full, skipping event:', item.id);
-                                return;
-                            }
-
-                            const minutesArea = $(this).find('.minutes_showcase_area_content');
-
-                            const col9width = minutesArea.outerWidth();
-                            let col1width = col9width / 9;
-
-                            const leftPos = col1width * colIndex;
-                            const width = col1width;
-
-                            minutesArea.append(renderEvent({
-                                // ...getEventRenderConfig(item),
-                                bg: "#b7d7ff",
-                                border: "#1a73e8",
-                                time: `${opening_time} - ${closing_time}`,
-                                top: topOffset,
-                                height,
-                                left: leftPos,
-                                width: width,
-                                timeline_id: item.id,
-                                text: `appointment (${item.status})`
-                            }));
-                        });
-                    });
+                    renderAllEvents(RES, dateStr);
 
                     // console.log(eventColumnMap);
                     // console.log(columns);
@@ -3223,7 +3045,205 @@
                 }
             });
         }
+        
+        function renderAllEvents(res, dateStr){
+            const eventColumnMap = new Map();
+            let columns = [];
+            
+            $("#timeListAM li, #timeListPM li").each(function () {
 
+                let slotTime = $(this).data("time");
+                let dateCheck = dateStr; // YYYY-MM-DD
+                let slotHour = slotTime.split(':')[0];
+
+                // console.log("slotTime", slotTime);
+                // console.log("slotHour", slotHour);
+                // console.log("slotHourType", typeof(slotHour));
+
+                // 🔴 CLEAR OLD EVENTS
+                $(this).find(".event-item").remove();
+
+                // 🔵 POSITION MANAGEMENT
+                let baseLeft = 0;
+                // let increment = 9;
+                let leftCount = 0;
+                let height = 0;
+                let topOffset = -8;
+                let bottomOffset = 0;
+                // let columns = [];
+                // console.log(eventColumnMap);
+                // console.log(columns);
+
+                res.timelines.forEach(item => {
+                    console.log("item",item)
+                    const startMin = toMinutes(item.opening_time);
+                    const endMin = toMinutes(item.closing_time, true);
+
+                    const slotStartMin = toMinutes(slotTime);
+                    const slotEndMin = slotStartMin + 60;
+
+                    // overlap check
+                    if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
+
+                    // height math
+                    // const rowHeight = 300;
+                    const minutesArea = $(this).find('.minutes_showcase_area_content');
+
+                    const rowHeight = minutesArea.parent().height(); 
+
+                    const oneMinHeight = rowHeight / 60;
+
+                    const visibleStart = Math.max(startMin, slotStartMin);
+                    const visibleEnd = Math.min(endMin, slotEndMin);
+
+                    const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
+                    const height = (visibleEnd - visibleStart) * oneMinHeight;
+                    // console.log('item.id', item.data.id);
+
+                    const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
+
+                    if (colIndex === null) {
+                        console.warn('Timeline full, skipping event:', item.id);
+                        return;
+                    }
+
+                    // const minutesArea = $(this).find('.minutes_showcase_area_content');
+
+                    const col9width = minutesArea.outerWidth();
+                    let col1width = col9width / 9;
+
+                    const leftPos = col1width * colIndex;
+                    const width = col1width;
+
+                    minutesArea.append(renderEvent({
+                        // ...getEventRenderConfig(item),
+                        bg: "#b7d7ff",
+                        border: "#1a73e8",
+                        time: `${item.opening_time} - ${item.closing_time}`,
+                        top: topOffset,
+                        height,
+                        left: leftPos,
+                        width: width,
+                        timeline_id: item.id,
+                        text: 'event'
+                    }));
+                });
+                
+                res.bricks.forEach(item => {
+                    console.log("item",item)
+                    const opening_time = item.create_date.split(' ')[1]
+                    const startMin = toMinutes(opening_time);
+                    const closing_time = addMinutesToTime(opening_time);
+                    const endMin = toMinutes(closing_time, true);
+
+                    const slotStartMin = toMinutes(slotTime);
+                    const slotEndMin = slotStartMin + 60;
+
+                    // overlap check
+                    if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
+
+                    // height math
+                    // const rowHeight = 300;
+                    const minutesArea = $(this).find('.minutes_showcase_area_content');
+
+                    const rowHeight = minutesArea.parent().height(); 
+                    const oneMinHeight = rowHeight / 60;
+
+                    const visibleStart = Math.max(startMin, slotStartMin);
+                    const visibleEnd = Math.min(endMin, slotEndMin);
+
+                    const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
+                    const height = (visibleEnd - visibleStart) * oneMinHeight;
+                    // console.log('item.id', item.data.id);
+
+                    const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
+
+                    if (colIndex === null) {
+                        console.warn('Timeline full, skipping event:', item.id);
+                        return;
+                    }
+
+                    // const minutesArea = $(this).find('.minutes_showcase_area_content');
+
+                    const col9width = minutesArea.outerWidth();
+                    let col1width = col9width / 9;
+
+                    const leftPos = col1width * colIndex;;
+                    const width = col1width;
+
+                    minutesArea.append(renderEvent({
+                        // ...getEventRenderConfig(item),
+                        bg: "#b7d7ff",
+                        border: "#1a73e8",
+                        time: `${opening_time} - ${closing_time}`,
+                        top: topOffset,
+                        height,
+                        left: leftPos,
+                        width: width,
+                        timeline_id: item.id,
+                        text: 'brick'
+                    }));
+                });
+                
+                res.appointments.forEach(item => {
+                    console.log("item",item)
+                    const opening_time = item.start_datetime.split(' ')[1];
+                    const closing_time = item.end_datetime.split(' ')[1];
+                    const startMin = toMinutes(opening_time);
+                    const endMin = toMinutes(closing_time, true);
+                    // console.log("startMin",startMin)
+                    // console.log("endMin",endMin)
+                    const slotStartMin = toMinutes(slotTime);
+                    const slotEndMin = slotStartMin + 60;
+
+                    // overlap check
+                    if (!(startMin < slotEndMin && endMin > slotStartMin)) return;
+
+                    // height math
+                    const minutesArea = $(this).find('.minutes_showcase_area_content');
+
+                    const rowHeight = minutesArea.parent().height();
+                    
+                    const oneMinHeight = rowHeight / 60;
+
+                    const visibleStart = Math.max(startMin, slotStartMin);
+                    const visibleEnd = Math.min(endMin, slotEndMin);
+
+                    const topOffset = (visibleStart - slotStartMin) * oneMinHeight - 4;
+                    const height = (visibleEnd - visibleStart) * oneMinHeight;
+                    // console.log('item.id', item.data.id);
+
+                    const colIndex = getStableColumnIndex(item.id, startMin, endMin, columns, eventColumnMap);
+
+                    if (colIndex === null) {
+                        console.warn('Timeline full, skipping event:', item.id);
+                        return;
+                    }
+
+                    // const minutesArea = $(this).find('.minutes_showcase_area_content');
+                    
+                    const col9width = minutesArea.outerWidth();
+                    let col1width = col9width / 9;
+
+                    const leftPos = col1width * colIndex;
+                    const width = col1width;
+
+                    minutesArea.append(renderEvent({
+                        // ...getEventRenderConfig(item),
+                        bg: "#b7d7ff",
+                        border: "#1a73e8",
+                        time: `${opening_time} - ${closing_time}`,
+                        top: topOffset,
+                        height,
+                        left: leftPos,
+                        width: width,
+                        timeline_id: item.id,
+                        text: `appointment (${item.status})`
+                    }));
+                });
+            });
+        }
+        
         function getEventRenderConfig(item) {
             switch (item.type) {
 

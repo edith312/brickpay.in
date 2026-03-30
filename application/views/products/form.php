@@ -86,7 +86,7 @@
                         <?php foreach ($categories as $cat): ?>
                             <option value="<?= $cat['id'] ?>"
                                 <?= (isset($product) && $product['category_id'] == $cat['id']) ? 'selected' : '' ?>>
-                                <?= $cat['name'] ?>
+                                <?= $cat['cat_name'] ?>
                             </option>
                         <?php endforeach; ?>
                     </select>

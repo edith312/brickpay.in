@@ -842,4 +842,17 @@ class AdminHome extends CI_Controller
             'connections' => $connections
         ]);
     }
+
+    public function user_id(){
+        if (!sessionId('admin_id')) {
+            redirect(base_url(''));
+        }
+
+        $data['title'] = 'USER ID';
+
+        $this->load->view('admin/template/header-link.php');
+        $this->load->view('admin/template/header.php');
+        $this->load->view('admin/third_dimension', $data);
+        $this->load->view('admin/template/footer-link');
+    }
 }

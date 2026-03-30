@@ -188,4 +188,5 @@
         let query = $('#search_product').val().trim();
         fetchProducts(0, query);
     }, 500); // 500ms delay
+    
 </script>

@@ -313,6 +313,21 @@
 									<span class="mx-2"> Map</span>
 								</a>
 							</li>
+							<li>
+								<a href="<?= base_url() ?>admin/user_id" aria-label="User ID">
+									<svg class="svg-stroke" xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+										<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+										<path d="M12 2a10 10 0 1 0 10 10a10 10 0 0 0 -10 -10"></path>
+										<path d="M12 6v2"></path>
+										<path d="M12 16v2"></path>
+										<path d="M16.5 7.5l-1.5 1.5"></path>
+										<path d="M7.5 16.5l1.5 -1.5"></path>
+										<path d="M6 12h2"></path>
+										<path d="M16 12h2"></path>
+									</svg>
+									<span class="mx-2"> User ID</span>
+								</a>
+							</li>
 						</ul>
 					</div>
 				</div>

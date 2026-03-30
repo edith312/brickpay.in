@@ -279,6 +279,7 @@ $route['admin/total-projects'] = 'AdminHome/total_projects';
 $route['admin/celebrity-management'] = 'AdminHome/celebrity_management';
 $route['admin/event-management'] = 'AdminHome/event_management';
 $route['admin/data-feeding-panel'] = 'AdminHome/data_feeding_panel';
+$route['admin/user_id'] = 'AdminHome/user_id';
 
 
 // @ Shiv Web Developer
