@@ -849,7 +849,9 @@ class AdminHome extends CI_Controller
         }
 
         $data['title'] = 'USER ID';
-
+        $users = $this->CommonModal->getAllRows('freelancer');
+        // dd($users);
+        $data['users'] = $users;
         $this->load->view('admin/template/header-link.php');
         $this->load->view('admin/template/header.php');
         $this->load->view('admin/third_dimension', $data);
